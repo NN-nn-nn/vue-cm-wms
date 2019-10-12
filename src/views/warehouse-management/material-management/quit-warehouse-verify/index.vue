@@ -18,7 +18,7 @@
 
 <script>
 export default {
-  name: 'WareQuitWarehouseRecord',
+  name: 'WareQuitWarehouseVerify',
   data() {
     return {}
   }
