@@ -1,4 +1,4 @@
-// TODO:命名示例，最后删除该文件
+// TODO:命名示例
 import request from '@/utils/request'
 
 export function fetchList(query) {

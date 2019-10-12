@@ -11,6 +11,11 @@ import Layout from '@/layout'
 // import chartsRouter from './modules/charts'
 // import tableRouter from './modules/table'
 // import nestedRouter from './modules/nested'
+import reportManagementRouter from './modules/reportManagement'
+import configManagementRouter from './modules/configManagement'
+import purchasingManagementRouter from './modules/purchasingManagement'
+import warehouseManagementRouter from './modules/warehouseManagement'
+import technicalManagementRouter from './modules/technicalManagement'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -79,7 +84,7 @@ export const constantRoutes = [
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
         name: 'Dashboard',
-        meta: { title: '统计报表', icon: 'dashboard', affix: true }
+        meta: { title: '首页', icon: 'dashboard', affix: true }
       }
     ]
   }
@@ -96,6 +101,11 @@ export const asyncRoutes = [
   // chartsRouter,
   // nestedRouter,
   // tableRouter,
+  reportManagementRouter,
+  configManagementRouter,
+  purchasingManagementRouter,
+  warehouseManagementRouter,
+  technicalManagementRouter,
 
   // {
   //   path: '/example',
