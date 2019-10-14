@@ -21,24 +21,15 @@ const technicalManagementRouter = {
       meta: { title: '定额管理', roles: ['admin'] },
       children: [
         {
-          path: '/technical-management/quota-management/list',
-          component: () => import('@/views/technical-management/quota-management/list'),
-          name: 'TechQuotaManagementList',
-          hidden: true,
-          meta: { title: '项目列表', roles: ['admin'] }
-        },
-        {
-          path: '/technical-management/quota-management/create',
-          component: () => import('@/views/technical-management/quota-management/development'),
-          name: 'TechQuotaManagementDevelopment',
-          hidden: true,
+          path: '/technical-management/quota-management/formulate',
+          component: () => import('@/views/technical-management/quota-management/formulate/index'),
+          name: 'TechQuotaFormulate',
           meta: { title: '定额制定', roles: ['admin'] }
         },
         {
-          path: '/technical-management/quota-management/edit',
-          component: () => import('@/views/technical-management/quota-management/tracking'),
-          name: 'TechQuotaManagementTracking',
-          hidden: true,
+          path: '/technical-management/quota-management/tracking',
+          component: () => import('@/views/technical-management/quota-management/tracking/index'),
+          name: 'TechQuotaTracking',
           meta: { title: '定额跟踪', roles: ['admin'] }
         }
       ]

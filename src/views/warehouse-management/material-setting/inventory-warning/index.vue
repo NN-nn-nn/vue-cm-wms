@@ -5,7 +5,9 @@
     <div class="filter-container">
       <!-- 左侧box -->
       <div class="filter-left-box">
-        <div class="filter-item">左</div>
+        <div class="filter-item">
+          左
+        </div>
       </div>
       <!-- 右侧box -->
       <div class="filter-right-box">右</div>

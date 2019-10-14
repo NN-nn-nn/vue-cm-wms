@@ -10,6 +10,7 @@ const validatorPhone = /^1([38]\d|4[5679]|5[0-35-9]|6[56]|7[01345678]|9[189])\d{
 
 // 手机 + 固话
 const validatorTel = /^(0\d{2}-\d{8}(-\d{1,4})?)|(0\d{3}-\d{7,8}(-\d{1,4})?)$|^1([38]\d|4[5679]|5[0-35-9]|6[56]|7[01345678]|9[189])\d{8}$/
+
 // 密码正则 6-20位字母数字组合
 const validatorPwd = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,20}$/
 
@@ -29,7 +30,16 @@ const validatorOneToHundred = /^(1|([1-9]\d{0,1})|100)$/
 const validatorMoreHundred = /^(100|([1-9][0-9]\d{1})|1000)$/
 
 // 大小写字母
-const validatorLetter = /^[A-Za-z]+$/
+const validatorEn = {
+  pattern: /^[A-Za-z]+$/,
+  message: '请输入英文'
+}
+
+// 中文
+const validatorCN = {
+  pattern: /^[\u4e00-\u9fa5]+$/,
+  message: '请输入中文'
+}
 
 const validatorBankCard = /^([1-9]{1})(\d{14}|\d{15}|\d{17}|\d{18})$/
 
@@ -39,4 +49,4 @@ const validatorDomain = /^(?=^.{3,255}$)(www\.)?[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.
 // 域名验证2(必须以/结尾)
 const validatorDomain2 = /\/$/
 
-export { validatorEmail, validatorPhone, validatorTel, validatorPwd, validatorPositiveInt, validatorNatural, validatorOneToHundred, validatorIDCard, validatorMoreHundred, validatorLetter, validatorBankCard, validatorDomain, validatorDomain2 }
+export { validatorCN, validatorEmail, validatorPhone, validatorTel, validatorPwd, validatorPositiveInt, validatorNatural, validatorOneToHundred, validatorIDCard, validatorMoreHundred, validatorEn, validatorBankCard, validatorDomain, validatorDomain2 }
