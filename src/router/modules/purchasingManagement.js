@@ -54,7 +54,7 @@ const purchasingManagementRouter = {
     },
     {
       path: '/purchasing-management/supplier-management',
-      component: () => import('@/views/purchasing-management/supplier-management/list'),
+      component: () => import('@/views/purchasing-management/supplier-management'),
       redirect: '/purchasing-management/supplier-management/list',
       name: 'SupplierManagementList',
       meta: { title: '供应商管理', roles: ['admin'] },
@@ -79,6 +79,20 @@ const purchasingManagementRouter = {
           name: 'SupplierManagementEdit',
           hidden: true,
           meta: { title: '编辑供应商', roles: ['admin'] }
+        },
+        {
+          path: '/purchasing-management/supplier-management/transaction-record',
+          component: () => import('@/views/purchasing-management/supplier-management/transaction-record'),
+          name: 'SupplierManagementTranRecord',
+          hidden: true,
+          meta: { title: '交易记录', roles: ['admin'] }
+        },
+        {
+          path: '/bullet-box',
+          component: () => import('@/views/purchasing-management/supplier-management/bullet-box'),
+          name: 'SupplierManagementBulletBox',
+          hidden: true,
+          meta: { title: '详情', roles: ['admin'] }
         }
       ]
     }

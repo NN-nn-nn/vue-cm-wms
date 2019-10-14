@@ -39,4 +39,7 @@ const validatorDomain = /^(?=^.{3,255}$)(www\.)?[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.
 // 域名验证2(必须以/结尾)
 const validatorDomain2 = /\/$/
 
-export { validatorEmail, validatorPhone, validatorTel, validatorPwd, validatorPositiveInt, validatorNatural, validatorOneToHundred, validatorIDCard, validatorMoreHundred, validatorLetter, validatorBankCard, validatorDomain, validatorDomain2 }
+// 银行卡账户
+const validatorBankAcount = /^([1-9]{1})(\d{14}|\d{18})$/
+
+export { validatorEmail, validatorPhone, validatorTel, validatorPwd, validatorPositiveInt, validatorNatural, validatorOneToHundred, validatorIDCard, validatorMoreHundred, validatorLetter, validatorBankCard, validatorDomain, validatorDomain2, validatorBankAcount }

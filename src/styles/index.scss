@@ -13,6 +13,10 @@ body {
   font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
 }
 
+ul, ol li {
+  list-style: none;
+}
+
 label {
   font-weight: 700;
 }
@@ -194,4 +198,9 @@ aside {
 
 .multiselect--active {
   z-index: 1000 !important;
+}
+
+// table 表头
+.el-table tr.header {
+  background: #337ab7 !important;
 }
