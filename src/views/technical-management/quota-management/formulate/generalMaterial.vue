@@ -56,7 +56,7 @@
             <el-table-column prop="kind" label="种类" align="center" width="130">
               <template slot-scope="scope">
                 <span v-if="scope.row.isHistory">{{ scope.row.kind }}</span>
-                <el-select v-else v-model="scope.row.kind" placeholder="请选择">
+                <el-select v-else v-model="scope.row.kind" placeholder="请选择" @change="selKind">
                   <el-option
                     v-for="item in kindList"
                     :key="item.value"
@@ -205,10 +205,7 @@ export default {
       multipleSelection: [],
       nameList: [], // 名称
       kindList: [], // 种类
-      materialList: [{ // 材质
-        // label: 'Q2555',
-        // value: 0
-      }],
+      materialList: [], // 材质
       unitList: [{ // 单位
         label: '吨',
         value: 0
@@ -221,7 +218,7 @@ export default {
   mounted() {
     this.nameList = [{
       label: '钢板',
-      value: 0
+      value: 1
     }]
   },
   methods: {
@@ -239,10 +236,18 @@ export default {
       if (val) {
         this.kindList = [{
           label: '油漆',
+          value: 1
+        }]
+      }
+    },
+    selKind(val) {
+      console.log(val)
+      if (val) {
+        this.materialList = [{
+          label: 'Q2555',
           value: 0
         }]
       }
-    //   console.log(this.name)
     },
     addHandle() {
       const newObj = {
