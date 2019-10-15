@@ -14,9 +14,9 @@ const warehouseManagementRouter = {
   },
   children: [
     {
-      path: '/warehouse-management/material-management/material-warehouse',
-      component: () => import('@/views/warehouse-management/material-management/material-warehouse'),
-      redirect: 'warehouse-management/material-management/material-warehouse',
+      path: '/warehouse-management/material-management',
+      component: () => import('@/views/warehouse-management/material-management'),
+      redirect: '/warehouse-management/material-management/material-warehouse',
       name: 'MaterialManagement',
       meta: { title: '物料管理', roles: ['admin'] },
       children: [

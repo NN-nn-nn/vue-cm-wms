@@ -23,7 +23,7 @@
     <!-- 主要内容容器 -->
     <div class="content-container">
       <div id="typeBox" class="type-box">
-        <div v-for="(item, i) in typeList" :key="i" class="type-item" @click="openDetail">
+        <div v-for="(item, i) in typeList" :key="i" class="type-item" @click="openDetail(item.id)">
           <span v-text="item.typeName" />
           <span v-text="item.typeCode" />
           <el-tooltip class="item" effect="dark" content="删除" placement="top-start">
