@@ -1,6 +1,6 @@
 <template>
   <!-- 页面主容器 -->
-  <div class="pagination-container">
+  <div class="page-container">
     <!-- 主要内容容器 -->
     <div class="content-container" />
     <!-- 供应商详情页 -->
