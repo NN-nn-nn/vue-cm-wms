@@ -27,6 +27,20 @@ const technicalManagementRouter = {
           meta: { title: '定额制定', roles: ['admin'] }
         },
         {
+          path: '/technical-management/quota-management/formulate/generalMaterial',
+          component: () => import('@/views/technical-management/quota-management/formulate/generalMaterial'),
+          name: 'TechQuotaFormuGeneral',
+          hidden: true,
+          meta: { title: '一般物料定额', roles: ['admin'] }
+        },
+        {
+          path: '/technical-management/quota-management/formulate/steelPlate',
+          component: () => import('@/views/technical-management/quota-management/formulate/steelPlate'),
+          name: 'TechQuotaFormuSteelPlate',
+          hidden: true,
+          meta: { title: '钢板定额', roles: ['admin'] }
+        },
+        {
           path: '/technical-management/quota-management/tracking',
           component: () => import('@/views/technical-management/quota-management/tracking/index'),
           name: 'TechQuotaTracking',
