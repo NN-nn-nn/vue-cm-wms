@@ -68,8 +68,25 @@ const warehouseManagementRouter = {
         {
           path: '/warehouse-management/material-setting/material-class',
           component: () => import('@/views/warehouse-management/material-setting/material-class'),
+          redirect: '/warehouse-management/material-setting/material-class/list',
           name: 'WareMaterialClass',
-          meta: { title: '物料分类', roles: ['admin'] }
+          meta: { title: '物料分类', roles: ['admin'] },
+          children: [
+            {
+              path: '/warehouse-management/material-setting/material-class/list',
+              component: () => import('@/views/warehouse-management/material-setting/material-class/list'),
+              name: 'WareMaterialClassList',
+              meta: { title: '分类详情', roles: ['admin'] },
+              hidden: true
+            },
+            {
+              path: '/warehouse-management/material-setting/material-class/detail',
+              component: () => import('@/views/warehouse-management/material-setting/material-class/detail'),
+              name: 'WareMaterialClassDetail',
+              meta: { title: '种类详情', roles: ['admin'] },
+              hidden: true
+            }
+          ]
         },
         {
           path: '/warehouse-management/material-setting/inventory-warning',
