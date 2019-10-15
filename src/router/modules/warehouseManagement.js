@@ -51,22 +51,16 @@ const warehouseManagementRouter = {
           meta: { title: '出库汇总', roles: ['admin'] }
         },
         {
-          path: '/warehouse-management/material-management/quit-warehouse-record',
-          component: () => import('@/views/warehouse-management/material-management/quit-warehouse-record'),
-          name: 'WareQuitWarehouseRecord',
-          meta: { title: '退库记录', roles: ['admin'] }
-        },
-        {
-          path: '/warehouse-management/material-management/quota-tracking',
-          component: () => import('@/views/warehouse-management/material-management/quota-tracking'),
-          name: 'WareQuotaTracking',
-          meta: { title: '定额跟踪', roles: ['admin'] }
+          path: '/warehouse-management/material-management/quit-warehouse-verify',
+          component: () => import('@/views/warehouse-management/material-management/quit-warehouse-verify'),
+          name: 'WareQuitWarehouseVerify',
+          meta: { title: '退库审核', roles: ['admin'] }
         }
       ]
     },
     {
-      path: '/warehouse-management/material-setting/material-class',
-      component: () => import('@/views/warehouse-management/material-setting/material-class'),
+      path: '/warehouse-management/material-setting',
+      component: () => import('@/views/warehouse-management/material-setting'),
       redirect: '/warehouse-management/material-setting/material-class',
       name: 'MaterialSetting',
       meta: { title: '物料设置', roles: ['admin'] },

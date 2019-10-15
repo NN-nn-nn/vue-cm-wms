@@ -16,7 +16,7 @@
               end-placeholder="结束日期"
             />
           </div>
-          <el-input v-model="searchInp" class="search" clearable placeholder="请输入您要搜索的内容" @keyup.enter.native="searchHandle" />
+          <el-input v-model="searchInp" class="search" clearable filterable placeholder="请输入您要搜索的内容" />
         </div>
       </div>
       <!-- 右侧box -->
@@ -107,9 +107,6 @@ export default {
     },
     exportHandle() { // 记录导出
 
-    },
-    searchHandle() {
-      console.log(222)
     }
   }
 }

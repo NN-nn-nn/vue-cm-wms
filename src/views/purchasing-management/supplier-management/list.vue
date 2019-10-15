@@ -5,7 +5,7 @@
     <div class="filter-container">
       <div class="filter-left-box">
         <div class="filter-item">
-          <el-input v-model="searchInp" placeholder="请输入搜索名称" clearable @keyup.enter.native="searchHandle" />
+          <el-input v-model="searchInp" placeholder="请输入搜索名称" clearable filterable />
         </div>
       </div>
       <div class="filter-right-box"><el-button type="primary" @click="goCreate">添加供应商</el-button></div>
@@ -131,9 +131,6 @@ export default {
     }
   },
   methods: {
-    searchHandle() {
-      console.log(333)
-    },
     goCreate() {
       this.$router.push({ path: '/purchasing-management/supplier-management/create' })
     },

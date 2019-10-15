@@ -43,12 +43,6 @@ const purchasingManagementRouter = {
           component: () => import('@/views/purchasing-management/material-handling/quit-warehouse-record'),
           name: 'MatQuitWarehouseRecord',
           meta: { title: '退库记录', roles: ['admin'] }
-        },
-        {
-          path: '/purchasing-management/material-handling/quota-tracking',
-          component: () => import('@/views/purchasing-management/material-handling/quota-tracking'),
-          name: 'MatQuotaTracking',
-          meta: { title: '定额跟踪', roles: ['admin'] }
         }
       ]
     },
