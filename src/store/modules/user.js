@@ -32,12 +32,17 @@ const actions = {
   // user login
   login({ commit }, userInfo) {
     const { username, password } = userInfo
+    console.log('userinfo', userInfo, username, password)
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
-        resolve()
+      login({ userName: username.trim(), password: password }).then(res => {
+        const { data } = res
+        if (+res.code === 200) {
+          commit('SET_TOKEN', data)
+          setToken(data)
+          resolve()
+        } else {
+          reject(res.message)
+        }
       }).catch(error => {
         reject(error)
       })
@@ -51,20 +56,20 @@ const actions = {
         const { data } = response
 
         if (!data) {
-          reject('Verification failed, please Login again.')
+          reject('验证失败，请重新登录.')
         }
 
-        const { roles, name, avatar, introduction } = data
+        const { permissions, name, avatar, phone } = data
 
         // roles must be a non-empty array
-        if (!roles || roles.length <= 0) {
-          reject('getInfo: roles must be a non-null array!')
+        if (!permissions || permissions.length <= 0) {
+          reject('没有权限!')
         }
 
-        commit('SET_ROLES', roles)
+        commit('SET_ROLES', permissions)
         commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        commit('SET_INTRODUCTION', introduction)
+        commit('SET_AVATAR', avatar || 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif')
+        commit('SET_INTRODUCTION', phone)
         resolve(data)
       }).catch(error => {
         reject(error)
@@ -109,13 +114,13 @@ const actions = {
 
       commit('SET_TOKEN', token)
       setToken(token)
-
-      const { roles } = await dispatch('getInfo')
-
+      console.log(1111)
+      const { permissions } = await dispatch('getInfo')
+      console.log('permissions', permissions)
       resetRouter()
 
       // generate accessible routes map based on roles
-      const accessRoutes = await dispatch('permission/generateRoutes', roles, { root: true })
+      const accessRoutes = await dispatch('permission/generateRoutes', permissions, { root: true })
 
       // dynamically add accessible routes
       router.addRoutes(accessRoutes)

@@ -10,7 +10,7 @@ import { getToken } from '@/utils/auth'
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
-  timeout: 5000 // request timeout
+  timeout: 50000 // request timeout
 })
 
 // request interceptor
@@ -18,16 +18,15 @@ service.interceptors.request.use(
   config => {
     // do something before request is sent
     config.headers['Content-Type'] = 'application/json'
-
     if (config.data === null || config.data === undefined) config.data = {}
     if (config.params === null || config.params === undefined) config.params = {}
-
     if (store.getters.token) {
       // let each request carry token
       // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
       // please modify it according to the actual situation
-      config.headers['X-Token'] = getToken()
+      config.headers['Authorization'] = `cat ${getToken()}`
     }
+
     // config.data = Qs.stringify(config.data)
     return config
   },
