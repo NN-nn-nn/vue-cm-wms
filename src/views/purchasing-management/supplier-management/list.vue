@@ -1,6 +1,6 @@
 <template>
   <!-- 页面主容器 -->
-  <div class="pagination-container">
+  <div class="page-container">
     <!-- 查询容器 -->
     <div class="filter-container">
       <div class="filter-left-box">

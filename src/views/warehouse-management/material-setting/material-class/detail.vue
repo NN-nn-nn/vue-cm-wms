@@ -1,6 +1,6 @@
 <template>
   <!-- 页面主容器 -->
-  <div class="pagination-container">
+  <div class="page-container">
     <!-- 查询容器 -->
     <div class="filter-container">
       <!-- 左侧box -->
@@ -52,7 +52,7 @@
               </el-table-column>
               <el-table-column prop="materialCode" label="代码" align="center" width="180" />
               <el-table-column prop="createTime" label="时间" align="center" width="180" />
-              <el-table-column label="操作" align="center">
+              <el-table-column label="操作">
                 <template slot-scope="scope">
                   <el-button v-if="scope.row.edit" type="success" size="small" icon="el-icon-circle-check-outline" @click="confirmEdit(scope.row)">保存</el-button>
                   <el-button v-else type="primary" size="small" icon="el-icon-edit" @click="scope.row.edit=!scope.row.edit">编辑</el-button>
@@ -61,7 +61,6 @@
               </el-table-column>
             </el-table>
             <div class="pagination-container">
-              <!-- <el-pagination :current-page="listQuery.pageNumber" :page-sizes="[10, 20, 30, 50]" :page-size="listQuery.pageSize" background layout="sizes, jumper, prev, next" @size-change="handleSizeChange" @current-change="handleCurrentChange" /> -->
               <el-pagination v-show="total>0" :current-page="listQuery.pageNumber" :page-sizes="[10, 20, 30, 50]" :page-size="listQuery.pageSize" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
             </div>
           </div>
