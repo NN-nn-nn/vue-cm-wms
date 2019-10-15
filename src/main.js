@@ -18,6 +18,7 @@ import './permission' // 权限控制
 import './utils/error-log' // 错误日志
 
 import * as filters from './filters' // 全局过滤器
+import { parseTime } from './utils'
 
 /**
  *如果您不想使用模拟服务器
@@ -35,6 +36,9 @@ if (process.env.NODE_ENV === 'production') {
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium' // 设置element-ui默认大小
 })
+
+// 时间格式过滤器
+Vue.filter('parseTime', parseTime)
 
 // register global utility filters（注册全局实用程序过滤器）
 Object.keys(filters).forEach(key => {
