@@ -18,7 +18,7 @@ const configManagementRouter = {
       component: () => import('@/views/config-management/residual-material'),
       //   redirect: '/config-management/residual-material',
       name: 'ConfigResidualMaterial',
-      meta: { title: '预料定义', roles: ['admin'] },
+      meta: { title: '余料定义', roles: ['admin'] },
       children: []
     }
   ]

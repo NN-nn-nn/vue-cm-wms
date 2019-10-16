@@ -4,4 +4,9 @@ const apiResultCode = {
   API_VERSION: 50001 // 接口版本更新
 }
 
-export { apiResultCode }
+const dictionaryType = {
+  UNIT: 1,
+  SUPPLIER: 2
+}
+
+export { apiResultCode, dictionaryType }
