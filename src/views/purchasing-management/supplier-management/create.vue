@@ -150,7 +150,6 @@
 import { validatorEmail, validatorTel, validatorBankAcount } from '@/utils/validatePattern'
 import { getProvice, save } from '@/api/supplier'
 import { fetchEnterpriseTypeList, fetchSupplierTypeList } from '@/api/dictionary'
-import { supplierType } from '@/utils/commonType'
 import XLSX from 'xlsx'
 export default {
   name: 'SupplierManagementList',
@@ -275,12 +274,12 @@ export default {
         if (res.code === 200) {
           this.enterpriseList = res.data
         }
-      }).catch(e => { })
+      })
       fetchSupplierTypeList().then(res => {
         if (res.code === 200) {
           this.supplierList = res.data
         }
-      }).catch(e => {})
+      })
     },
     selArea(val) {
       this.ruleForm.state = val[0]
@@ -293,6 +292,7 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          console.log(this.ruleForm)
           save(this.ruleForm).then(res => {
             if (res.data && res.code === 200) {
               this.$message.success('创建成功！')
@@ -330,10 +330,8 @@ export default {
         console.log(sheet)
         sheet.forEach(v => {
           if (v.供应商入库登记表 === '供应商全称*') {
-            console.log('进来了')
             this.ruleForm.name = v.__EMPTY
             this.ruleForm.shortName = v.__EMPTY_2
-            // console.log(v.__EMPTY)
           } else if (v.供应商入库登记表 === '详细地址*') {
             this.ruleForm.state = v.__EMPTY
             this.ruleForm.city = v.__EMPTY_1
@@ -347,6 +345,9 @@ export default {
             this.ruleForm.legalRepresentative = v.__EMPTY
             this.ruleForm.registeredCapital = v.__EMPTY_2
             this.ruleForm.enterpriseType = v.__EMPTY_4
+            this.enterpriseList.forEach(item => {
+              if (item.name === v.__EMPTY_4) this.ruleForm.enterpriseType = item.value
+            })
           } else if (v.供应商入库登记表 === '开户行名称*') {
             this.ruleForm.firstBankName = v.__EMPTY
             this.ruleForm.firstBankAccount = v.__EMPTY_2
@@ -365,21 +366,14 @@ export default {
           } else {
             this.ruleForm.mainBusiness = v.__EMPTY
             v.__EMPTY_4 = v.__EMPTY_4.split('、')
-            console.log(v.__EMPTY_4.split('、'))
-
-            supplierType.forEach(item => {
-              // v.__EMPTY_4.forEach()
-              // console.log(item.label, typeof item.label)
-              if (item.label === v.__EMPTY_4) {
-                console.log(item.value)
-                this.ruleForm.supplierClassification = Number(item.value)
-              }
+            v.__EMPTY_4.forEach(item => {
+              this.supplierList.forEach(itemChild => {
+                if (itemChild.name === item) this.ruleForm.supplierClassification.push(itemChild.value)
+              })
             })
-            // console.log(this.ruleForm.supplierClassification)
           }
-          // console.log(v.供应商入库登记表)
         })
-        // console.log(this.ruleForm)
+        console.log(this.ruleForm.supplierClassification)
       }
     }
   }

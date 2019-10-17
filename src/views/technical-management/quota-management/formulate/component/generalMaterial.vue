@@ -163,7 +163,7 @@
           </el-table-column>
         </el-table>
       </el-form>
-      <div class="btn">
+      <div class="formulate-btn">
         <el-button type="primary" icon="el-icon-circle-plus-outline" @click="addHandle">添加</el-button>
         <el-button type="primary" icon="el-icon-circle-check-outline" @click="confirmHandle">确定</el-button>
       </div>
@@ -289,8 +289,5 @@ export default {
 </script>
 
 <style scoped>
-.btn {
-    margin: 20px 0 0 0;
-    text-align: right;
-}
+
 </style>
