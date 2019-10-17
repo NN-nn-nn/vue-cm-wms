@@ -168,6 +168,7 @@ export default {
               message: '添加失败',
               type: 'error'
             })
+            console.log(e)
           })
         } else {
           return false

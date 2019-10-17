@@ -6,22 +6,13 @@
       <!-- 左侧box -->
       <div class="filter-left-box">
         <div class="filter-item">
-          <el-date-picker
-            v-model="year"
-            type="year"
-            value-format="yyyy"
-            placeholder="选择年"
+          <el-cascader
+            v-model="currentProjectId"
+            placeholder="试试搜索：2019"
+            :options="projectCascadeList"
+            :props="props"
+            filterable
           />
-        </div>
-        <div class="filter-item">
-          <el-select v-model="project" style="width:260px;" filterable placeholder="请选择相关项目">
-            <el-option
-              v-for="item in list"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
         </div>
         <div class="filter-item">
           <el-radio-group v-model="materialBaseType" size="medium">
@@ -49,6 +40,9 @@
 <script>
 import SteelPlate from './steelPlate'
 import generalMaterial from './generalMaterial'
+import { changeProjectToCascadeByYear } from '@/utils/other'
+import { fetchProjectGroupByYear } from '@/api/project'
+
 export default {
   name: 'TechQuotaFormulate',
   components: {
@@ -57,6 +51,7 @@ export default {
   },
   data() {
     return {
+      props: { value: 'id', label: 'name', children: 'children', expandTrigger: 'hover' },
       year: new Date(),
       list: [{
         value: '选项1',
@@ -66,8 +61,13 @@ export default {
         label: '江干区高沙大学生联谊会'
       }],
       project: '',
-      materialBaseType: 4
+      materialBaseType: 4,
+      currentProjectId: [],
+      projectCascadeList: []
     }
+  },
+  created() {
+    this.getProjectYearCascade()
   },
   mounted() {
 
@@ -75,13 +75,43 @@ export default {
   methods: {
     yearHandle(val) {
       console.log(this.year)
+    },
+    /**
+   * 获取项目年份级联列表
+   */
+    getProjectYearCascade: function() {
+      fetchProjectGroupByYear().then(({ data, code, message }) => {
+        if (code === 200) {
+          this.projectCascadeList = changeProjectToCascadeByYear(data, '入库总额(万元)', 'totalPrice')
+          // this.projectCascadeList = changeProjectToCascadeByYear(data)
+          if (this.projectCascadeList[0] && this.projectCascadeList[0].children[0] && this.projectCascadeList[0].children[0].id) {
+            this.currentProjectId.push(this.projectCascadeList[0].id)
+            this.currentProjectId.push(this.projectCascadeList[0].children[0].id)
+          }
+        } else {
+          this.$message({
+            message: message,
+            type: 'error'
+          })
+        }
+      }).catch(e => {
+        this.$message({
+          message: '获取项目级联列表失败',
+          type: 'error'
+        })
+        console.log(e)
+      })
     }
   }
+
 }
 </script>
 
 <style scoped>
 .filter-item {
   margin: 0 10px;
+}
+.el-cascader {
+  width: 300px;
 }
 </style>
