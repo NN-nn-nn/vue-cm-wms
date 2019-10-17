@@ -61,7 +61,8 @@
 </template>
 
 <script>
-import { removeTreeEmptyFiled } from '@/utils'
+import { removeTreeEmptyFiled, setInfoOfTree } from '@/utils'
+import { MATERIAL_BASE_TYPE } from '@/utils/conventionalContent'
 import { fetchMaterialList, updateMinimumInventory, fetchMaterialClassTree } from '@/api/material'
 
 export default {
@@ -74,6 +75,7 @@ export default {
         pageSize: 10,
         classId: undefined
       },
+      currentBaseType: MATERIAL_BASE_TYPE.MATERIAL,
       currentClassId: [],
       total: 0,
       mateLoading: false,
@@ -86,7 +88,7 @@ export default {
   },
   methods: {
     getMaterialClassTree: function() {
-      fetchMaterialClassTree().then(({ data, code, message }) => {
+      fetchMaterialClassTree(this.currentBaseType.index).then(({ data, code, message }) => {
         if (code === 200) {
           if (data && data.length) {
             this.mateOption[0] = {
@@ -94,6 +96,8 @@ export default {
               id: -1
             }
             this.mateOption[0].childrenList = data
+
+            setInfoOfTree(this.mateOption, 'childrenList', 'name', 'otherInfo', 3)
             this.mateOption = removeTreeEmptyFiled(this.mateOption, 'childrenList')
             if (this.mateOption[0] && this.mateOption[0].childrenList[0] && this.mateOption[0].childrenList[0].childrenList[0] && this.mateOption[0].childrenList[0].childrenList[0].id) {
               this.currentClassId.push(this.mateOption[0].id)

@@ -371,3 +371,32 @@ export function removeTreeEmptyFiled(arr, childName) {
   })
   return JSON.parse(JSON.stringify(arr))
 }
+
+/**
+ * 对树的某一层设置信息
+ * @export
+ * @param {*} pendingArr 待处理数组
+ * @param {*} childFieldName 子节点字段名
+ * @param {*} needChangeField 需要修改的字段
+ * @param {*} infoField 携带信息的字段
+ * @param {*} pollingLimit 轮询次数（树层级）
+ * @param {number} [currentIndex=1] 当前轮序下标
+ * @author duhh
+ */
+export function setInfoOfTree(pendingArr, childFieldName, needChangeField, infoField, pollingLimit, currentIndex = 1) {
+  if (pendingArr) {
+    if ((currentIndex === pollingLimit) && !!pendingArr) {
+      pendingArr.forEach(c => {
+        console.log('c', c)
+        if (c && c[needChangeField] && c[infoField]) {
+          c[needChangeField] = `${c[needChangeField]}(${c[infoField]})`
+        }
+      })
+    }
+    if (currentIndex < pollingLimit && !!pendingArr) {
+      pendingArr.forEach(c => {
+        setInfoOfTree(c[childFieldName], childFieldName, needChangeField, infoField, pollingLimit, ++currentIndex)
+      })
+    }
+  }
+}

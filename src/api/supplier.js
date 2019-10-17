@@ -1,5 +1,18 @@
 import request from '@/utils/request'
 
+/**
+ * 查看某分类的供应商简单信息
+ * @param {string/number} baseType 基础分类
+ * @author duhh
+ */
+export function fetchListByBaseType(baseType) {
+  return request({
+    url: '/supplier/find/list-simple',
+    method: 'get',
+    params: { classification: baseType }
+  })
+}
+
 // 创建供应商
 export function save(data) {
   return request({

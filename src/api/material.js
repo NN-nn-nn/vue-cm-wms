@@ -1,3 +1,7 @@
+/**
+ * 物料接口
+ * @author duhh
+ */
 import request from '@/utils/request'
 
 // 获取物料名称
@@ -109,11 +113,20 @@ export function updateMinimumInventory(data) {
 }
 
 // 查询物料分类和其级联信息
-export function fetchMaterialClassTree(params) {
+export function fetchMaterialClassTree(baseType) {
   return request({
     url: '/material-type/option/list',
     method: 'get',
-    params
+    params: { formType: baseType }
+  })
+}
+
+// 查询物料树
+export function fetchMaterialTree(baseType) {
+  return request({
+    url: '/material-type/tree/list',
+    method: 'get',
+    params: { formType: baseType }
   })
 }
 

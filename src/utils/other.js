@@ -24,5 +24,6 @@ export function changeProjectToCascadeByYear(arr, tip = '', tipField) {
       newArr.push(_node)
     }
   })
+  console.log(newArr)
   return JSON.parse(JSON.stringify(newArr))
 }

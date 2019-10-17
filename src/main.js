@@ -40,6 +40,11 @@ Vue.use(Element, {
 // 时间格式过滤器
 Vue.filter('parseTime', parseTime)
 
+Vue.filter('toFixed', (value, precision) => {
+  if (isNaN(value)) return ''
+  return value.toFixed(precision)
+})
+
 // register global utility filters（注册全局实用程序过滤器）
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])

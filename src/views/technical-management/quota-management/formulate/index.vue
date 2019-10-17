@@ -82,8 +82,8 @@ export default {
     getProjectYearCascade: function() {
       fetchProjectGroupByYear().then(({ data, code, message }) => {
         if (code === 200) {
-          this.projectCascadeList = changeProjectToCascadeByYear(data, '入库总额(万元)', 'totalPrice')
-          // this.projectCascadeList = changeProjectToCascadeByYear(data)
+          // this.projectCascadeList = changeProjectToCascadeByYear(data, '入库总额(万元)', 'totalPrice')
+          this.projectCascadeList = changeProjectToCascadeByYear(data)
           if (this.projectCascadeList[0] && this.projectCascadeList[0].children[0] && this.projectCascadeList[0].children[0].id) {
             this.currentProjectId.push(this.projectCascadeList[0].id)
             this.currentProjectId.push(this.projectCascadeList[0].children[0].id)
