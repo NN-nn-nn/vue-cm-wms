@@ -132,8 +132,8 @@
             </el-form-item>
           </div>
           <div class="center">
-            <el-button type="primary" @click="submitForm('ruleForm')">更新</el-button>
-            <el-button @click="resetForm('ruleForm')">重置</el-button>
+            <el-button class="el-icon-edit" type="primary" @click="submitForm('ruleForm')"> 修改</el-button>
+            <el-button class="el-icon-error" @click="cancelHandle"> 取消</el-button>
           </div>
 
         </el-form>
@@ -330,8 +330,8 @@ export default {
         }
       })
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields()
+    cancelHandle() {
+      this.$router.go(-1)
     }
   }
 }

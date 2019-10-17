@@ -89,17 +89,10 @@ export default {
             this.currentProjectId.push(this.projectCascadeList[0].children[0].id)
           }
         } else {
-          this.$message({
-            message: message,
-            type: 'error'
-          })
+          this.$message.err(message)
         }
       }).catch(e => {
-        this.$message({
-          message: '获取项目级联列表失败',
-          type: 'error'
-        })
-        console.log(e)
+        this.$message.error('获取项目级联列表失败')
       })
     }
   }

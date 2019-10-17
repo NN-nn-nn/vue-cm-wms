@@ -8,7 +8,7 @@
           <el-input v-model="searchInp" placeholder="请输入搜索名称" clearable filterable />
         </div>
       </div>
-      <div class="filter-right-box"><el-button type="primary" @click="goCreate">添加供应商</el-button></div>
+      <div class="filter-right-box"><el-button class="el-icon-circle-plus-outline" type="primary" @click="goCreate"> 添加供应商</el-button></div>
     </div>
     <!-- 主要内容容器 -->
     <div class="content-container">
@@ -58,6 +58,7 @@
           </el-table-column>
           <el-table-column
             label="供应商分类"
+            width="280"
           >
             <template slot-scope="scope">
               <span style="margin-left: 10px">{{ scope.row.supplierClassType }}</span>
@@ -68,27 +69,30 @@
               <el-button
                 size="mini"
                 type="primary"
-
+                class="el-icon-info"
                 @click="checkDetail(scope.row.id)"
-              >详情
+              > 详情
               </el-button>
               <el-button
                 size="mini"
+                class="el-icon-edit-outline"
                 type="warning"
                 @click="handleEdit(scope.row.id)"
-              >修改
+              > 修改
               </el-button>
               <el-button
                 size="mini"
+                class="el-icon-delete"
                 type="danger"
                 @click="handleDelete(scope.row.id)"
-              >删除
+              > 删除
               </el-button>
               <el-button
                 size="mini"
+                class="el-icon-document"
                 type="info"
                 @click="goRecord()"
-              >交易记录
+              > 交易记录
               </el-button>
             </template>
           </el-table-column>
@@ -113,15 +117,11 @@
 <script>
 import bulletBox from './bullet-box'
 import { list } from '@/api/supplier'
-import { parseTime } from '@/utils/index'
 import { supplierType } from '@/utils/commonType'
 export default {
   name: 'SupplierManagementList',
   components: {
     bulletBox
-  },
-  filters: {
-    parseTime
   },
   data() {
     return {
@@ -149,23 +149,24 @@ export default {
           this.loading = false
           this.data = res.data.data
           this.data.forEach((v, index) => {
-            v.supplierClassificationList.forEach(item => {
+            this.supplierClassType = ''
+            v.supplierClassification = v.supplierClassification.substring(1, v.supplierClassification.length - 1)
+            v.supplierClassification = v.supplierClassification.split(',')
+            v.supplierClassification.forEach(item => {
+              item = item.replace(/\"/g, '')
               supplierType.filter(typeItem => {
-                if (typeItem.value === item) {
+                if (Number(typeItem.value) === Number(item)) {
                   this.supplierClassType += typeItem.label + '  '
                 }
               })
-              console.log(this.supplierClassType)
             })
             v.supplierClassType = this.supplierClassType
           })
-          console.log(this.data)
           this.totalCount = res.data.totalCount
         } else {
           this.loading = false
         }
       }).catch(e => {
-        // this.$message.error(e.$message)
         this.loading = false
       })
     },
