@@ -15,13 +15,13 @@
     <!-- 主要内容容器 -->
     <div class="content-container">
       <el-tabs id="classTabs" v-model="currentTabId" :tab-position="'left'" style="min-height: 200px;" @tab-click="changeTab">
-        <el-tab-pane v-for="(item,i) in classList" :key="i" :label="item.className + ' | ' + item.classCode" :name="`${item.id}`">
+        <el-tab-pane v-for="(item,i) in classList" :key="i" :label="`${item.className}[${item.unit}] | ${item.classCode}`" :name="`${item.id}`">
           <div class="filter-container">
             <!-- 左侧box -->
             <div class="filter-left-box">
               <div class="filter-item">
                 <el-button type="primary" size="medium" icon="el-icon-edit" @click="openClassDlg('update', item)">修改种类信息</el-button>
-                <el-button type="danger" size="small" icon="el-icon-delete" @click="deleteTip('class', item)">删除当前种类</el-button>
+                <el-button type="danger" :loading="delLoadBtn" size="small" icon="el-icon-delete" @click="deleteTip('class', item)">删除当前种类</el-button>
               </div>
             </div>
             <!-- 右侧box -->
@@ -30,39 +30,46 @@
             </div>
           </div>
           <div class="content-container">
-            <el-table
-              v-loading="matelistLoading"
-              :data="materialList"
-              border
-              stripe
-              style="width: 100%"
-            >
-              <el-table-column prop="typeName" label="物料名称" align="center" width="180" />
-              <el-table-column prop="className" label="物料种类" align="center" width="180" />
-              <el-table-column prop="detailName" label="材质/型号/品种" align="center" width="220">
-                <template slot-scope="scope">
-                  <template v-if="scope.row.edit">
-                    <div class="edit-item">
-                      <el-input v-model="scope.row.detailName" class="edit-input" size="small" @blur="validateName(scope.row.detailName, scope.row.id)" />
-                      <el-button class="cancel-btn" size="small" icon="el-icon-refresh" type="warning" @click="cancelEdit(scope.row)">取消</el-button>
-                    </div>
+            <template v-if="item.id == currentTabId">
+              <el-table
+                v-loading="matelistLoading"
+                :data="materialList"
+                border
+                stripe
+                style="width: 100%"
+              >
+                <el-table-column type="index" label="序号" align="center" width="100" />
+                <el-table-column prop="typeName" label="物料名称" align="center" width="180" />
+                <el-table-column prop="className" label="物料种类" align="center" width="180" />
+                <el-table-column prop="detailName" label="材质/型号/品种" align="center" width="220">
+                  <template slot-scope="scope">
+                    <template v-if="scope.row.edit">
+                      <div class="edit-item">
+                        <el-input v-model="scope.row.detailName" class="edit-input" size="small" />
+                        <el-button class="cancel-btn" size="small" icon="el-icon-refresh" type="warning" @click="cancelEdit(scope.row)">取消</el-button>
+                      </div>
+                    </template>
+                    <span v-else>{{ scope.row.detailName }}</span>
                   </template>
-                  <span v-else>{{ scope.row.detailName }}</span>
-                </template>
-              </el-table-column>
-              <el-table-column prop="materialCode" label="代码" align="center" width="180" />
-              <el-table-column prop="createTime" label="时间" align="center" width="180" />
-              <el-table-column label="操作">
-                <template slot-scope="scope">
-                  <el-button v-if="scope.row.edit" type="success" size="small" icon="el-icon-circle-check-outline" @click="confirmEdit(scope.row)">保存</el-button>
-                  <el-button v-else type="primary" size="small" icon="el-icon-edit" @click="scope.row.edit=!scope.row.edit">编辑</el-button>
-                  <el-button type="danger" size="small" @click="deleteTip('material', scope.row)">删除</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-            <div class="pagination-container">
-              <el-pagination v-show="total > 0" :current-page="listQuery.pageNumber" :page-sizes="[10, 20, 30, 50]" :page-size="listQuery.pageSize" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
-            </div>
+                </el-table-column>
+                <el-table-column prop="materialCode" label="代码" align="center" width="180" />
+                <el-table-column label="时间" align="center" width="180">
+                  <template slot-scope="scope">
+                    {{ scope.row.createTime | parseTime }}
+                  </template>
+                </el-table-column>
+                <el-table-column label="操作">
+                  <template slot-scope="scope">
+                    <el-button v-if="scope.row.edit" type="success" size="small" icon="el-icon-circle-check-outline" @click="confirmEdit(scope.row)">保存</el-button>
+                    <el-button v-else type="primary" size="small" icon="el-icon-edit" @click="scope.row.edit=!scope.row.edit">编辑</el-button>
+                    <el-button type="danger" size="small" @click="deleteTip('material', scope.row)">删除</el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+              <div class="pagination-container">
+                <el-pagination v-show="total > 0" :current-page="listQuery.pageNumber" :page-sizes="[10, 20, 30, 50]" :page-size="listQuery.pageSize" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+              </div>
+            </template>
           </div>
         </el-tab-pane>
       </el-tabs>
@@ -72,6 +79,16 @@
       <el-form ref="classForm" :model="classForm" :rules="classRule">
         <el-form-item label="名称" :label-width="'80px'" prop="className">
           <el-input v-model="classForm.className" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="单位" :label-width="'80px'" prop="unitId">
+          <el-select v-model="classForm.unitId" filterable placeholder="请选择">
+            <el-option
+              v-for="item in unitList"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            />
+          </el-select>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -96,6 +113,7 @@
 
 <script>
 import { validatorCN } from '@/utils/validatePattern'
+import { fetchUnitList } from '@/api/dictionary'
 import { fetchClassList, createClass, updateClass, delClass, fetchMaterialList, createMaterial, updateMaterial, delMaterial } from '@/api/material'
 
 export default {
@@ -105,6 +123,7 @@ export default {
       classDlgVisible: false,
       classEditDlgVisible: false,
       materialDlgVisible: false,
+      delLoadBtn: false,
       submitClassLoadBtn: false,
       submitMaterialBtn: false,
       matelistLoading: false,
@@ -117,8 +136,13 @@ export default {
       currentTabId: undefined,
       classList: [], // 种类列表
       materialList: [],
+      unitList: [
+        { name: '元', id: '1' }
+      ], // 单位列表
       listQuery: {
-        id: undefined
+        id: undefined,
+        pageNumber: 1,
+        pageSize: 10
       },
       materialForm: {}, // 物料材质表单
       classForm: {}, // 物料种类表单
@@ -127,27 +151,36 @@ export default {
           { required: true, message: '请输入种类名称', trigger: 'blur' },
           { min: 1, max: 7, message: '请输入1-7个字', trigger: 'blur' },
           { pattern: validatorCN.pattern, message: validatorCN.message, trigger: 'blur' }
+        ],
+        unitId: [
+          { required: true, message: '请选择单位', trigger: 'blur' }
         ]
       },
       materialRule: { // 物料种类表单验证
         detailName: [
-          { required: true, message: '请输入材质名称', trigger: 'blur' }
-          // { min: 1, max: 7, message: '请输入1-7个字', trigger: 'blur' }
+          { required: true, message: '请输入材质名称', trigger: 'blur' },
+          { min: 1, max: 12, message: '请输入1-12个字符', trigger: 'blur' }
           // { pattern: validatorCN.pattern, message: validatorCN.message, trigger: 'blur' }
         ]
       }
     }
   },
+  created() {
+    this.getUnitList()
+  },
   mounted() {
     this.backRouterName = this.$route.query && this.$route.query.backRouterName
     this.typeId = this.$route.query && this.$route.query.id
-    this.fetchClassList()
+    this.getClassList()
   },
   methods: {
     openClassDlg: function(status, item) {
       this.operateDlgStatus = status
       if (item && item.id) {
-        this.classForm = Object.assign({}, item)
+        this.classForm = Object.assign({ typeId: this.typeId }, item)
+        console.log(this.classForm)
+      } else {
+        this.classForm = { typeId: this.typeId }
       }
       this.classDlgVisible = true
     },
@@ -186,39 +219,32 @@ export default {
         })
       }).catch(e => {
         this.$message({
-          // message: error.message,
           message: '删除失败',
           type: 'error'
         })
       })
     },
+    // 获取物料材质列表
     getMaterialList: function() {
       this.matelistLoading = true
       this.materialList = []
-      this.listQuery.id = this.currentTabId
-      fetchMaterialList(this.listQuery).then(res => {
-        this.materialList.push({ id: 1, typeName: '焊接材料', className: '焊条', detailName: 'AUFAS', materialCode: 'HJ61', createTime: '2017-08-02' })
-        this.materialList.push({ id: 1, typeName: '焊接材料', className: '焊条', detailName: 'AUFAS', materialCode: 'HJ61', createTime: '2017-08-02' })
-        this.materialList.push({ id: 1, typeName: '焊接材料', className: '焊条', detailName: 'AUFAS', materialCode: 'HJ61', createTime: '2017-08-02' })
-        this.materialList.push({ id: 1, typeName: '焊接材料', className: '焊条', detailName: 'AUFAS', materialCode: 'HJ61', createTime: '2017-08-02' })
-        this.materialList.push({ id: 1, typeName: '焊接材料', className: '焊条', detailName: 'AUFAS', materialCode: 'HJ61', createTime: '2017-08-02' })
-        this.materialList.push({ id: 1, typeName: '焊接材料', className: '焊条', detailName: 'AUFAS', materialCode: 'HJ61', createTime: '2017-08-02' })
-        this.materialList = this.materialList.map(v => {
-          this.$set(v, 'edit', false)
-          v.originalName = v.detailName
-          return v
-        })
-        this.total = this.materialList.length || 0
-        // if (res.data.resultCode === 200) {
-        //   resolve(res.data.resultContent)
-        // } else {
-        //   this.$message({
-        //     // message: error.message,
-        //     message: res.data.resultMsg,
-        //     type: 'error'
-        //   })
-        //   reject()
-        // }
+      this.listQuery.classId = this.currentTabId
+      fetchMaterialList(this.listQuery).then(({ data, code, message }) => {
+        if (code === 200) {
+          if (data && data.data && data.data.length) {
+            this.materialList = data.data.map(v => {
+              this.$set(v, 'edit', false)
+              v.originalName = v.detailName
+              return v
+            })
+          }
+          this.total = data.totalCount || 0
+        } else {
+          this.$message({
+            message: message,
+            type: 'error'
+          })
+        }
         this.matelistLoading = false
       }).catch(e => {
         this.$message({
@@ -228,11 +254,6 @@ export default {
         this.matelistLoading = false
         console.log(e)
       })
-      // this.list = _venderLabels.map(v => {
-      //       this.$set(v, 'edit', false)
-      //       v.originalName = v.name
-      //       return v
-      //     })
     },
     // 搜索界面
     handleFilter() {
@@ -248,34 +269,27 @@ export default {
       this.listQuery.pageNumber = val
       this.getMaterialList()
     },
-    // 验证材质名称是否正确
-    validateName: function(name, id) {
-      // checkName(name, id).then(
-      //   response => {
-      //     this.resultMsg = response.data.resultMsg
-      //     this.resultCode = response.data.resultCode
-      //     if (response.data.resultCode !== 200) {
-      //       this.$message({
-      //         message: response.data.resultMsg,
-      //         type: 'warning'
-      //       })
-      //     }
-      //   }
-      // )
-    },
     submitMaterial: function() {
       this.$refs['materialForm'].validate((valid) => {
         if (valid) {
           this.submitMaterialBtn = true
-          createMaterial(this.materialForm).then(() => {
-            this.$message({
-              message: '添加成功',
-              type: 'success'
-            })
+          this.materialForm.classId = Number(this.currentTabId)
+          createMaterial(this.materialForm).then(({ data, code, message }) => {
+            if (code === 200) {
+              this.$message({
+                message: '添加成功',
+                type: 'success'
+              })
+              this.materialDlgVisible = false
+              this.$refs['materialForm'].resetFields()
+              this.getMaterialList()
+            } else {
+              this.$message({
+                message: message,
+                type: 'success'
+              })
+            }
             this.submitMaterialBtn = false
-            this.materialDlgVisible = false
-            this.$refs['materialForm'].resetFields()
-            this.getMaterialList()
           }).catch(e => {
             this.submitMaterialBtn = false
             this.$message({
@@ -298,16 +312,8 @@ export default {
       })
     },
     confirmEdit(row) {
-      // 如果名称检测结果为‘重复’ 400
-      // if (this.resultCode !== null && this.resultCode !== 200) {
-      //   this.$message({
-      //     message: this.resultMsg,
-      //     type: 'warning'
-      //   })
-      //   return
-      // }
-      updateMaterial({ id: row.id, detailName: row.detailName }).then(res => {
-        if (res.data.resultCode === 200) {
+      updateMaterial({ id: row.id, detailName: row.detailName }).then(({ data, code, message }) => {
+        if (code === 200) {
           row.edit = false
           row.originalName = row.name
           this.$message({
@@ -316,42 +322,42 @@ export default {
           })
         } else {
           this.$message({
-            message: res.data.resultMsg,
+            message: message,
             type: 'error'
           })
         }
       }).catch(e => {
         console.log(e)
+        this.$message({
+          message: '保存失败',
+          type: 'error'
+        })
       })
     },
     changeTab: function(e) {
       this.currentTabId = e.name
       this.getMaterialList()
     },
-    fetchClassList: function() {
+    getClassList: function() {
       const loading = this.$loading({
         target: '#classTabs',
         lock: true,
-        text: '正在切换',
+        text: '正在加载',
         fullscreen: false
-        // spinner: 'el-icon-loading',
-        // background: 'rgba(0, 0, 0, 0.7)'
       })
-      fetchClassList({ id: this.typeId }).then(res => {
-        this.classList.push({ id: 1, className: '焊条', classCode: '6' })
-        this.classList.push({ id: 2, className: '焊条2', classCode: '7' })
-        this.currentTabId = this.classList[0].id + ''
-        this.getMaterialList()
-        // if (res.data.resultCode === 200) {
-        //   resolve(res.data.resultContent)
-        // } else {
-        //   this.$message({
-        //     // message: error.message,
-        //     message: res.data.resultMsg,
-        //     type: 'error'
-        //   })
-        //   reject()
-        // }
+      fetchClassList({ typeId: this.typeId }).then(({ data, code, message }) => {
+        if (code === 200) {
+          this.classList = data
+          if (this.classList && this.classList.length) {
+            this.currentTabId = this.classList[0].id + ''
+            this.getMaterialList()
+          }
+        } else {
+          this.$message({
+            message: message,
+            type: 'error'
+          })
+        }
         loading.close()
       }).catch(e => {
         this.$message({
@@ -376,19 +382,28 @@ export default {
         this.editClass()
       }
     },
+    // 保存种类信息
     saveClass: function() {
       this.$refs['classForm'].validate((valid) => {
         if (valid) {
           this.submitClassLoadBtn = true
-          createClass(this.classForm).then(() => {
-            this.$message({
-              message: '添加成功',
-              type: 'success'
-            })
+          this.classForm.unit = this.searchUnitName(this.classForm.unitId)
+          createClass(this.classForm).then(({ data, code, message }) => {
+            if (code === 200) {
+              this.$message({
+                message: '添加成功',
+                type: 'success'
+              })
+              this.$refs['classForm'].resetFields()
+              this.classDlgVisible = false
+              this.getClassList()
+            } else {
+              this.$message({
+                message: message,
+                type: 'success'
+              })
+            }
             this.submitClassLoadBtn = false
-            this.classDlgVisible = false
-            this.$refs['classForm'].resetFields()
-            // this.getTypeList()
           }).catch(e => {
             this.submitClassLoadBtn = false
             this.$message({
@@ -401,19 +416,28 @@ export default {
         }
       })
     },
+    // 修改种类信息
     editClass: function() {
       this.$refs['classForm'].validate((valid) => {
         if (valid) {
           this.submitClassLoadBtn = true
-          updateClass(this.classForm).then(() => {
-            this.$message({
-              message: '修改成功',
-              type: 'success'
-            })
+          this.classForm.unit = this.searchUnitName(this.classForm.unitId)
+          updateClass(this.classForm).then(({ data, code, message }) => {
+            if (code === 200) {
+              this.$message({
+                message: '修改成功',
+                type: 'success'
+              })
+              this.classDlgVisible = false
+              this.$refs['classForm'].resetFields()
+              this.getClassList()
+            } else {
+              this.$message({
+                message: message,
+                type: 'error'
+              })
+            }
             this.submitClassLoadBtn = false
-            this.classDlgVisible = false
-            this.$refs['classForm'].resetFields()
-            // this.getTypeList()
           }).catch(e => {
             this.submitClassLoadBtn = false
             this.$message({
@@ -426,16 +450,26 @@ export default {
         }
       })
     },
+    // 删除种类
     deleteClass: function(id) {
-      delClass(id).then(res => {
-        // this.getMaterialList()
-        this.$message({
-          message: '删除成功',
-          type: 'success'
-        })
+      this.delLoadBtn = true
+      delClass(id).then(({ data, code, message }) => {
+        if (code === 200) {
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          })
+          this.getClassList()
+        } else {
+          this.$message({
+            message: message,
+            type: 'error'
+          })
+        }
+        this.delLoadBtn = false
       }).catch(e => {
+        this.delLoadBtn = false
         this.$message({
-          // message: error.message,
           message: '删除失败',
           type: 'error'
         })
@@ -460,6 +494,27 @@ export default {
         })
       })
     },
+    // 获取单位类型
+    getUnitList: function() {
+      fetchUnitList().then(({ data, code, message }) => {
+        if (code === 200) {
+          if (data && data.length) {
+            this.unitList = data.map(v => {
+              const _new = {
+                id: v.id,
+                name: v.name
+              }
+              return _new
+            })
+          }
+        } else {
+          this.$message({
+            type: 'error',
+            message: message
+          })
+        }
+      })
+    },
     openAddClassDlg: function() {
       this.classDlgVisible = true
     },
@@ -467,6 +522,17 @@ export default {
       this.$refs[fromName].resetFields()
       this.classDlgVisible = false
       this.materialDlgVisible = false
+    },
+    searchUnitName(unitId) {
+      if (!unitId) return
+      let unitName
+      for (let i = 0; i < this.unitList.length; i++) {
+        if (this.unitList[i].id === unitId) {
+          unitName = this.unitList[i].name
+          break
+        }
+      }
+      return unitName
     }
   }
 }
@@ -474,6 +540,9 @@ export default {
 
 <style scoped>
 .el-input {
+  width: 300px;
+}
+.el-select {
   width: 300px;
 }
 .edit-item {
@@ -484,13 +553,7 @@ export default {
   align-items: center;
 }
 .edit-input {
-  /* padding-right: 100px; */
   width: 120px;
   margin-right: 10px;
-}
-.cancel-btn {
-  /* position: absolute;
-  right: 15px;
-  top: 10px; */
 }
 </style>

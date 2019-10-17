@@ -143,7 +143,7 @@ service.interceptors.response.use(
       duration: 3 * 1000
     })
 
-    return Promise.reject(error)
+    // return Promise.reject(error)
   }
 )
 
