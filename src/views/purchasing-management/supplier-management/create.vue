@@ -6,21 +6,22 @@
       <div class="form">
         <el-form ref="ruleForm" :model="ruleForm" :rules="rules" label-width="110px" class="demo-ruleForm">
           <div class="rule-row">
-            <el-form-item label="供应商全称" prop="fullName">
-              <el-input v-model="ruleForm.fullName" />
+            <el-form-item label="供应商全称" prop="name">
+              <el-input v-model="ruleForm.name" />
             </el-form-item>
-            <el-form-item label="简称" prop="abbreviation">
-              <el-input v-model="ruleForm.abbreviation" />
-            </el-form-item>
-            <el-form-item label="供应商编号" prop="code">
-              <el-input v-model="ruleForm.code" />
+            <el-form-item label="简称" prop="shortName">
+              <el-input v-model="ruleForm.shortName" />
             </el-form-item>
           </div>
           <div class="rule-row">
             <el-form-item label="选择地区" prop="area">
               <el-cascader
+                v-model="ruleForm.area"
+                style="width: 260px"
                 :options="options"
-                :show-all-levels="false"
+                :props="props"
+                filterable
+                @change="selArea"
               />
             </el-form-item>
             <el-form-item label="详细地址" prop="address">
@@ -28,81 +29,91 @@
             </el-form-item>
           </div>
           <div class="rule-row">
-            <el-form-item label="社会统一代码" prop="uniteCode">
-              <el-input v-model="ruleForm.uniteCode" />
+            <el-form-item label="社会统一代码" prop="socialCode">
+              <el-input v-model="ruleForm.socialCode" />
             </el-form-item>
-            <el-form-item label="成立日期" prop="dateEstablish">
+            <el-form-item label="成立日期" prop="registrationDate">
               <el-date-picker
-                v-model="ruleForm.dateEstablish"
+                v-model="ruleForm.registrationDate"
                 type="date"
                 placeholder="选择日期"
               />
             </el-form-item>
-            <el-form-item label="营业期限" prop="operatePeriod">
-              <el-input v-model="ruleForm.operatePeriod" placeholder="请输入营业期限" />
+            <el-form-item label="营业期限" prop="businessTerm">
+              <el-input v-model="ruleForm.businessTerm" placeholder="请输入营业期限" />
             </el-form-item>
           </div>
           <div class="rule-row">
-            <el-form-item label="法定代表人" prop="legal">
-              <el-input v-model="ruleForm.legal" />
+            <el-form-item label="法定代表人" prop="legalRepresentative">
+              <el-input v-model="ruleForm.legalRepresentative" />
             </el-form-item>
-            <el-form-item label="注册资本" prop="registCapital">
-              <el-input v-model="ruleForm.registCapital" />
+            <el-form-item label="注册资本" prop="registeredCapital">
+              <el-input v-model="ruleForm.registeredCapital" />
             </el-form-item>
-            <el-form-item label="企业类型" prop="enterpries" required>
-              <el-select v-model="ruleForm.enterpries">
-                <el-option label="美食/餐厅线上活动" value="1" />
+            <el-form-item label="企业类型" prop="enterpriseType">
+              <el-select v-model="ruleForm.enterpriseType" @change="enterpriseChange">
+                <el-option
+                  v-for="item in enterpriseList"
+                  :key="item.value"
+                  :label="item.name"
+                  :value="item.value"
+                />
               </el-select>
             </el-form-item>
           </div>
           <div class="rule-row">
-            <el-form-item label="开户行名称" prop="bankName">
-              <el-input v-model="ruleForm.bankName" placeholder="请输入开户行名称" />
+            <el-form-item label="开户行名称" prop="firstBankName">
+              <el-input v-model="ruleForm.firstBankName" placeholder="请输入开户行名称" />
             </el-form-item>
-            <el-form-item label="银行账户" prop="bankAccount">
-              <el-input v-model="ruleForm.bankAccount" />
-            </el-form-item>
-          </div>
-          <div class="rule-row">
-            <el-form-item label="公司官网" prop="companyWebsite">
-              <el-input v-model="ruleForm.companyWebsite" placeholder="请输入公司官网" />
-            </el-form-item>
-            <el-form-item label="单位邮箱" prop="unitMailbox">
-              <el-input v-model="ruleForm.unitMailbox" placeholder="请输入单位邮箱" />
-            </el-form-item>
-            <el-form-item label="电话" prop="phone">
-              <el-input v-model="ruleForm.phone" placeholder="请输入电话" />
+            <el-form-item label="银行账户" prop="firstBankAccount">
+              <el-input v-model="ruleForm.firstBankAccount" />
             </el-form-item>
           </div>
           <div class="rule-row">
-            <el-form-item label="联系人1" prop="contactOne">
-              <el-input v-model="ruleForm.contactOne" placeholder="请输入联系人1" />
+            <el-form-item label="公司官网" prop="website">
+              <el-input v-model="ruleForm.website" placeholder="请输入公司官网" />
             </el-form-item>
-            <el-form-item label="联系电话" prop="contactPhoneOne">
-              <el-input v-model="ruleForm.contactPhoneOne" placeholder="请输入联系电话" />
+            <el-form-item label="单位邮箱" prop="companyEmail">
+              <el-input v-model="ruleForm.companyEmail" placeholder="请输入单位邮箱" />
             </el-form-item>
-            <el-form-item label="个人邮箱" prop="personalMailOne">
-              <el-input v-model="ruleForm.personalMailOne" placeholder="请输入个人邮箱" />
+            <el-form-item label="电话" prop="companyPhone">
+              <el-input v-model="ruleForm.companyPhone" placeholder="请输入电话" />
             </el-form-item>
           </div>
           <div class="rule-row">
-            <el-form-item label="联系人2" prop="contactTwo">
-              <el-input v-model="ruleForm.contactTwo" placeholder="请输入联系人2" />
+            <el-form-item label="联系人1" prop="firstContact">
+              <el-input v-model="ruleForm.firstContact" placeholder="请输入联系人1" />
             </el-form-item>
-            <el-form-item label="联系电话" prop="contactPhoneTwo">
-              <el-input v-model="ruleForm.contactPhoneTwo" placeholder="请输入联系电话" />
+            <el-form-item label="联系电话" prop="firstContactPhone">
+              <el-input v-model="ruleForm.firstContactPhone" placeholder="请输入联系电话" />
             </el-form-item>
-            <el-form-item label="个人邮箱" prop="personalMailTwo">
-              <el-input v-model="ruleForm.personalMailTwo" placeholder="请输入个人邮箱" />
+            <el-form-item label="个人邮箱" prop="firstContactEmail">
+              <el-input v-model="ruleForm.firstContactEmail" placeholder="请输入个人邮箱" />
+            </el-form-item>
+          </div>
+          <div class="rule-row">
+            <el-form-item label="联系人2" prop="secondContact">
+              <el-input v-model="ruleForm.secondContact" placeholder="请输入联系人2" />
+            </el-form-item>
+            <el-form-item label="联系电话" prop="secondContactPhone">
+              <el-input v-model="ruleForm.secondContactPhone" placeholder="请输入联系电话" />
+            </el-form-item>
+            <el-form-item label="个人邮箱" prop="secondContactEmail">
+              <el-input v-model="ruleForm.secondContactEmail" placeholder="请输入个人邮箱" />
             </el-form-item>
           </div>
           <div class="rule-row">
             <el-form-item label="主营业务" prop="mainBusiness">
               <el-input v-model="ruleForm.mainBusiness" placeholder="请输入主营业务" />
             </el-form-item>
-            <el-form-item label="供应商分类" prop="supplierClass">
-              <el-select v-model="ruleForm.supplierClass">
-                <el-option label="美食/餐厅线上活动" value="1" />
+            <el-form-item label="供应商分类" prop="supplierClassification">
+              <el-select v-model="ruleForm.supplierClassification" multiple style="width: 390px">
+                <el-option
+                  v-for="item in supplierList"
+                  :key="item.value"
+                  :label="item.name"
+                  :value="item.value"
+                />
               </el-select>
             </el-form-item>
           </div>
@@ -120,62 +131,78 @@
               </el-upload>
             </el-form-item>
           </div>
+
+          <!-- <div>
+            <input type="file" @change="choseFile($event)">
+          </div> -->
+
           <div class="center">
-            <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
+            <!-- <el-upload
+              class="upload-demo"
+              action=""
+              :on-change="choseFile"
+              accept=""
+              :auto-upload="false"
+            >
+              <el-button size="small" class="el-icon-upload el-icon-right" type="primary">点击上传</el-button>
+            </el-upload> -->
+
+            <el-button type="primary" @click="submitForm('ruleForm')">添加</el-button>
             <el-button @click="resetForm('ruleForm')">重置</el-button>
           </div>
 
         </el-form>
       </div>
     </div>
-    <!-- 其他模块（例如弹窗等） -->
-
   </div>
 </template>
 <script>
 import { validatorEmail, validatorTel, validatorBankAcount } from '@/utils/validatePattern'
+import { getProvice, save } from '@/api/supplier'
+import { fetchEnterpriseTypeList, fetchSupplierTypeList } from '@/api/dictionary'
+import XLSX from 'xlsx'
 export default {
   name: 'SupplierManagementList',
   data() {
     return {
+      fileContent: '',
+      supplierList: [], // 供应商类型
+      enterpriseList: [], // 企业类型
       ruleForm: {
-        fullName: '',
-        abbreviation: '',
-        code: '',
-        area: '',
+        name: '',
+        shortName: '',
+        area: [],
+        state: '',
+        city: '',
+        region: '',
         address: '',
-        uniteCode: '',
-        dateEstablish: '',
-        operatePeriod: '',
-        legal: '',
-        registCapital: '',
-        enterpries: '',
-        bankName: '',
-        bankAccount: '',
-        companyWebsite: '',
-        unitMailbox: '',
-        phone: '',
-        contactOne: '',
-        contactPhoneOne: '',
-        personalMailOne: '',
-        contactTwo: '',
-        contactPhoneTwo: '',
-        personalMailTwo: '',
+        socialCode: '',
+        registrationDate: '',
+        businessTerm: '',
+        legalRepresentative: '',
+        registeredCapital: '',
+        enterpriseType: '',
+        enterpriseTypeName: '',
+        firstBankName: '',
+        firstBankAccount: '',
+        website: '',
+        companyEmail: '',
+        companyPhone: '',
+        firstContact: '',
+        firstContactPhone: '',
+        firstContactEmail: '',
+        secondContact: '',
+        secondContactPhone: '',
+        secondContactEmail: '',
         mainBusiness: '',
-        supplierClass: ''
+        supplierClassification: ''
       },
       rules: {
-        fullName: [
-          { required: true, message: '请输入供应商全称', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+        name: [
+          { required: true, message: '请输入供应商全称', trigger: 'blur' }
         ],
-        abbreviation: [
-          { required: true, message: '请输入简称', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
-        ],
-        code: [
-          { required: true, message: '请输入供应商编号', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+        shortName: [
+          { required: true, message: '请输入简称', trigger: 'blur' }
         ],
         area: [
           { required: true, message: '请选择地区', trigger: 'change' }
@@ -183,63 +210,134 @@ export default {
         address: [
           { required: true, message: '请输入详细地址', trigger: 'blur' }
         ],
-        uniteCode: [
+        socialCode: [
           { required: true, message: '请输入社会统一代码', trigger: 'blur' }
         ],
-        dateEstablish: [
+        registrationDate: [
           { required: true, message: '请选择成立日期', trigger: 'change' }
         ],
-        registCapital: [
+        registeredCapital: [
           { required: true, message: '请输入注册资本', trigger: 'blur' }
         ],
-        bankName: [
+        enterpriseType: [
+          { required: true, message: '请选择企业类型', trigger: 'change' }
+        ],
+        firstBankName: [
           { required: true, message: '请输入开户行名称', trigger: 'blur' }
         ],
-        bankAccount: [
+        firstBankAccount: [
           { required: true, message: '请输入银行账户', trigger: 'blur' },
           { pattern: validatorBankAcount, message: '请输入正确的银行账户', trigger: 'blur' }
         ],
-        unitMailbox: [
+        companyEmail: [
           { pattern: validatorEmail, message: '请输入正确的邮箱号码', trigger: 'blur' }
         ],
-        phone: [
+        companyPhone: [
           { pattern: validatorTel, message: '请输入正确的电话号码', trigger: 'blur' }
         ],
-        contactOne: [
+        firstContact: [
           { required: true, message: '请输入联系人1', trigger: 'blur' }
         ],
-        contactPhoneOne: [
+        firstContactPhone: [
           { required: true, message: '请输入联系电话', trigger: 'blur' },
           { pattern: validatorTel, message: '请输入正确的电话号码', trigger: 'blur' }
         ],
-        personalMailOne: [
+        secondContactPhone: [
+          { pattern: validatorTel, message: '请输入正确的电话号码', trigger: 'blur' }
+        ],
+        firstContactEmail: [
           { required: true, message: '请输入个人邮箱', trigger: 'blur' },
           { pattern: validatorEmail, message: '请输入正确的邮箱号码', trigger: 'blur' }
         ],
-        personalMailTwo: [
+        secondContactEmail: [
           { pattern: validatorEmail, message: '请输入正确的邮箱号码', trigger: 'blur' }
+        ],
+        supplierClassification: [
+          { required: true, message: '请选择供应商类型', trigger: 'change' }
         ]
       },
       options: [],
+      props: {
+        label: 'name',
+        value: 'id',
+        children: 'cityList'
+      },
       fileList: [{ name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' }, { name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' }]
     }
   },
+  mounted() {
+    this.getList()
+    // console.log(XLSX)
+  },
   methods: {
+    getList() {
+      getProvice().then(res => {
+        this.options = res.data
+        this.options.forEach(v => {
+          v.cityList.forEach(item => {
+            if (item.cityList.length < 1) {
+              item.cityList = undefined
+            }
+          })
+        })
+      }).catch(e => { })
+      fetchEnterpriseTypeList().then(res => {
+        if (res.code === 200) {
+          this.enterpriseList = res.data
+        }
+      }).catch(e => { })
+      fetchSupplierTypeList().then(res => {
+        if (res.code === 200) {
+          this.supplierList = res.data
+        }
+      }).catch(e => {})
+    },
+    selArea(val) {
+      this.ruleForm.state = val[0]
+      this.ruleForm.city = val[1]
+      this.ruleForm.region = val[2]
+    },
     handleChange(file, fileList) {
       console.log(file)
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!')
+          save(this.ruleForm).then(res => {
+            if (res.data && res.code === 200) {
+              this.$message.success('创建成功！')
+              this.$refs[formName].resetFields()
+            } else {
+              this.$message.error('创建失败!')
+            }
+          }).catch(e => {
+            this.$message.error('接口失败')
+          })
         } else {
-          console.log('error submit!!')
           return false
+        }
+      })
+    },
+    enterpriseChange(val) {
+      this.enterpriseList.filter(v => {
+        if (Number(v.value) === Number(this.ruleForm.enterpriseType)) {
+          this.ruleForm.enterpriseTypeName = v.name
         }
       })
     },
     resetForm(formName) {
       this.$refs[formName].resetFields()
+    },
+    choseFile(file) {
+      var reader = new FileReader()
+      reader.readAsArrayBuffer(file.target.files[0]) // type array
+      reader.onload = res => {
+        var zzexcel = XLSX.read(res.target.result, {
+          type: 'array' // binary
+        })
+        const sheet = XLSX.utils.sheet_to_json(zzexcel.Sheets[zzexcel.SheetNames[0]])
+        console.log(sheet)
+      }
     }
   }
 }

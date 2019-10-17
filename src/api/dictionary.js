@@ -18,3 +18,12 @@ export function fetchSupplierTypeList() {
     params: { type: type.SUPPLIER }
   })
 }
+
+// 获取企业类型列表
+export function fetchEnterpriseTypeList() {
+  return request({
+    url: '/dictionary/getChildListByType',
+    method: 'get',
+    params: { type: type.EnterPrise }
+  })
+}
