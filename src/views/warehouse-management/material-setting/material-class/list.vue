@@ -6,7 +6,7 @@
       <!-- 左侧box -->
       <div class="filter-left-box">
         <div class="filter-item">
-          <el-radio-group v-model="listQuery.materialBaseType" size="medium" @change="getTypeList">
+          <el-radio-group v-model="listQuery.formType" size="medium" @change="getTypeList">
             <el-radio-button :label="4">一般物料</el-radio-button>
             <el-radio-button :label="0">钢板</el-radio-button>
             <el-radio-button :label="1">型钢</el-radio-button>
@@ -17,17 +17,19 @@
       </div>
       <!-- 右侧box -->
       <div class="filter-right-box">
-        <UploadBtn :action="action" :btn-name="'物料分类导入'" />
+        <div class="filter-item">
+          <UploadBtn :action="action" :btn-name="'物料分类导入'" />
+        </div>
       </div>
     </div>
     <!-- 主要内容容器 -->
     <div class="content-container">
       <div id="typeBox" class="type-box">
-        <div v-for="(item, i) in typeList" :key="i" class="type-item" @click="openDetail(item.id)">
+        <div v-for="(item, i) in typeList" :id="`type${item.id}`" :key="i" class="type-item" @click="openDetail(item.id)">
           <span v-text="item.typeName" />
           <span v-text="item.typeCode" />
           <el-tooltip class="item" effect="dark" content="删除" placement="top-start">
-            <div class="del-img-item" @click="deleteType(item.id)">
+            <div id="delItem" class="del-img-item" @click.stop="deleteType(item.id, `type${item.id}`)">
               <img class="del-img" src="@/assets/images/delete.png">
             </div>
           </el-tooltip>
@@ -70,7 +72,7 @@ export default {
   data() {
     return {
       listQuery: { // 大类查询条件
-        materialBaseType: 4
+        formType: 4
       },
       typeForm: { // 大类表单
 
@@ -89,9 +91,7 @@ export default {
       },
       dialogFormVisible: false,
       saveLoadingBtn: false,
-      typeList: [
-        { id: 1, typeName: '焊接材料', typeCode: 'SJ' }
-      ],
+      typeList: [],
       action: 'https://jsonplaceholder.typicode.com/posts/'
     }
   },
@@ -103,47 +103,39 @@ export default {
       this.$router.push({ name: 'WareMaterialClassDetail', query: { id, backRouterName: this.$options.name }})
     },
     /**
-     * 更改基础类型
-     * 0-钢板，1-型材，2-彩卷，3-围护，4-一般物料
-     */
-    changeBaseType: function() {
-      const loading = this.$loading({
-        lock: true,
-        text: 'Loading',
-        spinner: 'el-icon-loading',
-        background: 'rgba(0, 0, 0, 0.7)'
-      })
-      setTimeout(() => {
-        loading.close()
-      }, 1000)
-    },
-    /**
      * 删除物料类型
      * @param id {number} 物料类型id
      */
-    deleteType: function(id) {
+    deleteType: function(id, target) {
       const loading = this.$loading({
-        target: '#typeBox',
+        target: `#${target}`,
         lock: true,
+        spinner: 'el-icon-loading',
         text: '正在删除',
+        background: 'rgba(255, 255, 255, 0.75)',
         fullscreen: false
       })
-      delType(id).then(res => {
-        this.getTypeList()
-        this.$message({
-          message: '删除成功',
-          type: 'success'
-        })
+      delType(id).then(({ data, code, message }) => {
+        if (code === 200) {
+          this.getTypeList()
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          })
+        } else {
+          this.$message({
+            message: message,
+            type: 'error'
+          })
+        }
+        loading.close()
       }).catch(e => {
+        loading.close()
         this.$message({
-          // message: error.message,
           message: '删除失败',
           type: 'error'
         })
       })
-      setTimeout(() => {
-        loading.close()
-      }, 2000)
     },
     handleClose(done) {
       this.$refs['createTypeForm'].clearValidate()
@@ -153,15 +145,23 @@ export default {
       this.$refs['createTypeForm'].validate((valid) => {
         if (valid) {
           this.saveLoadingBtn = true
-          createType(this.typeForm).then(() => {
-            this.$message({
-              message: '添加成功',
-              type: 'success'
-            })
+          this.typeForm.formType = this.listQuery.formType
+          createType(this.typeForm).then(({ data, code, message }) => {
+            if (code === 200) {
+              this.$message({
+                message: '添加成功',
+                type: 'success'
+              })
+              this.dialogFormVisible = false
+              this.$refs['createTypeForm'].resetFields()
+              this.getTypeList()
+            } else {
+              this.$message({
+                message: message,
+                type: 'error'
+              })
+            }
             this.saveLoadingBtn = false
-            this.dialogFormVisible = false
-            this.$refs['createTypeForm'].resetFields()
-            this.getTypeList()
           }).catch(e => {
             this.saveLoadingBtn = false
             this.$message({
@@ -182,22 +182,20 @@ export default {
       const loading = this.$loading({
         target: '#typeBox',
         lock: true,
-        text: '正在切换',
+        text: '正在加载',
         fullscreen: false
         // spinner: 'el-icon-loading',
         // background: 'rgba(0, 0, 0, 0.7)'
       })
-      fetchTypeList(this.listQuery).then(res => {
-        // if (res.data.resultCode === 200) {
-        //   resolve(res.data.resultContent)
-        // } else {
-        //   this.$message({
-        //     // message: error.message,
-        //     message: res.data.resultMsg,
-        //     type: 'error'
-        //   })
-        //   reject()
-        // }
+      fetchTypeList(this.listQuery).then(({ data, code, message }) => {
+        if (+code === 200) {
+          this.typeList = data
+        } else {
+          this.$message({
+            message: message,
+            type: 'error'
+          })
+        }
         loading.close()
       }).catch(e => {
         this.$message({
@@ -208,13 +206,13 @@ export default {
         console.log(e)
       })
     },
-    delTip(id) {
+    delTip(id, target) {
       this.$confirm('确认删除?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.deleteType(id)
+        this.deleteType(id, target)
       }).catch(() => {
         this.$message({
           type: 'info',

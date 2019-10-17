@@ -9,4 +9,12 @@ const dictionaryType = {
   SUPPLIER: 2
 }
 
-export { apiResultCode, dictionaryType }
+const MATERIAL_BASE_TYPE = {
+  STEEL_PLATE: { index: 0, name: '钢板', value: 'steelPlate' },
+  STEEL: { index: 1, name: '型钢', value: 'steel' },
+  STRIP_STEEL: { index: 3, name: '彩卷/带钢', value: 'stripSteel' },
+  ENCLOSURE: { index: 2, name: '成品围护', value: 'enclosure' },
+  MATERIAL: { index: 4, name: '一般物料', value: 'material' }
+}
+
+export { apiResultCode, dictionaryType, MATERIAL_BASE_TYPE }

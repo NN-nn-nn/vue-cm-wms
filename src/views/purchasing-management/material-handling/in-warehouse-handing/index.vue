@@ -15,9 +15,9 @@
       <!-- <el-button type="primary" size="medium" @click="">一般物料入库</el-button>
       <el-button type="primary" size="medium">钢板入库</el-button>
       <el-button type="primary" size="medium">型钢入库</el-button>
-      <el-button type="primary" size="medium">彩券/带钢入库</el-button>
+      <el-button type="primary" size="medium">彩卷/带钢入库</el-button>
       <el-button type="primary" size="medium">成品围护入库</el-button> -->
-      <el-button v-for="(item, i) in warehouseType" :key="i" type="primary" size="medium" @click="item.visible = true">{{ item.name }}</el-button>
+      <el-button v-for="(item, i) in warehouseType" :key="i" type="primary" size="medium" @click="item.visible = true"><svg-icon :icon-class="item.icon" />{{ item.name }}</el-button>
     </div>
     <!-- 其他模块（例如弹窗等） -->
     <!-- 一般物料入库Dlg -->
@@ -45,11 +45,11 @@ export default {
   data() {
     return {
       warehouseType: {
-        type_one: { name: '一般物料入库', visible: false, type: 0 },
-        type_two: { name: '钢板入库', visible: false, type: 1 },
-        type_three: { name: '型钢入库', visible: false, type: 2 },
-        type_four: { name: '彩券/带钢入库', visible: false, type: 3 },
-        type_five: { name: '成品围护入库', visible: false, type: 4 }
+        type_one: { name: '一般物料入库', visible: false, type: 0, icon: 'material' },
+        type_two: { name: '钢板入库', visible: false, type: 1, icon: 'steel-plate' },
+        type_three: { name: '型钢入库', visible: false, type: 2, icon: 'steel' },
+        type_four: { name: '彩卷/带钢入库', visible: false, type: 3, icon: 'strip-steel' },
+        type_five: { name: '成品围护入库', visible: false, type: 4, icon: 'enclosure' }
       }
     }
   },
@@ -77,5 +77,8 @@ export default {
     width: 200px;
     height: 60px;
     font-size: 18px;
+}
+.svg-icon {
+  margin-right: 10px;
 }
 </style>

@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 获取物料名称
 export function fetchTypeList(query) {
   return request({
-    url: '/article/list',
+    url: '/material-type/find/list',
     method: 'get',
     params: query
   })
@@ -12,7 +12,7 @@ export function fetchTypeList(query) {
 // 创建物料名称
 export function createType(data) {
   return request({
-    url: '/article/create',
+    url: '/material-type/save',
     method: 'post',
     data
   })
@@ -21,16 +21,16 @@ export function createType(data) {
 // 删除物料名称
 export function delType(id) {
   return request({
-    url: '/article/create',
-    method: 'post',
-    data: { id }
+    url: '/material-type/delete',
+    method: 'delete',
+    params: { id }
   })
 }
 
 // 获取物料种类列表
 export function fetchClassList(query) {
   return request({
-    url: '/article/list',
+    url: '/material-class/find/list',
     method: 'get',
     params: query
   })
@@ -39,7 +39,7 @@ export function fetchClassList(query) {
 // 创建物料种类
 export function createClass(data) {
   return request({
-    url: '/article/create',
+    url: '/material-class/save',
     method: 'post',
     data
   })
@@ -48,8 +48,8 @@ export function createClass(data) {
 // 修改物料种类
 export function updateClass(data) {
   return request({
-    url: '/article/create',
-    method: 'post',
+    url: '/material-class/update',
+    method: 'put',
     data
   })
 }
@@ -57,16 +57,16 @@ export function updateClass(data) {
 // 删除物料种类
 export function delClass(id) {
   return request({
-    url: '/article/create',
-    method: 'post',
-    data: { id }
+    url: '/material-class/delete',
+    method: 'delete',
+    params: { id }
   })
 }
 
 // 获取物料材质列表
 export function fetchMaterialList(query) {
   return request({
-    url: '/article/list',
+    url: '/material-detail/find/list',
     method: 'get',
     params: query
   })
@@ -75,7 +75,7 @@ export function fetchMaterialList(query) {
 // 新增物料材质
 export function createMaterial(data) {
   return request({
-    url: '/article/create',
+    url: '/material-detail/save',
     method: 'post',
     data
   })
@@ -84,8 +84,8 @@ export function createMaterial(data) {
 // 修改物料材质
 export function updateMaterial(data) {
   return request({
-    url: '/article/create',
-    method: 'post',
+    url: '/material-detail/update',
+    method: 'put',
     data
   })
 }
@@ -93,8 +93,44 @@ export function updateMaterial(data) {
 // 删除物料材质
 export function delMaterial(id) {
   return request({
-    url: '/article/create',
-    method: 'post',
+    url: '/material-detail/delete',
+    method: 'delete',
     data: { id }
+  })
+}
+
+// 修改物料最低库存
+export function updateMinimumInventory(data) {
+  return request({
+    url: '/material-detail/update/minimum-inventory',
+    method: 'put',
+    data
+  })
+}
+
+// 查询物料分类和其级联信息
+export function fetchMaterialClassTree(params) {
+  return request({
+    url: '/material-type/option/list',
+    method: 'get',
+    params
+  })
+}
+
+// 获取物料材质列表
+export function fetchScrapList(query) {
+  return request({
+    url: '/materialScrap/find/list',
+    method: 'get',
+    params: query
+  })
+}
+
+// 废料定义
+export function updateScrap(data) {
+  return request({
+    url: '/materialScrap/save',
+    method: 'post',
+    data
   })
 }

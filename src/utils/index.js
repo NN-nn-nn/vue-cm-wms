@@ -5,6 +5,9 @@
  * @returns {string | null}
  */
 export function parseTime(time, cFormat) {
+  if (!time) {
+    return null
+  }
   if (arguments.length === 0) {
     return null
   }
@@ -351,4 +354,20 @@ export function removeClass(ele, cls) {
     const reg = new RegExp('(\\s|^)' + cls + '(\\s|$)')
     ele.className = ele.className.replace(reg, ' ')
   }
+}
+
+/**
+ * 移除tree中child为空的字段
+ * @param {Array} arr 数组
+ * @param {string} childName 子节点字段名
+ */
+export function removeTreeEmptyFiled(arr, childName) {
+  arr.forEach(a => {
+    if (a[childName] && a[childName].length) {
+      removeTreeEmptyFiled(a[childName], childName)
+    } else {
+      delete a[childName]
+    }
+  })
+  return JSON.parse(JSON.stringify(arr))
 }
