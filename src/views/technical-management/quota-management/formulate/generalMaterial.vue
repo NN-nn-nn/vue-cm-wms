@@ -41,8 +41,8 @@
           <el-table-column label="物料类别" align="center">
             <el-table-column prop="name" label="名称" align="center" width="130">
               <template slot-scope="scope">
-                <span v-if="scope.row.isHistory">{{ scope.row.name }}</span>
-                <el-select v-else v-model="scope.row.name" placeholder="请选择" @change="selName(scope.row.name)">
+                <span v-if="scope.row.isHistory">{{ scope.row.formModal.name }}</span>
+                <el-select v-else v-model="scope.row.formModal.name" placeholder="请选择" @change="selName">
                   <el-option
                     v-for="item in nameList"
                     :key="item.value"
@@ -55,8 +55,8 @@
 
             <el-table-column prop="kind" label="种类" align="center" width="130">
               <template slot-scope="scope">
-                <span v-if="scope.row.isHistory">{{ scope.row.kind }}</span>
-                <el-select v-else v-model="scope.row.kind" placeholder="请选择" @change="selKind">
+                <span v-if="scope.row.isHistory">{{ scope.row.formModal.kind }}</span>
+                <el-select v-else v-model="scope.row.formModal.kind" placeholder="请选择" @change="selKind">
                   <el-option
                     v-for="item in kindList"
                     :key="item.value"
@@ -69,8 +69,8 @@
 
             <el-table-column prop="material" label="材质" align="center" width="130">
               <template slot-scope="scope">
-                <span v-if="scope.row.isHistory">{{ scope.row.material }}</span>
-                <el-select v-else v-model="scope.row.material" placeholder="请选择">
+                <span v-if="scope.row.isHistory">{{ scope.row.formModal.material }}</span>
+                <el-select v-else v-model="scope.row.formModal.material" placeholder="请选择">
                   <el-option
                     v-for="item in materialList"
                     :key="item.value"
@@ -87,8 +87,8 @@
             align="center"
           >
             <template slot-scope="scope">
-              <span v-if="scope.row.isHistory">{{ scope.row.color }}</span>
-              <el-input v-else v-model="scope.row.color" placeholder="" />
+              <span v-if="scope.row.isHistory">{{ scope.row.formModal.color }}</span>
+              <el-input v-else v-model="scope.row.formModal.color" placeholder="" />
             </template>
           </el-table-column>
           <el-table-column
@@ -97,8 +97,8 @@
             align="center"
           >
             <template slot-scope="scope">
-              <span v-if="scope.row.isHistory">{{ scope.row.unit }}</span>
-              <el-select v-else v-model="scope.row.unit" placeholder="请选择">
+              <span v-if="scope.row.isHistory">{{ scope.row.formModal.unit }}</span>
+              <el-select v-else v-model="scope.row.formModal.unit" placeholder="请选择">
                 <el-option
                   v-for="item in unitList"
                   :key="item.value"
@@ -114,8 +114,8 @@
             align="center"
           >
             <template slot-scope="scope">
-              <span v-if="scope.row.isHistory">{{ scope.row.quantity }}</span>
-              <el-input v-else v-model="scope.row.quantity" placeholder="" />
+              <span v-if="scope.row.isHistory">{{ scope.row.formModal.quantity }}</span>
+              <el-input v-else v-model="scope.row.formModal.quantity" placeholder="" />
             </template>
           </el-table-column>
           <el-table-column label="库存查询" width="100" align="center">
@@ -181,26 +181,29 @@ export default {
       data: [{
         date: '2016-05-03',
         number: '21',
-        name: '钢板',
-        kind: '油漆',
-        material: 'Q255',
-        color: '蓝色',
-        unit: '吨',
-        quantity: '255',
         remarks: '有库存',
         isHistory: 1,
-        addItem: 0
+        formModal: {
+          name: '钢板',
+          kind: '油漆',
+          material: 'Q255',
+          color: '蓝色',
+          unit: '吨',
+          quantity: '255'
+        }
       }, {
         date: '2016-05-03',
         number: '21',
-        name: '钢板',
-        kind: '油漆',
-        material: 'Q255',
-        color: '黄色',
-        unit: '吨',
-        quantity: '255',
         remarks: '有库存',
-        isHistory: 1
+        isHistory: 1,
+        formModal: {
+          name: '钢板',
+          kind: '油漆',
+          material: 'Q255',
+          color: '黄色',
+          unit: '吨',
+          quantity: '255'
+        }
       }],
       multipleSelection: [],
       nameList: [], // 名称
@@ -251,13 +254,16 @@ export default {
     },
     addHandle() {
       const newObj = {
-        name: '',
-        kind: '',
-        material: '',
-        color: '',
-        unit: '',
-        quantity: '',
-        remarks: ''
+        number: '',
+        remarks: '',
+        formModal: {
+          name: '',
+          kind: '',
+          material: '',
+          color: '',
+          unit: '',
+          quantity: ''
+        }
       }
       this.data.push(newObj)
     },
@@ -274,7 +280,9 @@ export default {
       paramsArr = this.data.filter(v => {
         return !v.isHistory
       })
-      console.log(paramsArr)
+      paramsArr.forEach(v => {
+
+      })
     }
   }
 }

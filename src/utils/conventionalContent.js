@@ -6,7 +6,8 @@ const apiResultCode = {
 
 const dictionaryType = {
   UNIT: 1,
-  SUPPLIER: 2
+  SUPPLIER: 2,
+  EnterPrise: 0
 }
 
 const MATERIAL_BASE_TYPE = {

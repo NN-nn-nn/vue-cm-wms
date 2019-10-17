@@ -5,52 +5,51 @@
     <div class="content-container" />
     <!-- 供应商详情页 -->
     <el-dialog :visible.sync="show" class="box" :before-close="close">
-      <div class="wrap">
+      <div v-loading="loading" class="wrap">
         <div>
-          <p>供应商全称：杭州市江干区</p>
-          <p>简称：</p>
-          <p>供应商编号:</p>
+          <p> <span class="style">供应商全称：</span> {{ info.name }}</p>
+          <p> <span class="style">简称：</span>{{ info.shortName }}</p>
+          <p> <span class="style">供应商编号：</span>{{ info.supplierCode }}</p>
         </div>
         <div>
-          <p>详细地址:</p>
+          <p><span class="style">详细地址：</span>{{ info.address }}</p>
         </div>
         <div>
-          <p>社会统一代码:</p>
-          <p>成立日期:</p>
-          <p>营业期限:</p>
+          <p><span class="style">社会统一代码：</span>{{ info.socialCode }}</p>
+          <p><span class="style">成立日期：</span>{{ info.registrationDate }}</p>
+          <p><span class="style">营业期限：</span>{{ info.businessTerm }}</p>
         </div>
         <div>
-          <p>法定代表人:</p>
-          <p>注册资本:</p>
-          <p>企业类型:</p>
+          <p><span class="style">法定代表人：</span>{{ info.legalRepresentative }}</p>
+          <p><span class="style">注册资本：</span>{{ info.registeredCapital }}</p>
+          <p><span class="style">企业类型：</span>{{ info.enterpriseType }}</p>
         </div>
         <div>
-          <p>开户行名称:</p>
-          <p>银行账号:</p>
+          <p><span class="style">开户行名称：</span>{{ info.firstBankName }}</p>
+          <p><span class="style">银行账号：</span>{{ info.firstBankAccount }}</p>
         </div>
         <div>
-          <p>公司官方网站:</p>
-          <p>单位邮箱:</p>
-          <p>电话:</p>
+          <p><span class="style">公司官方网站：</span>{{ info.website }}</p>
+          <p><span class="style">单位邮箱：</span>{{ info.companyEmail }}</p>
+          <p><span class="style">电话：</span>{{ info.companyPhone }}</p>
         </div>
         <div>
-          <p>联系人1:</p>
-          <p>联系电话:</p>
-          <p>个人邮箱:</p>
+          <p><span class="style">联系人1：</span>{{ info.firstContact }}</p>
+          <p><span class="style">联系电话：</span>{{ info.firstContactPhone }}</p>
+          <p><span class="style">个人邮箱：</span>{{ info.firstContactEmail }}</p>
         </div>
         <div>
-          <p>联系人2:</p>
-          <p>联系电话:</p>
-          <p>个人邮箱:</p>
+          <p><span class="style">联系人2：</span>{{ info.secondContact }}</p>
+          <p><span class="style">联系电话：</span>{{ info.secondContactPhone }}</p>
+          <p><span class="style">个人邮箱：</span>{{ info.secondContactEmail }}</p>
         </div>
         <div>
-          <p>主营业务:</p>
-          <p>供应商分类:</p>
+          <p><span class="style">主营业务：</span>{{ info.mainBusiness }}</p>
+          <p><span class="style">供应商分类：</span>{{ info.supplierClassification }}</p>
         </div>
         <div>
           相关资料
         </div>
-        <!-- <el-button type="primary" @click="close">关闭</el-button> -->
       </div>
     </el-dialog>
     <!--  删除的弹窗  -->
@@ -70,11 +69,16 @@
 </template>
 
 <script>
+import { detail, delItem } from '@/api/supplier'
 export default {
   name: 'SuppperManagementBulletBox',
   props: {
-    detail: {
-      type: Object,
+    id: {
+      type: Number,
+      default: () => {}
+    },
+    delId: {
+      type: Number,
       default: () => {}
     },
     show: {
@@ -85,12 +89,51 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      info: {},
+      loading: false
+    }
   },
-  mounted() { },
+  watch: {
+    show(newVal, oldVal) {
+      if (newVal) {
+        this.getInfo()
+      }
+    },
+    delShow(newVal, oldVal) {
+      if (newVal) {
+        console.log(this.delId)
+      }
+    }
+  },
+  mounted() {},
   methods: {
+    getInfo() {
+      this.loading = true
+      const params = {
+        id: this.id
+      }
+      detail(params).then(res => {
+        this.loading = false
+        this.info = res.data
+      }).catch(e => {
+        this.loading = false
+      })
+    },
     deleteHandle() { // 确定删除
       this.$emit('closeBox')
+      const params = {
+        id: this.delId
+      }
+      delItem(params).then(res => {
+        if (res.code === 200) {
+          this.$message.success('删除成功!')
+        } else {
+          this.$message.error('删除失败!')
+        }
+      }).catch(e => {
+        this.$message.error('数据接口失败或网络失败!')
+      })
     },
     close() {
       this.$emit('closeBox')
@@ -119,5 +162,10 @@ export default {
 }
 .wrap p {
   width: 33%;
+}
+.style {
+  font-weight: 700;
+  font-size: 15px;
+  color: rgb(16, 16, 17);
 }
 </style>
