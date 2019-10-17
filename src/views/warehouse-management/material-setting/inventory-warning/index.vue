@@ -78,12 +78,7 @@ export default {
       total: 0,
       mateLoading: false,
       mateList: [], // 物料列表
-      mateOption: [
-        {
-          name: '一般物料',
-          id: -1
-        }
-      ]
+      mateOption: []
     }
   },
   created() {
@@ -94,6 +89,10 @@ export default {
       fetchMaterialClassTree().then(({ data, code, message }) => {
         if (code === 200) {
           if (data && data.length) {
+            this.mateOption[0] = {
+              name: '一般物料',
+              id: -1
+            }
             this.mateOption[0].childrenList = data
             this.mateOption = removeTreeEmptyFiled(this.mateOption, 'childrenList')
             if (this.mateOption[0] && this.mateOption[0].childrenList[0] && this.mateOption[0].childrenList[0].childrenList[0] && this.mateOption[0].childrenList[0].childrenList[0].id) {
