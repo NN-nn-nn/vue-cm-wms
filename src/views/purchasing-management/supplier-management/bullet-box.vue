@@ -45,7 +45,7 @@
         </div>
         <div>
           <p><span class="style">主营业务：</span>{{ info.mainBusiness }}</p>
-          <p><span class="style">供应商分类：</span>{{ info.supplierClassification }}</p>
+          <p><span class="style">供应商分类：</span>{{ info.supplierClassType }}</p>
         </div>
         <div>
           相关资料
@@ -70,6 +70,8 @@
 
 <script>
 import { detail, delItem } from '@/api/supplier'
+import { supplierType } from '@/utils/commonType'
+
 export default {
   name: 'SuppperManagementBulletBox',
   props: {
@@ -91,13 +93,15 @@ export default {
   data() {
     return {
       info: {},
-      loading: false
+      loading: false,
+      supplierClassType: ''
     }
   },
   watch: {
     show(newVal, oldVal) {
       if (newVal) {
         this.getInfo()
+        this.supplierClassType = ''
       }
     },
     delShow(newVal, oldVal) {
@@ -116,6 +120,18 @@ export default {
       detail(params).then(res => {
         this.loading = false
         this.info = res.data
+        var info = this.info.supplierClassification
+        info = info.substring(1, info.length - 1)
+        info = info.split(',')
+        info.forEach(v => {
+          v = v.replace(/\"/g, '')
+          supplierType.filter(item => {
+            if (Number(item.value) === Number(v)) {
+              this.supplierClassType += item.label + '  '
+            }
+          })
+        })
+        this.info.supplierClassType = this.supplierClassType
       }).catch(e => {
         this.loading = false
       })

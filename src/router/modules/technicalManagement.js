@@ -27,18 +27,39 @@ const technicalManagementRouter = {
           meta: { title: '定额制定', roles: ['admin'] }
         },
         {
-          path: '/technical-management/quota-management/formulate/generalMaterial',
-          component: () => import('@/views/technical-management/quota-management/formulate/generalMaterial'),
+          path: '/technical-management/quota-management/formulate/component/generalMaterial',
+          component: () => import('@/views/technical-management/quota-management/formulate/component/generalMaterial'),
           name: 'TechQuotaFormuGeneral',
           hidden: true,
           meta: { title: '一般物料定额', roles: ['admin'] }
         },
         {
-          path: '/technical-management/quota-management/formulate/steelPlate',
-          component: () => import('@/views/technical-management/quota-management/formulate/steelPlate'),
+          path: '/technical-management/quota-management/formulate/component/steelPlate',
+          component: () => import('@/views/technical-management/quota-management/formulate/component/steelPlate'),
           name: 'TechQuotaFormuSteelPlate',
           hidden: true,
           meta: { title: '钢板定额', roles: ['admin'] }
+        },
+        {
+          path: '/technical-management/quota-management/formulate/component/steel',
+          component: () => import('@/views/technical-management/quota-management/formulate/component/steel'),
+          name: 'TechQuotaFormuSteel',
+          hidden: true,
+          meta: { title: '型钢定额', roles: ['admin'] }
+        },
+        {
+          path: '/technical-management/quota-management/formulate/component/colorStrip',
+          component: () => import('@/views/technical-management/quota-management/formulate/component/colorStrip'),
+          name: 'TechQuotaFormuColorStrip',
+          hidden: true,
+          meta: { title: '彩卷/带钢定额', roles: ['admin'] }
+        },
+        {
+          path: '/technical-management/quota-management/formulate/component/finishedProduct',
+          component: () => import('@/views/technical-management/quota-management/formulate/component/finishedProduct'),
+          name: 'TechQuotaFormuFinishedProduct',
+          hidden: true,
+          meta: { title: '成品围护定额', roles: ['admin'] }
         },
         {
           path: '/technical-management/quota-management/tracking',

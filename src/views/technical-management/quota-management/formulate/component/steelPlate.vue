@@ -22,12 +22,12 @@
           type="index"
           label="序号"
           align="center"
-          width="80"
+          width="50"
         />
         <el-table-column
           label="日期"
           align="center"
-          width="150"
+          width="100"
         >
           <template slot-scope="scope">{{ scope.row.date }}</template>
         </el-table-column>
@@ -35,10 +35,10 @@
           prop="number"
           label="编号"
           align="center"
-          width="80"
+          width="70"
         />
         <el-table-column label="物料类别" align="center">
-          <el-table-column prop="name" label="名称" align="center" width="130">
+          <el-table-column prop="name" label="名称" align="center" width="80">
             <template slot-scope="scope">
               <span v-if="scope.row.isHistory" style="margin:0;">{{ scope.row.name }}</span>
               <el-select v-else v-model="scope.row.name" placeholder="请选择">
@@ -52,7 +52,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column prop="kind" label="种类" align="center" width="130">
+          <el-table-column prop="kind" label="种类" align="center" width="80">
             <template slot-scope="scope">
               <span v-if="scope.row.isHistory" style="margin:0;">{{ scope.row.kind }}</span>
               <el-select v-else v-model="scope.row.kind" placeholder="请选择">
@@ -66,7 +66,7 @@
             </template>
           </el-table-column>
 
-          <el-table-column prop="material" label="材质" align="center" width="130">
+          <el-table-column prop="material" label="材质" align="center" width="80">
             <template slot-scope="scope">
               <span v-if="scope.row.isHistory" style="margin:0;">{{ scope.row.material }}</span>
               <el-select v-else v-model="scope.row.material" placeholder="请选择">
@@ -119,8 +119,18 @@
         >
           <template slot-scope="scope">{{ scope.row.weight }}</template>
         </el-table-column>
+        <el-table-column label="库存查询" width="100" align="center">
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              type="primary"
+              @click="queryInventory(scope.$index, scope.row)"
+            >查询</el-button>
+          </template>
+        </el-table-column>
         <el-table-column
           label="备注"
+          width="310"
           align="center"
         >
           <template slot-scope="scope">
@@ -128,7 +138,35 @@
             <el-input v-else v-model="scope.row.remarks" placeholder="" />
           </template>
         </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button
+              v-if="scope.row.isHistory"
+              size="mini"
+              type="primary"
+              icon="el-icon-edit"
+              @click="editHandle(scope.$index, scope.row)"
+            >修改</el-button>
+            <el-button
+              v-if="scope.row.isHistory =='0'"
+              size="mini"
+              type="success"
+              icon="el-icon-circle-check-outline"
+            >确定</el-button>
+            <el-button
+              v-if="scope.row.isHistory == '0'"
+              size="mini"
+              type="warning"
+              icon="el-icon-refresh"
+              @click="cancelHandle(scope.$index, scope.row)"
+            >取消</el-button>
+          </template>
+        </el-table-column>
       </el-table>
+      <div class="formulate-btn">
+        <el-button type="primary" icon="el-icon-circle-plus-outline" @click="addHandle">添加</el-button>
+        <el-button type="primary" icon="el-icon-circle-check-outline" @click="confirmHandle">确定</el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -142,16 +180,20 @@ export default {
       searchInp: '',
       data: [{
         date: '2016-05-03',
-        number: '',
-        name: '',
-        kind: '',
-        material: '',
-        long: '',
-        width: '',
-        thick: '',
-        quantity: '',
-        weight: 0,
-        remarks: ''
+        number: '21',
+        remarks: '有库存',
+        isHistory: 1,
+        long: 10,
+        width: 10,
+        thick: 10,
+        formModal: {
+          name: '钢板',
+          kind: '油漆',
+          material: 'Q255',
+          color: '蓝色',
+          unit: '吨',
+          quantity: '255'
+        }
       }],
       multipleSelection: [],
       nameList: [{
@@ -172,13 +214,51 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val
     },
+    queryInventory(index, item) {
+
+    },
     exportHandle() { // 记录导出
 
+    },
+    addHandle() {
+      const newObj = {
+        number: '',
+        remarks: '',
+        formModal: {
+          name: '',
+          kind: '',
+          material: '',
+          color: '',
+          unit: '',
+          quantity: ''
+        }
+      }
+      this.data.push(newObj)
+    },
+    editHandle(index, item) { // 修改每一天数据
+      item.isHistory = 0
+      this.data[index].isHistory = 0
+      console.log(item)
+    },
+    cancelHandle(index, item) {
+      item.isHistory = 1
+    },
+    confirmHandle() { // 确定新增
+      let paramsArr = []
+      paramsArr = this.data.filter(v => {
+        return !v.isHistory
+      })
+      paramsArr.forEach(v => {
+
+      })
     }
   }
 }
 </script>
 
 <style scoped>
-
+.btn {
+    margin: 20px 0 0 0;
+    text-align: right;
+}
 </style>

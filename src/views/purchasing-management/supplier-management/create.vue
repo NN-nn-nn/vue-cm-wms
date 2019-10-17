@@ -132,23 +132,13 @@
             </el-form-item>
           </div>
 
-          <!-- <div>
-            <input type="file" @change="choseFile($event)">
-          </div> -->
-
-          <div class="center">
-            <!-- <el-upload
-              class="upload-demo"
-              action=""
-              :on-change="choseFile"
-              accept=""
-              :auto-upload="false"
-            >
-              <el-button size="small" class="el-icon-upload el-icon-right" type="primary">点击上传</el-button>
-            </el-upload> -->
-
-            <el-button type="primary" @click="submitForm('ruleForm')">添加</el-button>
-            <el-button @click="resetForm('ruleForm')">重置</el-button>
+          <div class="btn">
+            <div class="file">
+              导入
+              <input type="file" class="file-export" @change="choseFile($event)">
+            </div>
+            <el-button type="primary" @click="submitForm('ruleForm')">&nbsp; 添加</el-button>
+            <el-button @click="resetForm('ruleForm')">&nbsp; 重置</el-button>
           </div>
 
         </el-form>
@@ -165,7 +155,6 @@ export default {
   name: 'SupplierManagementList',
   data() {
     return {
-      fileContent: '',
       supplierList: [], // 供应商类型
       enterpriseList: [], // 企业类型
       ruleForm: {
@@ -195,7 +184,7 @@ export default {
         secondContactPhone: '',
         secondContactEmail: '',
         mainBusiness: '',
-        supplierClassification: ''
+        supplierClassification: []
       },
       rules: {
         name: [
@@ -262,12 +251,12 @@ export default {
         value: 'id',
         children: 'cityList'
       },
+      excelData: {},
       fileList: [{ name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' }, { name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' }]
     }
   },
   mounted() {
     this.getList()
-    // console.log(XLSX)
   },
   methods: {
     getList() {
@@ -285,12 +274,12 @@ export default {
         if (res.code === 200) {
           this.enterpriseList = res.data
         }
-      }).catch(e => { })
+      })
       fetchSupplierTypeList().then(res => {
         if (res.code === 200) {
           this.supplierList = res.data
         }
-      }).catch(e => {})
+      })
     },
     selArea(val) {
       this.ruleForm.state = val[0]
@@ -303,10 +292,12 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          console.log(this.ruleForm)
           save(this.ruleForm).then(res => {
             if (res.data && res.code === 200) {
               this.$message.success('创建成功！')
               this.$refs[formName].resetFields()
+              this.$router.go(-1)
             } else {
               this.$message.error('创建失败!')
             }
@@ -337,6 +328,52 @@ export default {
         })
         const sheet = XLSX.utils.sheet_to_json(zzexcel.Sheets[zzexcel.SheetNames[0]])
         console.log(sheet)
+        sheet.forEach(v => {
+          if (v.供应商入库登记表 === '供应商全称*') {
+            this.ruleForm.name = v.__EMPTY
+            this.ruleForm.shortName = v.__EMPTY_2
+          } else if (v.供应商入库登记表 === '详细地址*') {
+            this.ruleForm.state = v.__EMPTY
+            this.ruleForm.city = v.__EMPTY_1
+            this.ruleForm.region = v.__EMPTY_2
+            this.ruleForm.address = v.__EMPTY_4
+          } else if (v.供应商入库登记表 === '社会统一代码*') {
+            this.ruleForm.socialCode = v.__EMPTY
+            this.ruleForm.registrationDate = v.__EMPTY_2
+            this.ruleForm.businessTerm = v.__EMPTY_4
+          } else if (v.供应商入库登记表 === '法定代表人') {
+            this.ruleForm.legalRepresentative = v.__EMPTY
+            this.ruleForm.registeredCapital = v.__EMPTY_2
+            this.ruleForm.enterpriseType = v.__EMPTY_4
+            this.enterpriseList.forEach(item => {
+              if (item.name === v.__EMPTY_4) this.ruleForm.enterpriseType = item.value
+            })
+          } else if (v.供应商入库登记表 === '开户行名称*') {
+            this.ruleForm.firstBankName = v.__EMPTY
+            this.ruleForm.firstBankAccount = v.__EMPTY_2
+          } else if (v.供应商入库登记表 === '公司官方网站') {
+            this.ruleForm.website = v.__EMPTY
+            this.ruleForm.companyEmail = v.__EMPTY_2
+            this.ruleForm.companyPhone = v.__EMPTY_4
+          } else if (v.供应商入库登记表 === '联系人1*') {
+            this.ruleForm.firstContact = v.__EMPTY
+            this.ruleForm.firstContactPhone = v.__EMPTY_2
+            this.ruleForm.firstContactEmail = v.__EMPTY_4
+          } else if (v.供应商入库登记表 === '联系人2') {
+            this.ruleForm.secondContact = v.__EMPTY
+            this.ruleForm.secondContactPhone = v.__EMPTY_2
+            this.ruleForm.secondContactEmail = v.__EMPTY_4
+          } else {
+            this.ruleForm.mainBusiness = v.__EMPTY
+            v.__EMPTY_4 = v.__EMPTY_4.split('、')
+            v.__EMPTY_4.forEach(item => {
+              this.supplierList.forEach(itemChild => {
+                if (itemChild.name === item) this.ruleForm.supplierClassification.push(itemChild.value)
+              })
+            })
+          }
+        })
+        console.log(this.ruleForm.supplierClassification)
       }
     }
   }
@@ -358,7 +395,35 @@ export default {
 .form .el-upload__tip {
   padding-left: 15px;
 }
-.center {
+.btn {
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-right: 50px;
+}
+.file {
+  position: relative;
+  display: inline-block;
+  background: #1890ff;
+  border-radius: 4px;
+  padding: 8px 24px;
+  overflow: hidden;
+  color: #ffffff;
+  line-height: 20px;
+  margin: 10px 10px;
+}
+.file .file-export {
+  position: absolute;
+  font-size: 100px;
+  right: 0;
+  top: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.file:hover {
+  background: #46a6ff;
+    border-color: #46a6ff;
+    color: #fff;
 }
 </style>

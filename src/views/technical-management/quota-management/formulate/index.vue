@@ -30,24 +30,32 @@
     <!-- 主要内容容器 -->
     <div class="content-container">
       <generalMaterial v-show="materialBaseType == 4" />
-
       <SteelPlate v-show="materialBaseType == 0" />
+      <Steel v-show="materialBaseType == 1" />
+      <ColorStrip v-show="materialBaseType == 2" />
+      <FinishedProduct v-show="materialBaseType == 3" />
     </div>
 
   </div>
 </template>
 
 <script>
-import SteelPlate from './steelPlate'
-import generalMaterial from './generalMaterial'
+import generalMaterial from './component/generalMaterial'
+import SteelPlate from './component/steelPlate'
+import Steel from './component/steel'
+import ColorStrip from './component/colorStrip'
+import FinishedProduct from './component/finishedProduct'
 import { changeProjectToCascadeByYear } from '@/utils/other'
 import { fetchProjectGroupByYear } from '@/api/project'
 
 export default {
   name: 'TechQuotaFormulate',
   components: {
+    generalMaterial,
     SteelPlate,
-    generalMaterial
+    Steel,
+    ColorStrip,
+    FinishedProduct
   },
   data() {
     return {
@@ -89,17 +97,10 @@ export default {
             this.currentProjectId.push(this.projectCascadeList[0].children[0].id)
           }
         } else {
-          this.$message({
-            message: message,
-            type: 'error'
-          })
+          this.$message.err(message)
         }
       }).catch(e => {
-        this.$message({
-          message: '获取项目级联列表失败',
-          type: 'error'
-        })
-        console.log(e)
+        this.$message.error('获取项目级联列表失败')
       })
     }
   }
