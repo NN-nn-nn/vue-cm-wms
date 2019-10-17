@@ -16,6 +16,7 @@ import configManagementRouter from './modules/configManagement'
 import purchasingManagementRouter from './modules/purchasingManagement'
 import warehouseManagementRouter from './modules/warehouseManagement'
 import technicalManagementRouter from './modules/technicalManagement'
+import SupportManagementRouter from './modules/supportManagement'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -106,6 +107,7 @@ export const asyncRoutes = [
   purchasingManagementRouter,
   warehouseManagementRouter,
   technicalManagementRouter,
+  SupportManagementRouter,
 
   // {
   //   path: '/example',
