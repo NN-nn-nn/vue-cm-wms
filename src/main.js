@@ -18,7 +18,7 @@ import './permission' // 权限控制
 import './utils/error-log' // 错误日志
 
 import * as filters from './filters' // 全局过滤器
-import { parseTime } from './utils'
+import { parseTime, digitUppercase } from './utils'
 
 /**
  *如果您不想使用模拟服务器
@@ -39,6 +39,7 @@ Vue.use(Element, {
 
 // 时间格式过滤器
 Vue.filter('parseTime', parseTime)
+Vue.filter('digitUppercase', digitUppercase)
 
 Vue.filter('toFixed', (value, precision) => {
   if (isNaN(value)) return ''
