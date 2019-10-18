@@ -61,14 +61,14 @@
         <el-table-column label="序号" align="center" type="index" width="80" />
         <el-table-column prop="province" align="center" label="编号" width="120">
           <template slot-scope="scope">
-            <div class="td-drawer">
+            <div class="mask-td">
               <el-tag v-if="scope.row.materialCode" size="medium">{{ scope.row.materialCode }}</el-tag>
             </div>
           </template>
         </el-table-column>
         <el-table-column label="物料类别 | 名称/种类/材质" align="center" width="300">
           <template slot-scope="scope">
-            <div class="td-drawer">
+            <div class="mask-td">
               <div :class="{'mask-red': scope.row.rules.detailId}" />
               <el-cascader
                 v-model="scope.row.materialClassIds"
@@ -85,7 +85,7 @@
 
         <el-table-column prop="province" label="颜色" align="center" width="120">
           <template slot-scope="scope">
-            <div class="td-drawer">
+            <div class="mask-td">
               <div :class="{'mask-red': scope.row.rules.color}" />
               <el-input v-model="scope.row.color" size="small" placeholder="颜色" />
             </div>
@@ -94,7 +94,7 @@
 
         <el-table-column prop="province" label="数量" align="center" width="170">
           <template slot-scope="scope">
-            <div class="td-drawer">
+            <div class="mask-td">
               <div :class="{'mask-red': scope.row.rules.number}" />
               <el-input-number v-model="scope.row.number" :min="1" :step="5" :precision="0" size="small" @change="scope.row.rules.number = false" />
             </div>
@@ -103,7 +103,7 @@
 
         <el-table-column prop="province" label="采购单价(元)" align="center" width="190">
           <template slot-scope="scope">
-            <div class="td-drawer">
+            <div class="mask-td">
               <div :class="{'mask-red': scope.row.rules.purchasePrice}" />
               <el-input-number v-model="scope.row.purchasePrice" :min="0" :step="5" :precision="2" size="small" style="width:160px" @change="scope.row.rules.purchasePrice = false" />
             </div>
@@ -112,7 +112,7 @@
 
         <el-table-column prop="province" label="含税总额(元)" align="center" width="130">
           <template slot-scope="scope">
-            <div class="td-drawer">
+            <div class="mask-td">
               <el-tag type="success" size="medium">{{ (scope.row.purchasePrice || 0) * (scope.row.number || 0) | toFixed(2) }}</el-tag>
             </div>
           </template>
@@ -120,7 +120,7 @@
 
         <el-table-column prop="province" label="品牌" align="center" width="200">
           <template slot-scope="scope">
-            <div class="td-drawer">
+            <div class="mask-td">
               <div :class="{'mask-red': scope.row.rules.brand}" />
               <el-input v-model="scope.row.brand" size="small" placeholder="品牌" @change="scope.row.rules.brand = false" />
             </div>
@@ -129,7 +129,7 @@
 
         <el-table-column prop="province" label="供应商" align="center" width="200">
           <template slot-scope="scope">
-            <div class="td-drawer">
+            <div class="mask-td">
               <div :class="{'mask-red': scope.row.rules.supplierId}" />
               <el-select v-model="scope.row.supplierId" size="small" filterable placeholder="供应商" @change="scope.row.rules.supplierId = false">
                 <el-option
@@ -145,7 +145,7 @@
 
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <div class="td-drawer" style="justify-content:left">
+            <div class="mask-td" style="justify-content:left">
               <el-button size="small" class="el-icon-delete" type="danger" @click="deleteRow(scope.$index)" />
             </div>
           </template>
@@ -413,29 +413,7 @@ export default {
   font-size: 15px;
   margin-right: 10px;
 }
-.mask-red {
-  background-color: #ff000021;
-  z-index: 2;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
 
-.td-drawer {
-  position: relative;
-  width:100%;
-  height:60px;
-  box-sizing:border-box;
-  padding:10px;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-}
 .footer-toolbar {
   display: flex;
   flex-direction: row;
@@ -447,7 +425,7 @@ export default {
   right: 0;
   height: 45px;
   box-shadow: 0 -1px 2px rgba(0,0,0,.03);
-  background: #fff;
+  background: #606266;
   /* border-top: 1px solid #e9e9e9; */
   padding: 0 25px 0 0;
   transition: .3s;
@@ -487,6 +465,7 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
+  color: #ffffff;
   align-items: center;
   box-sizing: border-box;
   padding: 0 20px;
