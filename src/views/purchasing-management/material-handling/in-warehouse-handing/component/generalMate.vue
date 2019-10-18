@@ -16,20 +16,21 @@
     <div class="content-container">
       <el-table :data="tableData" :max-height="800" style="width: 100%" border stripe>
         <el-table-column label="序号" align="center" type="index" width="100" />
-        <el-table-column prop="province" align="center" label="编号" width="100">
+        <el-table-column prop="province" align="center" label="编号" width="120">
           <template slot-scope="scope">
-            <el-tag size="medium"><span>{{ scope.row.materialCode }}</span></el-tag>
+            <el-tag v-if="scope.row.materialCode" size="medium">{{ scope.row.materialCode }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="物料类别 | 名称/种类/材质" align="center" width="400">
           <template slot-scope="scope">
             <el-cascader
               v-model="scope.row.materialClassIds"
-              placeholder="试试搜索：焊接材料"
+              placeholder="试试搜索：名称、种类或材质"
               :options="mateOption"
               :props="props"
               filterable
               style="width:350px"
+              @change="materialChange(scope.row)"
             />
           </template>
         </el-table-column>
@@ -86,7 +87,7 @@
 </template>
 
 <script>
-import { setInfoOfTree, removeTreeEmptyFiled } from '@/utils'
+import { setInfoOfTree, removeTreeEmptyFiled, getNodeInfoByIds } from '@/utils'
 import { MATERIAL_BASE_TYPE } from '@/utils/conventionalContent'
 import { fetchMaterialTree } from '@/api/material'
 import { fetchListByBaseType } from '@/api/supplier'
@@ -99,7 +100,6 @@ export default {
       submitLoading: false,
       mateOption: [],
       tableData: [{
-        materialCode: 111,
         date: '2016-05-03',
         name: '王小虎',
         province: '0.1111',
@@ -124,7 +124,6 @@ export default {
             this.mateOption = data
             setInfoOfTree(this.mateOption, 'childrenList', 'name', 'otherInfo', 2)
             this.mateOption = removeTreeEmptyFiled(this.mateOption, 'childrenList')
-            console.log(this.mateOption)
           }
         } else {
           this.$message({
@@ -139,6 +138,13 @@ export default {
         })
         console.log(e)
       })
+    },
+    materialChange: function(item) {
+      console.log(item.materialClassIds)
+      if (item.materialClassIds && item.materialClassIds.length === 3) {
+        const _node = getNodeInfoByIds(this.mateOption, item.materialClassIds, 'id', 'childrenList')
+        item.materialCode = _node.otherInfo
+      }
     },
     getSupplierList: function(baseType) {
       fetchListByBaseType(baseType).then(({ data, code, message }) => {

@@ -400,3 +400,36 @@ export function setInfoOfTree(pendingArr, childFieldName, needChangeField, infoF
     }
   }
 }
+
+/**
+ * 根据节点数组获取所需的节点信息
+ *
+ * @export
+ * @param {array} pendingArr 待处理数组
+ * @param {array} ids ids 数组
+ * @param {string} [idField='id'] id字段名称
+ * @param {string} [childField='children'] children字段名称
+ * @returns node 节点信息
+ * @author duhh
+ */
+export function getNodeInfoByIds(pendingArr, ids, idField = 'id', childField = 'children') {
+  const tempFlag = pendingArr && ids && ids.length && idField && childField
+  if (!tempFlag) return
+  let arr = [...pendingArr]
+  let nodeInfo
+  let currentIndex = 0
+  do {
+    for (let i = 0; i < arr.length; i++) {
+      if (ids[currentIndex] === arr[i][idField]) {
+        if (currentIndex === (ids.length - 1)) {
+          nodeInfo = arr[i]
+        } else {
+          arr = arr[i][childField]
+        }
+        break
+      }
+    }
+    ++currentIndex
+  } while (currentIndex < ids.length)
+  return nodeInfo
+}
