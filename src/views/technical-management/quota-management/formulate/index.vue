@@ -6,15 +6,6 @@
       <!-- 左侧box -->
       <div class="filter-left-box">
         <div class="filter-item">
-          <el-cascader
-            v-model="currentProjectId"
-            placeholder="试试搜索：2019"
-            :options="projectCascadeList"
-            :props="props"
-            filterable
-          />
-        </div>
-        <div class="filter-item">
           <el-radio-group v-model="materialBaseType" size="medium">
             <el-radio-button :label="4">一般物料</el-radio-button>
             <el-radio-button :label="0">钢板</el-radio-button>
@@ -23,17 +14,27 @@
             <el-radio-button :label="3">成品围护</el-radio-button>
           </el-radio-group>
         </div>
+        <div class="filter-item">
+          <el-cascader
+            v-model="currentProjectId"
+            placeholder="试试搜索：2019"
+            :options="projectCascadeList"
+            :props="props"
+            filterable
+            @change="projectHandle"
+          />
+        </div>
       </div>
       <!-- 右侧box -->
       <div class="filter-right-box" />
     </div>
     <!-- 主要内容容器 -->
     <div class="content-container">
-      <generalMaterial v-show="materialBaseType == 4" />
-      <SteelPlate v-show="materialBaseType == 0" />
-      <Steel v-show="materialBaseType == 1" />
-      <ColorStrip v-show="materialBaseType == 2" />
-      <FinishedProduct v-show="materialBaseType == 3" />
+      <generalMaterial v-if="materialBaseType == 4" :project-id="projectId" />
+      <SteelPlate v-else-if="materialBaseType == 0" :project-id="projectId" />
+      <Steel v-else-if="materialBaseType == 1" :project-id="projectId" />
+      <ColorStrip v-else-if="materialBaseType == 2" :project-id="projectId" />
+      <FinishedProduct v-else :project-id="projectId" />
     </div>
 
   </div>
@@ -61,17 +62,18 @@ export default {
     return {
       props: { value: 'id', label: 'name', children: 'children', expandTrigger: 'hover' },
       year: new Date(),
-      list: [{
-        value: '选项1',
-        label: '江干区高沙大学生联谊会'
-      }, {
-        value: '选项2',
-        label: '江干区高沙大学生联谊会'
-      }],
       project: '',
       materialBaseType: 4,
       currentProjectId: [],
-      projectCascadeList: []
+      projectCascadeList: [],
+      projectId: null
+    }
+  },
+  watch: {
+    materialBaseType(newVal, oldVal) {
+      if (newVal) {
+        this.projectId = this.currentProjectId[1]
+      }
     }
   },
   created() {
@@ -81,8 +83,8 @@ export default {
 
   },
   methods: {
-    yearHandle(val) {
-      console.log(this.year)
+    projectHandle(val) {
+      this.projectId = val[1]
     },
     /**
    * 获取项目年份级联列表
@@ -95,6 +97,7 @@ export default {
           if (this.projectCascadeList[0] && this.projectCascadeList[0].children[0] && this.projectCascadeList[0].children[0].id) {
             this.currentProjectId.push(this.projectCascadeList[0].id)
             this.currentProjectId.push(this.projectCascadeList[0].children[0].id)
+            this.projectId = this.currentProjectId[1]
           }
         } else {
           this.$message.err(message)
