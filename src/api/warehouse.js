@@ -1,10 +1,12 @@
-// TODO:命名示例
+/**
+ * 仓库接口
+ */
 import request from '@/utils/request'
 
-export function fetchList(query) {
+export function createInboundList(data) {
   return request({
-    url: '/article/list',
-    method: 'get',
-    params: query
+    url: '/storage-list/save',
+    method: 'post',
+    data
   })
 }

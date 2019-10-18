@@ -1,6 +1,7 @@
 <template>
   <!-- 页面主容器 -->
   <div class="page-container inbound-table">
+    <div :class="{'mask-container':submitLoading}" />
     <!-- 查询容器 -->
     <div class="filter-container">
       <!-- 左侧box -->
@@ -96,7 +97,7 @@
           <template slot-scope="scope">
             <div class="mask-td">
               <div :class="{'mask-red': scope.row.rules.number}" />
-              <el-input-number v-model="scope.row.number" :min="1" :step="5" :precision="0" size="small" @change="scope.row.rules.number = false" />
+              <el-input-number v-model="scope.row.number" :min="1" :step="5" :precision="0" size="small" @change="() => {scope.row.rules.number = false;calcTotal()}" />
             </div>
           </template>
         </el-table-column>
@@ -105,7 +106,7 @@
           <template slot-scope="scope">
             <div class="mask-td">
               <div :class="{'mask-red': scope.row.rules.purchasePrice}" />
-              <el-input-number v-model="scope.row.purchasePrice" :min="0" :step="5" :precision="2" size="small" style="width:160px" @change="scope.row.rules.purchasePrice = false" />
+              <el-input-number v-model="scope.row.purchasePrice" :min="0" :step="5" :precision="2" size="small" style="width:160px" @change="() => {scope.row.rules.purchasePrice = false;calcTotal()}" />
             </div>
           </template>
         </el-table-column>
@@ -163,18 +164,17 @@
             <span>合计</span>
           </div>
           <div class="price-total-num">
-            <span>22222</span>
+            <span>{{ totalAmount }}</span>
           </div>
           <div class="price-total-tip">
             <span>大写</span>
           </div>
-          <div class="price-total-num">
-            <span>{{ 2222.1 | digitUppercase }}</span>
+          <div class="price-total-num" style="width:60%">
+            <span>{{ totalAmount | digitUppercase }}</span>
           </div>
         </div>
         <el-button :loading="submitLoading" type="primary" size="small" style="height:30px;" @click="submitScrap">提交入库清单</el-button>
       </div>
-
     </div>
   </div>
 </template>
@@ -187,6 +187,7 @@ import { changeProjectToCascadeByYear } from '@/utils/other'
 import { fetchMaterialTree } from '@/api/material'
 import { fetchListByBaseType } from '@/api/supplier'
 import { fetchProjectGroupByYear } from '@/api/project'
+import { createInboundList } from '@/api/warehouse'
 export default {
   data() {
     return {
@@ -225,6 +226,7 @@ export default {
       inboundList: {
         storageTime: undefined,
         type: 0,
+        formType: MATERIAL_BASE_TYPE.MATERIAL.index,
         projectId: undefined
       }, // 入库清单
       tableData: [], // 列表数据
@@ -248,6 +250,7 @@ export default {
         number: true,
         detailId: true
       },
+      totalAmount: 0, // 总金额
       currentProjectId: [], // 需要入库的项目
       projectCascadeList: [] // 项目级联列表
     }
@@ -266,35 +269,62 @@ export default {
   },
   methods: {
     submitScrap() {
-      if (this.provideMateCheck) {
-        if (!this.inboundList.projectId) {
-          this.$message({ message: '甲供材料必须选择入库项目', type: 'warning' })
-          return
-        }
-      }
-      if (!this.inboundList.storageTime) {
-        this.$message({ message: '请选择入库时间', type: 'warning' })
-        return
-      }
-      if (!this.tableData || this.tableData.length < 1) {
-        this.$message({ message: '请添加入库记录', type: 'warning' })
-        return
-      }
-      let errorFlag = false
-      this.tableData.forEach(v => {
-        const _valid = this.dailyMateCheck ? this.dailyMateValid : this.needValid
-        for (const r in _valid) {
-          if (_valid[r] && (v[r] === undefined || v[r] === null)) {
-            console.log(v[r])
-            v.rules[r] = true
-            errorFlag = true
+      this.submitLoading = true
+      this.validSubmit().then(({ data }) => {
+        console.log(data)
+        createInboundList(data).then(({ code, message }) => {
+          if (code === 200) {
+            this.$message({ message: '保存成功', type: 'success' })
+          }
+          this.$message({ message: message, type: 'error' })
+          this.submitLoading = false
+        }).catch(e => {
+          this.submitLoading = false
+          this.$message({ message: '保存失败', type: 'error' })
+        })
+        this.submitLoading = false
+      }).catch(e => {
+        this.submitLoading = false
+      })
+    },
+    validSubmit() {
+      return new Promise((resolve, reject) => {
+        if (this.provideMateCheck) {
+          if (!this.inboundList.projectId) {
+            this.$message({ message: '甲供材料必须选择入库项目', type: 'warning' })
+            reject()
           }
         }
+        if (!this.inboundList.storageTime) {
+          this.$message({ message: '请选择入库时间', type: 'warning' })
+          reject()
+        }
+        const _tableData = JSON.parse(JSON.stringify(this.tableData))
+        if (!_tableData || _tableData.length < 1) {
+          this.$message({ message: '请添加入库记录', type: 'warning' })
+          reject()
+        }
+        let errorFlag = false
+        _tableData.forEach(v => {
+          const _valid = this.dailyMateCheck ? this.dailyMateValid : this.needValid
+          for (const r in _valid) {
+            if (_valid[r] && (v[r] === undefined || v[r] === null)) {
+              v.rules[r] = true
+              errorFlag = true
+            }
+          }
+          delete v.materialClassIds
+          delete v.rules
+        })
+        if (errorFlag) {
+          this.$message({ message: '请修正表格中标红的信息', type: 'warning' })
+          reject()
+        }
+        const _inboundList = JSON.parse(JSON.stringify(this.inboundList))
+        _inboundList.detailList = _tableData
+        _inboundList.totalPrice = this.totalAmount
+        resolve({ data: _inboundList })
       })
-      if (errorFlag) {
-        this.$message({ message: '请修正标红的信息', type: 'warning' })
-        return
-      }
     },
     /**
      * 获取项目年份级联列表
@@ -376,6 +406,14 @@ export default {
         console.log(e)
       })
     },
+    calcTotal: function() {
+      let totalAmount = 0
+      this.tableData.forEach(v => {
+        v.taxIncludedAmount = Number(((v.purchasePrice || 0) * (v.number || 0)).toFixed(2))
+        totalAmount += v.taxIncludedAmount
+      })
+      this.totalAmount = totalAmount
+    },
     // 添加行
     addRow: function() {
       this.tableData.push({ rules: { ...this.rules }})
@@ -393,6 +431,7 @@ export default {
   margin-right: 20px;
 }
 .page-container {
+  position: relative;
   padding: 0;
 }
 .footer-drawer {
@@ -425,7 +464,7 @@ export default {
   right: 0;
   height: 45px;
   box-shadow: 0 -1px 2px rgba(0,0,0,.03);
-  background: #606266;
+  background: #ffffff;
   /* border-top: 1px solid #e9e9e9; */
   padding: 0 25px 0 0;
   transition: .3s;
@@ -447,6 +486,7 @@ export default {
   justify-content: flex-start;
   align-items: center;
   height: 100%;
+  width: 100%;
 }
 .price-total-tip {
   width: 60px;
@@ -465,7 +505,7 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  color: #ffffff;
+  /* color: #ffffff; */
   align-items: center;
   box-sizing: border-box;
   padding: 0 20px;

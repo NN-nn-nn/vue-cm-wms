@@ -28,9 +28,9 @@
       :before-close="handleClose"
     >
       <GeneralMat v-if="currrentBaseType.index === MATERIAL_BASE_TYPE.MATERIAL.index" />
-      <span slot="footer" class="dialog-footer">
+      <!-- <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="closeDlg('type_one')">返 回</el-button>
-      </span>
+      </span> -->
     </el-dialog>
   </div>
 </template>
