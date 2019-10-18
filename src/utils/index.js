@@ -387,7 +387,6 @@ export function setInfoOfTree(pendingArr, childFieldName, needChangeField, infoF
   if (pendingArr) {
     if ((currentIndex === pollingLimit) && !!pendingArr) {
       pendingArr.forEach(c => {
-        console.log('c', c)
         if (c && c[needChangeField] && c[infoField]) {
           c[needChangeField] = `${c[needChangeField]}(${c[infoField]})`
         }
