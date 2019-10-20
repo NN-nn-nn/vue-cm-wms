@@ -15,7 +15,7 @@ const purchasingManagementRouter = {
   children: [
     {
       path: '/purchasing-management/material-handling',
-      component: () => import('@/views/purchasing-management/material-handling/in-warehouse-handing'),
+      component: () => import('@/views/purchasing-management/material-handling/index'),
       redirect: '/purchasing-management/material-handling/in-warehouse-handing',
       name: 'MaterialHandling',
       meta: { title: '物料办理', roles: ['admin'] },

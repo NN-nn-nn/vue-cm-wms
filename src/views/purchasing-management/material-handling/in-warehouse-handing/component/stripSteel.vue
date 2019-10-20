@@ -78,64 +78,52 @@
                 :props="props"
                 filterable
                 style="width:235px"
-                @change="() =>{scope.row.rules.detailId = false;materialChange(scope.row);calcMateTotalWeight(scope.row)}"
+                @change="() =>{scope.row.rules.detailId = false;materialChange(scope.row);}"
               />
             </div>
           </template>
         </el-table-column>
+
+        <el-table-column prop="province" label="颜色" align="center" width="110">
+          <template slot-scope="scope">
+            <div class="mask-td">
+              <div :class="{'mask-red': scope.row.rules.color}" />
+              <el-input v-model="scope.row.color" size="small" placeholder="颜色" />
+            </div>
+          </template>
+        </el-table-column>
+
         <el-table-column label="规格" align="center">
-          <el-table-column label="长(m)" align="center" width="100">
+          <el-table-column label="长(m)" align="center" width="120">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" :content="`${scope.row.length || 0}`" placement="top">
                 <div class="mask-td number-input">
                   <div :class="{'mask-red': scope.row.rules.length}" />
-                  <el-input-number v-model="scope.row.length" controls-position="right" :min="0" :precision="2" size="mini" @change="() => {scope.row.rules.length = false;calcMateTotalWeight(scope.row)}" />
+                  <el-input-number v-model="scope.row.length" controls-position="right" :min="0" :step="100" :precision="2" size="mini" @change="() => {scope.row.rules.length = false;calcUnitAmount(scope.row);}" />
                 </div>
               </el-tooltip>
             </template>
           </el-table-column>
-          <el-table-column label="宽(m)" align="center" width="100">
+          <el-table-column label="宽(m)" align="center" width="85">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" :content="`${scope.row.width || 0}`" placement="top">
                 <div class="mask-td number-input">
                   <div :class="{'mask-red': scope.row.rules.width}" />
-                  <el-input-number v-model="scope.row.width" controls-position="right" :min="0" :precision="2" size="mini" @change="() => {scope.row.rules.width = false;calcMateTotalWeight(scope.row)}" />
+                  <el-input-number v-model="scope.row.width" controls-position="right" :min="0" :step="0.5" :precision="2" size="mini" @change="() => {scope.row.rules.width = false;}" />
                 </div>
               </el-tooltip>
             </template>
           </el-table-column>
-          <el-table-column label="厚(mm)" align="center" width="100">
+          <el-table-column label="厚(mm)" align="center" width="90">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" :content="`${scope.row.thickness || 0}`" placement="top">
                 <div class="mask-td number-input">
                   <div :class="{'mask-red': scope.row.rules.thickness}" />
-                  <el-input-number v-model="scope.row.thickness" controls-position="right" :min="0" :precision="2" size="mini" @change="() => {scope.row.rules.thickness = false;calcMateTotalWeight(scope.row)}" />
+                  <el-input-number v-model="scope.row.thickness" controls-position="right" :min="0" :step="0.5" :precision="3" size="mini" @change="() => {scope.row.rules.thickness = false;}" />
                 </div>
               </el-tooltip>
             </template>
           </el-table-column>
-        </el-table-column>
-
-        <el-table-column prop="province" :label="`理论厚度 \n (mm)`" align="center" width="85">
-          <template slot-scope="scope">
-            <el-tooltip class="item" effect="dark" :content="`${scope.row.theoryThickness || 0}`" placement="top">
-              <div class="mask-td number-input">
-                <div :class="{'mask-red': scope.row.rules.theoryThickness}" />
-                <el-input-number v-model="scope.row.theoryThickness" controls-position="right" :min="0" size="mini" @change="() => {scope.row.rules.theoryThickness = false;}" />
-              </div>
-            </el-tooltip>
-          </template>
-        </el-table-column>
-
-        <el-table-column prop="province" :label="`数量 \n (张)`" align="center" width="85">
-          <template slot-scope="scope">
-            <el-tooltip class="item" effect="dark" :content="`${scope.row.number || 0}`" placement="top">
-              <div class="mask-td number-input">
-                <div :class="{'mask-red': scope.row.rules.number}" />
-                <el-input-number v-model="scope.row.number" controls-position="right" :min="1" :step="5" :precision="0" size="mini" @change="() => {scope.row.rules.number = false;calcTotal();calcMateTotalWeight(scope.row)}" />
-              </div>
-            </el-tooltip>
-          </template>
         </el-table-column>
 
         <el-table-column prop="province" :label="`总重 \n (t)`" align="center" width="100">
@@ -143,18 +131,18 @@
             <el-tooltip class="item" effect="dark" :content="`${scope.row.weight || 0}`" placement="top">
               <div class="mask-td number-input">
                 <div :class="{'mask-red': scope.row.rules.weight}" />
-                <el-input-number v-model="scope.row.weight" controls-position="right" :min="0" :step="0.5" :precision="2" size="mini" @change="() => {scope.row.rules.weight = false;calcTotal();calcNetWeight(scope.row)}" />
+                <el-input-number v-model="scope.row.weight" controls-position="right" :min="0" :step="0.5" :precision="2" size="mini" @change="() => {scope.row.rules.weight = false;calcTotal();calcUnitAmount(scope.row)}" />
               </div>
             </el-tooltip>
           </template>
         </el-table-column>
 
-        <el-table-column prop="province" :label="`采购单价 \n (元)`" align="center" width="120">
+        <el-table-column prop="province" :label="`采购单价 \n (t/元)`" align="center" width="120">
           <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" :content="`${scope.row.purchasePrice || 0}`" placement="top">
               <div class="mask-td number-input">
                 <div :class="{'mask-red': scope.row.rules.purchasePrice}" />
-                <el-input-number v-model="scope.row.purchasePrice" controls-position="right" :min="0" :step="5" :precision="2" size="mini" style="width:160px" @change="() => {scope.row.rules.purchasePrice = false;calcTotal()}" />
+                <el-input-number v-model="scope.row.purchasePrice" controls-position="right" :min="0" :step="5" :precision="2" size="mini" style="width:160px" @change="() => {scope.row.rules.purchasePrice = false;calcTotal();calcUnitAmount(scope.row);}" />
               </div>
             </el-tooltip>
           </template>
@@ -168,10 +156,10 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="province" :label="`单位净重 \n (kg/㎡)`" align="center" width="100">
+        <el-table-column prop="province" :label="`单位金额 \n (m/元)`" align="center" width="100">
           <template slot-scope="scope">
             <div class="mask-td">
-              <el-tag type="warning" size="medium">{{ scope.row.netWeight || '0.00' }}</el-tag>
+              <el-tag type="success" size="medium">{{ scope.row.unitAmount || '0.00' }}</el-tag>
             </div>
           </template>
         </el-table-column>
@@ -201,18 +189,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="province" label="炉批号" align="center">
-          <template slot-scope="scope">
-            <el-tooltip class="item" effect="dark" :content="`${scope.row.furnaceLotNumber || '暂未填写'}`" placement="top">
-              <div class="mask-td">
-                <div :class="{'mask-red': scope.row.rules.furnaceLotNumber}" />
-                <el-input v-model="scope.row.furnaceLotNumber" size="small" placeholder="炉批号" />
-              </div>
-            </el-tooltip>
-          </template>
-        </el-table-column>
-
-        <el-table-column label="操作" align="center" width="65">
+        <el-table-column label="操作" align="center">
           <template slot-scope="scope">
             <div class="mask-td" style="justify-content:left">
               <el-button size="small" class="el-icon-delete" type="danger" @click="deleteRow(scope.$index)" />
@@ -249,9 +226,9 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { setInfoOfTree, removeTreeEmptyFiled, getNodeInfoByIds, getCascaderNameByIds } from '@/utils'
+import { setInfoOfTree, removeTreeEmptyFiled, getNodeInfoByIds } from '@/utils'
 import { MATERIAL_BASE_TYPE } from '@/utils/conventionalContent'
-import { changeProjectToCascadeByYear, calcWeightByMateName } from '@/utils/other'
+import { changeProjectToCascadeByYear } from '@/utils/other'
 import { fetchMaterialTree } from '@/api/material'
 import { fetchListByBaseType } from '@/api/supplier'
 import { fetchProjectGroupByYear } from '@/api/project'
@@ -290,7 +267,7 @@ export default {
       props: { value: 'id', label: 'name', children: 'childrenList', expandTrigger: 'hover' }, // 级联列表格式
       mateOption: [], // 物料级联列表
       supplierList: [], // 供应商列表
-      currentBaseType: MATERIAL_BASE_TYPE.STEEL_PLATE, // 一般物料类型
+      currentBaseType: MATERIAL_BASE_TYPE.STRIP_STEEL, // 一般物料类型
       submitLoading: false, // 提交load
       inboundList: {
         storageTime: undefined,
@@ -304,9 +281,8 @@ export default {
         length: false, // 长
         width: false, // 宽
         thickness: false, // 厚度
-        theoryThickness: false, // 理论厚度
         purchasePrice: false, // 单价
-        number: false, // 数量
+        unitAmount: false, // 单位金额
         weight: false, // 总重
         supplierId: false, // 供应商
         brand: false, // 品牌
@@ -317,9 +293,8 @@ export default {
         length: true, // 长
         width: true, // 宽
         thickness: true, // 厚度
-        theoryThickness: true, // 理论厚度
         purchasePrice: true, // 单价
-        number: true, // 数量
+        unitAmount: true, // 单位金额
         weight: true, // 总重
         supplierId: true, // 供应商
         brand: true // 品牌
@@ -329,9 +304,8 @@ export default {
         length: true, // 长
         width: true, // 宽
         thickness: true, // 厚度
-        theoryThickness: true, // 理论厚度
         purchasePrice: true, // 单价
-        number: true, // 数量
+        unitAmount: true, // 单位金额
         weight: true // 总重
       },
       totalAmount: 0, // 总金额
@@ -459,34 +433,12 @@ export default {
       })
       this.totalAmount = totalAmount
     },
-    calcNetWeight: function(item) {
-      const length = item.length || 0
-      const width = item.width || 0
-      const thickness = item.thickness || 0
-      const number = item.number || 0
-      const weight = item.weight || 0
-      if (length && width && thickness && number && weight) {
-        item.netWeight = (item.weight * 1000 / number / length / width).toFixed(2)
-      } else {
-        item.weight = undefined
-        item.netWeight = '0.00'
+    calcUnitAmount(item) {
+      const length = item.length
+      const taxIncludedAmount = Number(item.taxIncludedAmount)
+      if (length && taxIncludedAmount) {
+        item.unitAmount = (taxIncludedAmount / length).toFixed(2)
       }
-    },
-    calcMateTotalWeight: function(item) {
-      const length = item.length || 0
-      const width = item.width || 0
-      const thickness = item.thickness || 0
-      const number = item.number || 0
-      const name = getCascaderNameByIds(this.mateOption, item.materialClassIds, 'id', 'childrenList')
-      if (length && width && thickness && number) {
-        item.weight = Number((calcWeightByMateName(length, width, thickness, number, name) / 1000).toFixed(2))
-        item.netWeight = (item.weight * 1000 / number / length / width).toFixed(2)
-        item.rules.weight = false
-      } else {
-        item.weight = undefined
-        item.netWeight = '0.00'
-      }
-      this.calcTotal()
     },
     validSubmit() {
       return new Promise((resolve, reject) => {

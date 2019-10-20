@@ -27,7 +27,11 @@
       :fullscreen="true"
       :before-close="handleClose"
     >
-      <GeneralMat v-if="currrentBaseType.index === MATERIAL_BASE_TYPE.MATERIAL.index" />
+      <GeneralMat v-if="currrentBaseType.index === MATERIAL_BASE_TYPE.MATERIAL.index" @closeEvent="createVisible = false" />
+      <SteelPlate v-if="currrentBaseType.index === MATERIAL_BASE_TYPE.STEEL_PLATE.index" @closeEvent="createVisible = false" />
+      <Steel v-if="currrentBaseType.index === MATERIAL_BASE_TYPE.STEEL.index" @closeEvent="createVisible = false" />
+      <StripSteel v-if="currrentBaseType.index === MATERIAL_BASE_TYPE.STRIP_STEEL.index" @closeEvent="createVisible = false" />
+      <Enclosure v-if="currrentBaseType.index === MATERIAL_BASE_TYPE.ENCLOSURE.index" @closeEvent="createVisible = false" />
       <!-- <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="closeDlg('type_one')">返 回</el-button>
       </span> -->
@@ -37,11 +41,15 @@
 
 <script>
 import GeneralMat from './component/generalMate'
+import SteelPlate from './component/steelPlate'
+import Steel from './component/steel'
+import StripSteel from './component/stripSteel'
+import Enclosure from './component/enclosure'
 import { MATERIAL_BASE_TYPE } from '@/utils/conventionalContent'
 
 export default {
   name: 'MatInWarehouseHanding',
-  components: { GeneralMat },
+  components: { GeneralMat, SteelPlate, Steel, StripSteel, Enclosure },
   data() {
     return {
       createVisible: false,

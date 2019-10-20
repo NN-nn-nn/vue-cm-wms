@@ -18,4 +18,10 @@ const MATERIAL_BASE_TYPE = {
   MATERIAL: { index: 4, name: '一般物料', value: 'material', icon: 'material' }
 }
 
-export { apiResultCode, dictionaryType, MATERIAL_BASE_TYPE }
+// 物料密度
+const MATERIAL_DENSITY = {
+  STEEL: 7.85,
+  STAINLESS_STEEL: 7.93
+}
+
+export { apiResultCode, dictionaryType, MATERIAL_BASE_TYPE, MATERIAL_DENSITY }

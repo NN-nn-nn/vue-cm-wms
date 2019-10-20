@@ -434,6 +434,37 @@ export function getNodeInfoByIds(pendingArr, ids, idField = 'id', childField = '
 }
 
 /**
+ * 根据节点数组获取级联名称
+ *
+ * @export
+ * @param {array} pendingArr 待处理数组
+ * @param {array} ids ids 数组
+ * @param {string} [idField='id'] id字段名称
+ * @param {string} [childField='children'] children字段名称
+ * @param {string} [nameField='name'] name字段名称
+ * @returns node 节点信息
+ * @author duhh
+ */
+export function getCascaderNameByIds(pendingArr, ids, idField = 'id', childField = 'children', nameField = 'name',) {
+  const tempFlag = pendingArr && ids && ids.length && idField && childField
+  if (!tempFlag) return ''
+  let arr = [...pendingArr]
+  let currentIndex = 0
+  let name = ''
+  do {
+    for (let i = 0; i < arr.length; i++) {
+      if (ids[currentIndex] === arr[i][idField]) {
+        name += arr[i][nameField]
+        arr = arr[i][childField]
+        break
+      }
+    }
+    ++currentIndex
+  } while (currentIndex < ids.length)
+  return name
+}
+
+/**
  * 数字转大写中文
  *
  * @export

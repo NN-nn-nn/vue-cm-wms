@@ -84,7 +84,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="province" label="颜色" align="center" width="120">
+        <el-table-column prop="province" label="颜色" align="center" width="110">
           <template slot-scope="scope">
             <div class="mask-td">
               <div :class="{'mask-red': scope.row.rules.color}" />
@@ -132,7 +132,7 @@
           <template slot-scope="scope">
             <div class="mask-td">
               <div :class="{'mask-red': scope.row.rules.supplierId}" />
-              <el-select v-model="scope.row.supplierId" size="small" filterable placeholder="供应商" @change="scope.row.rules.supplierId = false">
+              <el-select v-model="scope.row.supplierId" size="small" filterable clearable placeholder="供应商" @change="scope.row.rules.supplierId = false">
                 <el-option
                   v-for="item in supplierList"
                   :key="item.id"
@@ -164,7 +164,7 @@
             <span>合计</span>
           </div>
           <div class="price-total-num">
-            <span>{{ totalAmount }}</span>
+            <span>{{ totalAmount }}元</span>
           </div>
           <div class="price-total-tip">
             <span>大写</span>
@@ -189,6 +189,7 @@ import { fetchListByBaseType } from '@/api/supplier'
 import { fetchProjectGroupByYear } from '@/api/project'
 import { createInboundList } from '@/api/warehouse'
 export default {
+  name: 'GeneralMateComponent',
   data() {
     return {
       pickerOptions: {
@@ -226,7 +227,7 @@ export default {
       inboundList: {
         storageTime: undefined,
         type: 0,
-        formType: MATERIAL_BASE_TYPE.MATERIAL.index,
+        formType: undefined,
         projectId: undefined
       }, // 入库清单
       tableData: [], // 列表数据
@@ -266,6 +267,7 @@ export default {
     this.getProjectYearCascade()
     this.tableData.push({ rules: { ...this.rules }})
     this.inboundList.storageTime = new Date().getTime()
+    this.inboundList.formType = this.currentBaseType.index
   },
   methods: {
     submitScrap() {
@@ -275,8 +277,11 @@ export default {
         createInboundList(data).then(({ code, message }) => {
           if (code === 200) {
             this.$message({ message: '保存成功', type: 'success' })
+            // this.$emit('closeEvent')
+            this.tableData = [{ rules: { ...this.rules }}]
+          } else {
+            this.$message({ message: message, type: 'error' })
           }
-          this.$message({ message: message, type: 'error' })
           this.submitLoading = false
         }).catch(e => {
           this.submitLoading = false
@@ -285,45 +290,6 @@ export default {
         this.submitLoading = false
       }).catch(e => {
         this.submitLoading = false
-      })
-    },
-    validSubmit() {
-      return new Promise((resolve, reject) => {
-        if (this.provideMateCheck) {
-          if (!this.inboundList.projectId) {
-            this.$message({ message: '甲供材料必须选择入库项目', type: 'warning' })
-            reject()
-          }
-        }
-        if (!this.inboundList.storageTime) {
-          this.$message({ message: '请选择入库时间', type: 'warning' })
-          reject()
-        }
-        const _tableData = JSON.parse(JSON.stringify(this.tableData))
-        if (!_tableData || _tableData.length < 1) {
-          this.$message({ message: '请添加入库记录', type: 'warning' })
-          reject()
-        }
-        let errorFlag = false
-        _tableData.forEach(v => {
-          const _valid = this.dailyMateCheck ? this.dailyMateValid : this.needValid
-          for (const r in _valid) {
-            if (_valid[r] && (v[r] === undefined || v[r] === null)) {
-              v.rules[r] = true
-              errorFlag = true
-            }
-          }
-          delete v.materialClassIds
-          delete v.rules
-        })
-        if (errorFlag) {
-          this.$message({ message: '请修正表格中标红的信息', type: 'warning' })
-          reject()
-        }
-        const _inboundList = JSON.parse(JSON.stringify(this.inboundList))
-        _inboundList.detailList = _tableData
-        _inboundList.totalPrice = this.totalAmount
-        resolve({ data: _inboundList })
       })
     },
     /**
@@ -369,12 +335,8 @@ export default {
     materialChange: function(item) {
       if (item.materialClassIds && item.materialClassIds.length === 3) {
         const _materialNode = getNodeInfoByIds(this.mateOption, item.materialClassIds, 'id', 'childrenList')
-        // const _classNode = getNodeInfoByIds(this.mateOption, item.materialClassIds.slice(0, 2), 'id', 'childrenList')
         item.materialCode = _materialNode.otherInfo
-        // item.typeId = item.materialClassIds[0]
-        // item.classId = item.materialClassIds[1]
         item.detailId = item.materialClassIds[2]
-        // item.unit = _classNode.otherInfo
       }
     },
     projectChange: function() {
@@ -414,6 +376,56 @@ export default {
       })
       this.totalAmount = totalAmount
     },
+    validSubmit() {
+      return new Promise((resolve, reject) => {
+        if (this.provideMateCheck) {
+          if (!this.inboundList.projectId) {
+            this.notifyFun({ message: '甲供材料必须选择入库项目', type: 'warning' })
+            reject()
+          }
+        }
+        if (!this.inboundList.storageTime) {
+          this.notifyFun({ message: '请选择入库时间', type: 'warning' })
+          reject()
+        }
+        this.clearAllValid()
+        const _tableData = JSON.parse(JSON.stringify(this.tableData))
+        if (!_tableData || _tableData.length < 1) {
+          this.notifyFun({ message: '请添加入库记录', type: 'warning' })
+          reject()
+        }
+        let errorFlag = false
+        _tableData.forEach(v => {
+          const _valid = this.dailyMateCheck ? this.dailyMateValid : this.needValid
+          for (const r in _valid) {
+            if (_valid[r] && (v[r] === undefined || v[r] === null)) {
+              v.rules[r] = true
+              errorFlag = true
+            }
+          }
+        })
+        this.tableData = JSON.parse(JSON.stringify(_tableData))
+        if (errorFlag) {
+          this.notifyFun({ message: '请修正表格中标红的信息', type: 'warning' })
+          reject()
+        }
+        _tableData.forEach(v => {
+          delete v.materialClassIds
+          delete v.rules
+        })
+        const _inboundList = JSON.parse(JSON.stringify(this.inboundList))
+        _inboundList.detailList = _tableData
+        _inboundList.totalPrice = this.totalAmount
+        resolve({ data: _inboundList })
+      })
+    },
+    clearAllValid: function() {
+      this.tableData.forEach(v => {
+        for (const r in this.rules) {
+          v.rules[r] = false
+        }
+      })
+    },
     // 添加行
     addRow: function() {
       this.tableData.push({ rules: { ...this.rules }})
@@ -421,6 +433,12 @@ export default {
     // 删除行
     deleteRow: function(index) {
       this.tableData.splice(index, 1)
+      this.calcTotal()
+    },
+    notifyFun: function({ message, type, title }) {
+      setTimeout(() => {
+        this.$notify({ message: message, type: type })
+      }, 50)
     }
   }
 }
