@@ -46,7 +46,7 @@
       <div class="filter-right-box">
         <div class="filter-item">
           <el-tooltip class="item" effect="dark" content="甲供材料：必须选择项目(采购单价、品牌、供应商无需填写)" placement="top">
-            <el-checkbox v-model="provideMateCheck" :disabled="dailyMateCheck">甲供材料</el-checkbox>
+            <el-checkbox v-model="provideMateCheck" :disabled="dailyMateCheck" @change="changeProvide">甲供材料</el-checkbox>
           </el-tooltip>
         </div>
         <div class="filter-item">
@@ -106,7 +106,7 @@
           </el-table-column>
         </el-table-column>
 
-        <el-table-column prop="province" :label="`数量 \n (张)`" align="center" width="85">
+        <el-table-column prop="province" :label="`数量 \n (根)`" align="center" width="85">
           <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" :content="`${scope.row.number || 0}`" placement="top">
               <div class="mask-td number-input">
@@ -525,6 +525,9 @@ export default {
       setTimeout(() => {
         this.$notify({ message: message, type: type })
       }, 50)
+    },
+    changeProvide: function(check) {
+      this.inboundList.type = check ? 1 : 0
     }
   }
 }
@@ -555,6 +558,10 @@ export default {
   font-weight: bold;
   font-size: 15px;
   margin-right: 10px;
+}
+
+.list-info-item >span:nth-child(2) {
+  font-weight: 300
 }
 
 .footer-toolbar {

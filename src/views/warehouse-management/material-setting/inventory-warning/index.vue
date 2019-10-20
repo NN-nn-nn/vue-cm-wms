@@ -53,7 +53,7 @@
         </el-table-column>
       </el-table>
       <div class="pagination-container">
-        <el-pagination v-show="total > 0" :current-page="listQuery.pageNumber" :page-sizes="[10, 20, 30, 50]" :page-size="listQuery.pageSize" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+        <el-pagination v-show="total > 0" :current-page="listQuery.page" :page-sizes="[10, 20, 30, 50]" :page-size="listQuery.size" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
       </div>
     </div>
     <!-- 其他模块（例如弹窗等） -->
@@ -71,8 +71,8 @@ export default {
     return {
       props: { value: 'id', label: 'name', children: 'childrenList', expandTrigger: 'hover' },
       listQuery: { // 大类查询条件
-        pageNumber: 1,
-        pageSize: 10,
+        page: 1,
+        size: 10,
         classId: undefined
       },
       currentBaseType: MATERIAL_BASE_TYPE.MATERIAL,
@@ -199,16 +199,16 @@ export default {
     },
     // 搜索界面
     handleFilter() {
-      this.listQuery.pageNumber = 1
+      this.listQuery.page = 1
       this.getMaterialList()
     },
     // page组件相关
     handleSizeChange(val) {
-      this.listQuery.pageSize = val
+      this.listQuery.size = val
       this.getMaterialList()
     },
     handleCurrentChange(val) {
-      this.listQuery.pageNumber = val
+      this.listQuery.page = val
       this.getMaterialList()
     }
   }

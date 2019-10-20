@@ -46,7 +46,7 @@
       <div class="filter-right-box">
         <div class="filter-item">
           <el-tooltip class="item" effect="dark" content="甲供材料：必须选择项目(采购单价、品牌、供应商无需填写)" placement="top">
-            <el-checkbox v-model="provideMateCheck" :disabled="dailyMateCheck">甲供材料</el-checkbox>
+            <el-checkbox v-model="provideMateCheck" :disabled="dailyMateCheck" @change="changeProvide">甲供材料</el-checkbox>
           </el-tooltip>
         </div>
         <div class="filter-item">
@@ -125,7 +125,7 @@
           </el-table-column>
         </el-table-column>
 
-        <el-table-column prop="province" :label="`数量 \n (张)`" align="center" width="85">
+        <el-table-column prop="number" :label="`数量 \n (张)`" align="center" width="85">
           <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" :content="`${scope.row.number || 0}`" placement="top">
               <div class="mask-td number-input">
@@ -136,7 +136,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="province" :label="`总长度 \n (m)`" align="center" width="100">
+        <el-table-column prop="totalLength" :label="`总长度 \n (m)`" align="center" width="100">
           <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" :content="`${scope.row.totalLength || '0'}`" placement="top">
               <div class="mask-td number-input">
@@ -147,7 +147,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="province" :label="`采购单价 \n (m/元)`" align="center" width="120">
+        <el-table-column prop="purchasePrice" :label="`采购单价 \n (m/元)`" align="center" width="120">
           <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" :content="`${scope.row.purchasePrice || 0}`" placement="top">
               <div class="mask-td number-input">
@@ -158,7 +158,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="province" :label="`含税总额 \n (元)`" align="center" width="100">
+        <el-table-column prop="taxIncludedAmount" :label="`含税总额 \n (元)`" align="center" width="100">
           <template slot-scope="scope">
             <div class="mask-td">
               <el-tag type="success" size="medium">{{ scope.row.taxIncludedAmount || '0.00' }}</el-tag>
@@ -166,7 +166,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="province" label="品牌" align="center" width="150">
+        <el-table-column prop="brand" label="品牌" align="center" width="150">
           <template slot-scope="scope">
             <div class="mask-td">
               <div :class="{'mask-red': scope.row.rules.brand}" />
@@ -175,7 +175,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="province" label="供应商" align="center" width="150">
+        <el-table-column prop="supplierId" label="供应商" align="center" width="150">
           <template slot-scope="scope">
             <div class="mask-td">
               <div :class="{'mask-red': scope.row.rules.supplierId}" />
@@ -229,8 +229,8 @@
 <script>
 import { mapGetters } from 'vuex'
 import { setInfoOfTree, removeTreeEmptyFiled, getNodeInfoByIds } from '@/utils'
-import { MATERIAL_BASE_TYPE } from '@/utils/conventionalContent'
 import { changeProjectToCascadeByYear } from '@/utils/other'
+import { MATERIAL_BASE_TYPE } from '@/utils/conventionalContent'
 import { fetchMaterialTree } from '@/api/material'
 import { fetchListByBaseType } from '@/api/supplier'
 import { fetchProjectGroupByYear } from '@/api/project'
@@ -502,6 +502,9 @@ export default {
       setTimeout(() => {
         this.$notify({ message: message, type: type })
       }, 50)
+    },
+    changeProvide: function(check) {
+      this.inboundList.type = check ? 1 : 0
     }
   }
 }
@@ -532,6 +535,10 @@ export default {
   font-weight: bold;
   font-size: 15px;
   margin-right: 10px;
+}
+
+.list-info-item >span:nth-child(2) {
+  font-weight: 300
 }
 
 .footer-toolbar {
