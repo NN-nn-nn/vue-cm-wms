@@ -36,6 +36,7 @@
               <el-date-picker
                 v-model="ruleForm.registrationDate"
                 type="date"
+                value-format="timestamp"
                 placeholder="选择日期"
               />
             </el-form-item>
@@ -147,6 +148,7 @@
   </div>
 </template>
 <script>
+import { formatExcelDate } from '@/utils'
 import { validatorEmail, validatorTel, validatorBankAcount } from '@/utils/validatePattern'
 import { getProvice, save } from '@/api/supplier'
 import { fetchEnterpriseTypeList, fetchSupplierTypeList } from '@/api/dictionary'
@@ -339,7 +341,7 @@ export default {
             this.ruleForm.address = v.__EMPTY_4
           } else if (v.供应商入库登记表 === '社会统一代码*') {
             this.ruleForm.socialCode = v.__EMPTY
-            this.ruleForm.registrationDate = v.__EMPTY_2
+            this.ruleForm.registrationDate = formatExcelDate(v.__EMPTY_2)
             this.ruleForm.businessTerm = v.__EMPTY_4
           } else if (v.供应商入库登记表 === '法定代表人') {
             this.ruleForm.legalRepresentative = v.__EMPTY

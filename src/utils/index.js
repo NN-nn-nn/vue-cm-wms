@@ -504,3 +504,9 @@ export function digitUppercase(n) {
     .replace(/(零.)+/g, '零')
     .replace(/^整$/, '零元整')
 }
+
+export function formatExcelDate(numb) {
+  const time = new Date((numb - 1) * 24 * 3600000 + 1)
+  time.setYear(time.getFullYear() - 70)
+  return time.getTime()
+}
