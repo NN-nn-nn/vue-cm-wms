@@ -1,18 +1,9 @@
 <template>
   <!-- 页面主容器 -->
   <div class="page-container steelPlate">
-    <!-- 查询容器 -->
-    <div class="filter-container">
-      <!-- 左侧box -->
-      <div class="filter-left-box">
-        <div class="filter-item" />
-      </div>
-      <!-- 右侧box -->
-      <div class="filter-right-box" />
-    </div>
     <!-- 主要内容容器 -->
     <div class="content-container">
-      <el-table ref="data" :data="data" tooltip-effect="dark" stripe style="width: 100%">
+      <el-table ref="data" :data="data" :loading="dataLoading" tooltip-effect="dark" stripe style="width: 100%">
         <el-table-column type="index" label="序号" align="center" width="40" />
         <el-table-column label="日期" align="center" width="100">
           <template slot-scope="scope">{{ scope.row.createTime | parseTime('{y}-{m}-{d}') }}</template>
@@ -71,7 +62,7 @@
             </template>
           </el-table-column>
         </el-table-column>
-        <el-table-column label="数量(张)" width="160" align="center">
+        <el-table-column label="数量(张)" width="150" align="center">
           <template slot-scope="scope">
             <div class="mask-td">
               <div :class="{'mask-red': scope.row.rules.number}" />
@@ -136,11 +127,18 @@
                 icon="el-icon-edit"
                 @click="editHandle(scope.$index, scope.row)"
               >修改</el-button>
+              <!-- <el-button
+                v-if="!scope.row.isHistory"
+                size="mini"
+                type="primary"
+                icon="el-icon-edit"
+                @click="delHandle(scope.row.id)"
+              >删除</el-button> -->
               <el-button
                 v-if="scope.row.isHistory == 1"
                 size="mini"
                 type="success"
-                icon="el-icon-circle-check-outline"
+                icon="el-icon-success"
                 @click="editConfirm(scope.$index, scope.row)"
               >确定</el-button>
               <el-button
@@ -162,6 +160,7 @@
       </el-table>
       <div class="page-nation">
         <el-pagination
+          v-if="totalCount>0"
           :current-page="field.page"
           :page-sizes="[10, 20, 30, 40]"
           :page-size="field.size"
@@ -173,7 +172,7 @@
       </div>
       <div class="formulate-btn">
         <el-button type="warning" icon="el-icon-circle-plus-outline" @click="addDefaultHandle">继续添加</el-button>
-        <el-button type="primary" icon="el-icon-circle-check-outline" @click="confirmHandle">确定添加</el-button>
+        <el-button type="primary" icon="el-icon-success" @click="confirmHandle">确定添加</el-button>
       </div>
     </div>
   </div>
@@ -184,7 +183,7 @@
 import { setInfoOfTree, removeTreeEmptyFiled, getNodeInfoByIds } from '@/utils'
 import { fetchMaterialTree } from '@/api/material'
 import { MATERIAL_BASE_TYPE } from '@/utils/conventionalContent'
-import { qutoList, saveQuto, updateQuto } from '@/api/quotaMmanage'
+import { qutoList, saveQuto, updateQuto, delQuto } from '@/api/quotaMmanage'
 export default {
   name: 'TechQuotaFormuSteelPlate',
   props: {
@@ -236,7 +235,8 @@ export default {
         width: true,
         thickness: true,
         number: true
-      }
+      },
+      dataLoading: false
     }
   },
   watch: {
@@ -250,24 +250,28 @@ export default {
   mounted() {
     this.getMaterialClassTree(this.currnetBaseType.index)
     this.getList()
-    // this.data.push({ ...this.defaultObj })
   },
   methods: {
     getList() {
+      this.dataLoading = true
       this.field.projectId = this.projectId
-      qutoList(this.field).then(res => {
-        if (res.code === 200) {
-          this.data = res.data.data
-          this.data = this.data.map(v => {
-            v.rules = { ...this.rules }
-            return v
-          })
-          this.totalCount = res.data.totalCount
-          if (!this.data.length) {
+      qutoList(this.field).then(({ data, code, message }) => {
+        if (code === 200) {
+          this.dataLoading = false
+          if (data && data.length) {
+            this.data = data
+            this.data = this.data.map(v => {
+              v.rules = { ...this.rules }
+              return v
+            })
+          } else {
             this.data.push({ ...this.defaultObj })
-            console.log(this.data, '列表')
           }
+        } else {
+          this.dataLoading = false
         }
+      }).catch(e => {
+        this.dataLoading = false
       })
     },
     sizeChange(val) {
@@ -318,15 +322,15 @@ export default {
         item.detailId = item.materialClassIds[2]
       }
     },
-    queryInventory(index, item) {},
-    exportHandle() {
-      // 记录导出
+    queryInventory(index, item) { // 库存查询
+
     },
-    addDefaultHandle() {
+    exportHandle() { // 记录导出
+    },
+    addDefaultHandle() { // 继续添加
       this.data.push({ ...this.defaultObj })
     },
     editHandle(index, item) {
-      // 修改每一天数据
       this.data[index].isHistory = 1
       this.data[index].materialClassIds = [
         item.typeId,
@@ -375,15 +379,12 @@ export default {
       paramsArr = this.data.filter(v => {
         return v.isHistory
       })
-      // console.log(this.data)
+      console.log(paramsArr, 'ddd')
       if (paramsArr.length) {
         let errorFlag = false
         this.data.forEach(v => {
-          // console.log(v)
           const _valid = this.needValid
-          console.log(_valid)
           for (const r in _valid) {
-            // console.log(_valid[r], v[r])
             if (_valid[r] && (v[r] === undefined || v[r] === null)) {
               v.rules[r] = true
               errorFlag = true
@@ -391,7 +392,7 @@ export default {
           }
         })
         if (errorFlag) {
-          this.$message({ message: '请修正标红的信息', type: 'warning' })
+          this.notifyFun({ message: '请新增钢板', type: 'warning' })
           return
         } else {
           paramsArr.forEach(v => {
@@ -415,7 +416,21 @@ export default {
         this.$message.error('无数据可添加')
       }
     },
-    updateHandle() {}
+    delHandle(id) {
+      delQuto({ id: id }).then(({ code }) => {
+        if (code) {
+          this.$message.success('删除成功!')
+          this.getList()
+        } else {
+          this.$message.error('删除失败!')
+        }
+      })
+    },
+    notifyFun: function({ message, type, title }) {
+      setTimeout(() => {
+        this.$notify({ message: message, type: type })
+      }, 50)
+    }
   }
 }
 </script>

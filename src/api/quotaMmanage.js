@@ -35,3 +35,11 @@ export function updateQuto(data) {
     data
   })
 }
+
+// 删除对应的物料定额
+export function delQuto(data) {
+  return request({
+    url: '/material-quota/delete?id=' + data.id,
+    method: 'delete'
+  })
+}
