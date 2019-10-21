@@ -144,7 +144,7 @@ export default {
     return {
       inboundVerify: INBOUND_VERIFY,
       inboundVerifyStatus: INBOUND_VERIFY_STATUS,
-      currentBaseType: MATERIAL_BASE_TYPE.STRIP_STEEL, // 钢板
+      currentBaseType: MATERIAL_BASE_TYPE.stripSteel, // 钢板
       retrunVisible: false,
       successVisible: false,
       provideMateCheck: false,

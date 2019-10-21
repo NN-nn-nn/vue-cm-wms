@@ -173,7 +173,7 @@
             <span>{{ totalAmount | digitUppercase }}</span>
           </div>
         </div>
-        <el-button :loading="submitLoading" type="primary" size="small" style="height:30px;" @click="submitScrap">提交入库清单</el-button>
+        <el-button :loading="submitLoading" type="primary" size="small" @click="submitScrap">提交入库清单</el-button>
       </div>
     </div>
   </div>
@@ -222,7 +222,7 @@ export default {
       props: { value: 'id', label: 'name', children: 'childrenList', expandTrigger: 'hover' }, // 级联列表格式
       mateOption: [], // 物料级联列表
       supplierList: [], // 供应商列表
-      currentBaseType: MATERIAL_BASE_TYPE.MATERIAL, // 一般物料类型
+      currentBaseType: MATERIAL_BASE_TYPE.material, // 一般物料类型
       submitLoading: false, // 提交load
       inboundList: {
         storageTime: undefined,
@@ -247,7 +247,7 @@ export default {
         color: false,
         detailId: true
       },
-      dailyMateValid: {
+      provideMateValid: {
         number: true,
         detailId: true
       },
@@ -396,7 +396,7 @@ export default {
         }
         let errorFlag = false
         _tableData.forEach(v => {
-          const _valid = this.dailyMateCheck ? this.dailyMateValid : this.needValid
+          const _valid = this.provideMateCheck ? this.provideMateValid : this.needValid
           for (const r in _valid) {
             if (_valid[r] && (v[r] === undefined || v[r] === null)) {
               v.rules[r] = true

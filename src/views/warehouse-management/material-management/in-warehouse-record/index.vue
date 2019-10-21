@@ -47,7 +47,7 @@
           <el-radio-group v-model="listQuery.status" size="medium" @change="handleFilter">
             <el-radio-button :label="undefined">全部</el-radio-button>
             <el-radio-button :label="0">未审核</el-radio-button>
-            <el-radio-button :label="1">已审核</el-radio-button>
+            <el-radio-button :label="1">已通过</el-radio-button>
             <el-radio-button :label="2">已退回</el-radio-button>
           </el-radio-group>
         </div>
@@ -113,11 +113,11 @@
         <span>{{ `${ materialBaseNum[currentInbound.formType] ? materialBaseNum[currentInbound.formType].name : ''}入库审核：${currentInbound.storageListNo}` }}</span>
         <el-tag effect="dark" :type="currentInbound.status == 1 ? 'success' : currentInbound.status == 2 ? 'danger' : 'warning'" size="small">{{ inboundVerifyStatus[currentInbound.status] }}</el-tag>
       </div>
-      <GeneralMat v-if="currentInbound.formType === MATERIAL_BASE_TYPE.MATERIAL.index" :detail-id="currentInbound.id" @closeEvent="detailVisible = false" @refreshEvent="refreshInfo" />
-      <SteelPlate v-if="currentInbound.formType === MATERIAL_BASE_TYPE.STEEL_PLATE.index" :detail-id="currentInbound.id" @closeEvent="detailVisible = false" @refreshEvent="refreshInfo" />
-      <Steel v-if="currentInbound.formType === MATERIAL_BASE_TYPE.STEEL.index" :detail-id="currentInbound.id" @closeEvent="detailVisible = false" @refreshEvent="refreshInfo" />
-      <StripSteel v-if="currentInbound.formType === MATERIAL_BASE_TYPE.STRIP_STEEL.index" :detail-id="currentInbound.id" @closeEvent="detailVisible = false" @refreshEvent="refreshInfo" />
-      <Enclosure v-if="currentInbound.formType === MATERIAL_BASE_TYPE.ENCLOSURE.index" :detail-id="currentInbound.id" @closeEvent="detailVisible = false" @refreshEvent="refreshInfo" />
+      <GeneralMat v-if="currentInbound.formType === MATERIAL_BASE_TYPE.material.index" :detail-id="currentInbound.id" @closeEvent="detailVisible = false" @refreshEvent="refreshInfo" />
+      <SteelPlate v-if="currentInbound.formType === MATERIAL_BASE_TYPE.steelPlate.index" :detail-id="currentInbound.id" @closeEvent="detailVisible = false" @refreshEvent="refreshInfo" />
+      <Steel v-if="currentInbound.formType === MATERIAL_BASE_TYPE.steel.index" :detail-id="currentInbound.id" @closeEvent="detailVisible = false" @refreshEvent="refreshInfo" />
+      <StripSteel v-if="currentInbound.formType === MATERIAL_BASE_TYPE.stripSteel.index" :detail-id="currentInbound.id" @closeEvent="detailVisible = false" @refreshEvent="refreshInfo" />
+      <Enclosure v-if="currentInbound.formType === MATERIAL_BASE_TYPE.enclosure.index" :detail-id="currentInbound.id" @closeEvent="detailVisible = false" @refreshEvent="refreshInfo" />
     </el-dialog>
 
     <el-drawer

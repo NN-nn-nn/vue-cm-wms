@@ -11,18 +11,18 @@ const dictionaryType = {
 }
 
 const MATERIAL_BASE_TYPE = {
-  STEEL_PLATE: { index: 0, name: '钢板', value: 'steelPlate', icon: 'steel-plate' },
-  STEEL: { index: 1, name: '型钢', value: 'steel', icon: 'steel' },
-  STRIP_STEEL: { index: 2, name: '彩卷/带钢', value: 'stripSteel', icon: 'strip-steel' },
-  ENCLOSURE: { index: 3, name: '成品围护', value: 'enclosure', icon: 'enclosure' },
-  MATERIAL: { index: 4, name: '一般物料', value: 'material', icon: 'material' }
+  steelPlate: { index: 0, name: '钢板', value: 'steelPlate', icon: 'steel-plate', unit: 'kg' },
+  steel: { index: 1, name: '型钢', value: 'steel', icon: 'steel', unit: 'kg' },
+  stripSteel: { index: 2, name: '彩卷/带钢', value: 'stripSteel', icon: 'strip-steel', unit: 'kg' },
+  enclosure: { index: 3, name: '成品围护', value: 'enclosure', icon: 'enclosure', unit: 'm' },
+  material: { index: 4, name: '一般物料', value: 'material', icon: 'material' }
 }
 
 const MATERIAL_BASE_NUM = {
-  0: { index: 0, name: '钢板', value: 'steelPlate', icon: 'steel-plate' },
-  1: { index: 1, name: '型钢', value: 'steel', icon: 'steel' },
-  2: { index: 2, name: '彩卷/带钢', value: 'stripSteel', icon: 'strip-steel' },
-  3: { index: 3, name: '成品围护', value: 'enclosure', icon: 'enclosure' },
+  0: { index: 0, name: '钢板', value: 'steelPlate', icon: 'steel-plate', unit: 'kg' },
+  1: { index: 1, name: '型钢', value: 'steel', icon: 'steel', unit: 'kg' },
+  2: { index: 2, name: '彩卷/带钢', value: 'stripSteel', icon: 'strip-steel', unit: 'kg' },
+  3: { index: 3, name: '成品围护', value: 'enclosure', icon: 'enclosure', unit: 'm' },
   4: { index: 4, name: '一般物料', value: 'material', icon: 'material' }
 }
 

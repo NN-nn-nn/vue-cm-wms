@@ -10,6 +10,8 @@
             v-model="listQuery.year"
             type="year"
             placeholder="选择年"
+            value-format="yyyy"
+            @change="handleFilter"
           />
         </div>
         <div class="filter-item">
@@ -28,7 +30,7 @@
         <el-table-column prop="projectName" align="center" label="项目" />
         <el-table-column prop="typeName" label="入库总额(万元)" align="center">
           <template slot-scope="scope">
-            <el-tag type="success" size="medium">{{ scope.row.totalPrice | toFixed(2) }}</el-tag>
+            <el-tag type="success" size="medium">{{ scope.row.price }}</el-tag>
           </template>
         </el-table-column>
       </el-table>
@@ -72,7 +74,7 @@ export default {
   },
   created() {
     this.getList()
-    this.listQuery.year = new Date()
+    this.listQuery.year = new Date().getFullYear().toString()
   },
   methods: {
     getList: function() {
@@ -81,7 +83,10 @@ export default {
       fetchProjectInbound(this.listQuery).then(({ data, code, message }) => {
         if (code === 200) {
           if (data && data.data && data.data.length) {
-            this.tableData = data.data
+            this.tableData = data.data.map(v => {
+              v.price = (v.totalPrice / 10000).toFixed(2)
+              return v
+            })
             this.total = data.totalCount
           }
         } else {
