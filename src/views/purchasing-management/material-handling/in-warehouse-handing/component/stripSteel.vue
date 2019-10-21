@@ -131,7 +131,7 @@
             <el-tooltip class="item" effect="dark" :content="`${scope.row.weight || 0}`" placement="top">
               <div class="mask-td number-input">
                 <div :class="{'mask-red': scope.row.rules.weight}" />
-                <el-input-number v-model="scope.row.weight" controls-position="right" :min="0" :step="0.5" :precision="2" size="mini" @change="() => {scope.row.rules.weight = false;calcTotal();calcUnitAmount(scope.row)}" />
+                <el-input-number v-model="scope.row.weight" controls-position="right" :min="0" :step="0.5" :precision="3" size="mini" @change="() => {scope.row.rules.weight = false;calcTotal();calcUnitAmount(scope.row)}" />
               </div>
             </el-tooltip>
           </template>
@@ -156,10 +156,10 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="unitAmount" :label="`单位金额 \n (m/元)`" align="center" width="100">
+        <el-table-column prop="unitAmount" :label="`单位净重 \n (kg/m)`" align="center" width="100">
           <template slot-scope="scope">
             <div class="mask-td">
-              <el-tag type="success" size="medium">{{ scope.row.unitAmount || '0.00' }}</el-tag>
+              <el-tag type="success" size="medium">{{ scope.row.unitNetWeight || '0.00' }}</el-tag>
             </div>
           </template>
         </el-table-column>
@@ -282,7 +282,6 @@ export default {
         width: false, // 宽
         thickness: false, // 厚度
         purchasePrice: false, // 单价
-        unitAmount: false, // 单位金额
         weight: false, // 总重
         supplierId: false, // 供应商
         brand: false, // 品牌
@@ -294,7 +293,6 @@ export default {
         width: true, // 宽
         thickness: true, // 厚度
         purchasePrice: true, // 单价
-        unitAmount: true, // 单位金额
         weight: true, // 总重
         supplierId: true, // 供应商
         brand: true // 品牌
@@ -433,9 +431,11 @@ export default {
     },
     calcUnitAmount(item) {
       const length = item.length
-      const taxIncludedAmount = Number(item.taxIncludedAmount)
-      if (length && taxIncludedAmount) {
-        item.unitAmount = (taxIncludedAmount / length).toFixed(2)
+      const totalWeight = Number(item.weight)
+      if (length && totalWeight) {
+        item.unitNetWeight = (totalWeight * 1000 / length).toFixed(2)
+      } else {
+        item.unitNetWeight = 0
       }
     },
     validSubmit() {

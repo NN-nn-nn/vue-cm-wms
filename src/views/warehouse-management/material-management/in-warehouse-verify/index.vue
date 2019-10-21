@@ -59,7 +59,7 @@
           />
         </div>
         <div class="filter-item">
-          <el-input v-model="listQuery.className" placeholder="请输入物料名称" class="input-with-select" @keyup.enter.native="handleFilter">
+          <el-input v-model="listQuery.className" placeholder="请输入物料种类名称" class="input-with-select" @keyup.enter.native="handleFilter">
             <el-button slot="append" type="primary" icon="el-icon-search" @click="handleFilter" />
           </el-input>
         </div>
@@ -82,7 +82,11 @@
             <span>{{ materialBaseNum[scope.row.formType] ? materialBaseNum[scope.row.formType].name : '' }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="className" label="入库日期" align="center" />
+        <el-table-column prop="storageTime" label="入库日期" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.storageTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="storageListNo" label="入库凭证号" align="center" />
         <el-table-column prop="totalPrice" label="入库额(元)" align="center" />
         <el-table-column prop="className" label="状态" align="center">

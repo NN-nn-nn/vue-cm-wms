@@ -35,7 +35,7 @@ export function verifyInboundList(data) {
   return request({
     url: '/storage-list/check',
     method: 'put',
-    params: data
+    data
   })
 }
 

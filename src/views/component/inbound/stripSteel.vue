@@ -66,7 +66,7 @@
         </el-table-column>
         <el-table-column prop="weight" :label="`总重 \n (t)`" align="center" width="80">
           <template slot-scope="scope">
-            <span>{{ scope.row.weight | toFixed(2) }}</span>
+            <span>{{ scope.row.weight | toFixed(3) }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="purchasePrice" :label="`采购单价 \n (t/元)`" align="center" width="90">
@@ -79,9 +79,9 @@
             <el-tag type="success" size="medium">{{ scope.row.taxIncludedAmount | toFixed(2) }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="unitAmount" :label="`单位金额 \n (m/元)`" align="center" width="100">
+        <el-table-column prop="unitAmount" :label="`单位净重 \n (kg/m)`" align="center" width="100">
           <template slot-scope="scope">
-            <el-tag type="success" size="medium">{{ scope.row.unitAmount | toFixed(2) }}</el-tag>
+            <el-tag type="success" size="medium">{{ scope.row.unitNetWeight | toFixed(2) }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="brand" label="品牌" align="center" width="140" />

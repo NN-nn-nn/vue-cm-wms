@@ -71,7 +71,7 @@
         <el-table-column prop="number" :label="`数量 \n (张)`" align="center" width="70" />
         <el-table-column prop="weight" :label="`总重 \n (t)`" align="center" width="80">
           <template slot-scope="scope">
-            <span>{{ scope.row.weight | toFixed(2) }}</span>
+            <span>{{ scope.row.weight | toFixed(3) }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="purchasePrice" :label="`采购单价 \n (t/元)`" align="center" width="90">

@@ -35,6 +35,9 @@
       <!-- <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="closeDlg('type_one')">返 回</el-button>
       </span> -->
+      <div slot="title" class="dialog-title">
+        <span style="font-weight:bold;">{{ `${currrentBaseType.name}入库办理` }}</span>
+      </div>
     </el-dialog>
   </div>
 </template>

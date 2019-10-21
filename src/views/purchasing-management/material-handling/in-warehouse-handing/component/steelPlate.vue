@@ -143,7 +143,7 @@
             <el-tooltip class="item" effect="dark" :content="`${scope.row.weight || 0}`" placement="top">
               <div class="mask-td number-input">
                 <div :class="{'mask-red': scope.row.rules.weight}" />
-                <el-input-number v-model="scope.row.weight" controls-position="right" :min="0" :step="0.5" :precision="2" size="mini" @change="() => {scope.row.rules.weight = false;calcTotal();calcNetWeight(scope.row)}" />
+                <el-input-number v-model="scope.row.weight" controls-position="right" :min="0" :step="0.5" :precision="3" size="mini" @change="() => {scope.row.rules.weight = false;calcTotal();calcNetWeight(scope.row)}" />
               </div>
             </el-tooltip>
           </template>
@@ -467,7 +467,7 @@ export default {
       if (length && width && thickness && number && weight) {
         item.netWeight = (item.weight * 1000 / number / length / width).toFixed(2)
       } else {
-        item.weight = undefined
+        // item.weight = undefined
         item.netWeight = '0.00'
       }
     },
