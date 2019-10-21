@@ -3,7 +3,7 @@
   <div class="page-container steelPlate">
     <!-- 主要内容容器 -->
     <div class="content-container">
-      <el-table ref="data" :data="data" :loading="dataLoading" tooltip-effect="dark" stripe style="width: 100%">
+      <el-table ref="data" v-loading="dataLoading" :data="data" tooltip-effect="dark" stripe style="width: 100%">
         <el-table-column type="index" label="序号" align="center" width="40" />
         <el-table-column label="日期" align="center" width="100">
           <template slot-scope="scope">{{ scope.row.createTime | parseTime('{y}-{m}-{d}') }}</template>
@@ -81,7 +81,7 @@
         </el-table-column>
         <el-table-column label="总重(kg)" width="120" align="center">
           <template slot-scope="scope">
-            <el-tag v-if="!scope.row.isHistory">{{ scope.row.weight }}</el-tag>
+            <el-tag v-if="!scope.row.isHistory">{{ scope.row.weight | toFixed(3) }}</el-tag>
             <el-tag
               v-else
             >{{ scope.row.length&&scope.row.width&&scope.row.thickness&&scope.row.number? ((scope.row.length)*(scope.row.width)*(scope.row.thickness)*(scope.row.number)*7.85).toFixed(2): 0 }}</el-tag>
@@ -311,6 +311,7 @@ export default {
         })
     },
     materialHandle(item) {
+      console.log(item)
       if (item.materialClassIds && item.materialClassIds.length === 3) {
         const _node = getNodeInfoByIds(
           this.mateOption,
@@ -331,12 +332,16 @@ export default {
       this.data.push({ ...this.defaultObj })
     },
     editHandle(index, item) {
-      this.data[index].isHistory = 1
+      item.isHistory = 1
       this.data[index].materialClassIds = [
         item.typeId,
         item.classId,
         item.detailId
       ]
+      // this.data[index] = Object.assign({}, this.data[index])
+      this.$set(this.data, index, Object.assign({}, this.data[index]))
+      // console.log(data, '5555')
+      // this.data = JSON.parse(JSON.stringify(this.data))
     },
     editConfirm(index, item) {
       item.remark = this.data[index].remark
@@ -413,7 +418,7 @@ export default {
           }).catch(e => {})
         }
       } else {
-        this.$message.error('无数据可添加')
+        this.notifyFun({ message: '无新增数据添加', type: 'warning' })
       }
     },
     delHandle(id) {

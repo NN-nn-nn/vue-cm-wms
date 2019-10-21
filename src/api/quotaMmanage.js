@@ -43,3 +43,12 @@ export function delQuto(data) {
     method: 'delete'
   })
 }
+
+// 获取物料定额追踪列表
+export function quotaTrackList(query) {
+  return request({
+    url: '/material-quota/find/page',
+    method: 'get',
+    params: query
+  })
+}

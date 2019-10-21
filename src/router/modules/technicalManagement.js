@@ -66,6 +66,42 @@ const technicalManagementRouter = {
           component: () => import('@/views/technical-management/quota-management/tracking/index'),
           name: 'TechQuotaTracking',
           meta: { title: '定额跟踪', roles: ['admin'] }
+        },
+
+        {
+          path: '/technical-management/quota-management/tracking/component/generalMaterial',
+          component: () => import('@/views/technical-management/quota-management/formulate/component/generalMaterial'),
+          name: 'TechQuotaTrackGeneral',
+          hidden: true,
+          meta: { title: '一般物料定额跟踪', roles: ['admin'] }
+        },
+        {
+          path: '/technical-management/quota-management/tracking/component/steelPlate',
+          component: () => import('@/views/technical-management/quota-management/tracking/component/steelPlate'),
+          name: 'TechQuotaTrackSteelPlate',
+          hidden: true,
+          meta: { title: '钢板定额跟踪', roles: ['admin'] }
+        },
+        {
+          path: '/technical-management/quota-management/tracking/component/steel',
+          component: () => import('@/views/technical-management/quota-management/tracking/component/steel'),
+          name: 'TechQuotaTrackSteel',
+          hidden: true,
+          meta: { title: '型钢定额跟踪', roles: ['admin'] }
+        },
+        {
+          path: '/technical-management/quota-management/tracking/component/colorStrip',
+          component: () => import('@/views/technical-management/quota-management/tracking/component/colorStrip'),
+          name: 'TechQuotaTrackColorStrip',
+          hidden: true,
+          meta: { title: '彩卷/带钢定额跟踪', roles: ['admin'] }
+        },
+        {
+          path: '/technical-management/quota-management/tracking/component/finishedProduct',
+          component: () => import('@/views/technical-management/quota-management/tracking/component/finishedProduct'),
+          name: 'TechQuotaTrackFinishedProduct',
+          hidden: true,
+          meta: { title: '成品围护定额跟踪', roles: ['admin'] }
         }
       ]
     }
