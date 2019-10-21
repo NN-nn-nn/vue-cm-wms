@@ -71,7 +71,7 @@ export default {
   },
   watch: {
     materialBaseType(newVal, oldVal) {
-      if (newVal) {
+      if (newVal || newVal === 0) {
         this.projectId = this.currentProjectId[1]
       }
     }
