@@ -81,7 +81,7 @@
           <el-input v-model="classForm.className" autocomplete="off" />
         </el-form-item>
         <el-form-item label="单位" :label-width="'80px'" prop="unitId">
-          <el-select v-model="classForm.unitId" filterable placeholder="请选择">
+          <el-select v-model="classForm.unitId" filterable placeholder="请选择" :disabled="unitDisabled">
             <el-option
               v-for="item in unitList"
               :key="item.id"
@@ -113,6 +113,7 @@
 
 <script>
 import { validatorCN } from '@/utils/validatePattern'
+import { MATERIAL_BASE_TYPE, MATERIAL_BASE_NUM } from '@/utils/conventionalContent'
 import { fetchUnitList } from '@/api/dictionary'
 import { fetchClassList, createClass, updateClass, delClass, fetchMaterialList, createMaterial, updateMaterial, delMaterial } from '@/api/material'
 
@@ -120,6 +121,8 @@ export default {
   name: 'WareMaterialClassDetail',
   data() {
     return {
+      materialBaseType: MATERIAL_BASE_TYPE,
+      materialBaseNum: MATERIAL_BASE_NUM,
       classDlgVisible: false,
       classEditDlgVisible: false,
       materialDlgVisible: false,
@@ -131,6 +134,10 @@ export default {
         create: '添加种类信息',
         update: '修改种类信息'
       },
+      baseType: 0, // 基础类型
+      unitDisabled: false, // 单位可选
+      currentBaseType: {}, // 当前类型
+      baseUnitId: 0,
       total: 0,
       operateDlgStatus: 'create',
       currentTabId: undefined,
@@ -171,16 +178,19 @@ export default {
   mounted() {
     this.backRouterName = this.$route.query && this.$route.query.backRouterName
     this.typeId = this.$route.query && this.$route.query.id
+    this.baseType = this.$route.query && this.$route.query.baseType
+    this.unitDisabled = this.materialBaseType.material !== this.baseType
     this.getClassList()
+    this.currentBaseType = this.materialBaseNum[this.baseType]
   },
   methods: {
     openClassDlg: function(status, item) {
       this.operateDlgStatus = status
       if (item && item.id) {
-        this.classForm = Object.assign({ typeId: this.typeId }, item)
+        this.classForm = Object.assign({ typeId: this.typeId, unitId: this.baseUnitId }, item)
         console.log(this.classForm)
       } else {
-        this.classForm = { typeId: this.typeId }
+        this.classForm = { typeId: this.typeId, unitId: this.baseUnitId }
       }
       this.classDlgVisible = true
     },
@@ -503,6 +513,10 @@ export default {
               const _new = {
                 id: v.id,
                 name: v.name
+              }
+              const tempFlag = this.unitDisabled && _new.name && this.currentBaseType && this.currentBaseType.unit === _new.name
+              if (tempFlag) {
+                this.baseUnitId = _new.id
               }
               return _new
             })

@@ -241,7 +241,7 @@
             <span>{{ totalAmount | digitUppercase }}</span>
           </div>
         </div>
-        <el-button :loading="submitLoading" type="primary" size="small" style="height:30px;" @click="submitScrap">提交入库清单</el-button>
+        <el-button :loading="submitLoading" type="primary" size="small" @click="submitScrap">提交入库清单</el-button>
       </div>
     </div>
   </div>
@@ -249,7 +249,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { setInfoOfTree, removeTreeEmptyFiled, getNodeInfoByIds, getCascaderNameByIds } from '@/utils'
+import { removeTreeEmptyFiled, getNodeInfoByIds, getCascaderNameByIds } from '@/utils'
 import { MATERIAL_BASE_TYPE } from '@/utils/conventionalContent'
 import { changeProjectToCascadeByYear, calcWeightByMateName } from '@/utils/other'
 import { fetchMaterialTree } from '@/api/material'
@@ -290,7 +290,7 @@ export default {
       props: { value: 'id', label: 'name', children: 'childrenList', expandTrigger: 'hover' }, // 级联列表格式
       mateOption: [], // 物料级联列表
       supplierList: [], // 供应商列表
-      currentBaseType: MATERIAL_BASE_TYPE.STEEL_PLATE, // 一般物料类型
+      currentBaseType: MATERIAL_BASE_TYPE.steelPlate, // 一般物料类型
       submitLoading: false, // 提交load
       inboundList: {
         storageTime: undefined,
@@ -324,13 +324,12 @@ export default {
         supplierId: true, // 供应商
         brand: true // 品牌
       },
-      dailyMateValid: {
+      provideMateValid: {
         detailId: true, // 物料编号
         length: true, // 长
         width: true, // 宽
         thickness: true, // 厚度
         theoryThickness: true, // 理论厚度
-        purchasePrice: true, // 单价
         number: true, // 数量
         weight: true // 总重
       },
@@ -398,7 +397,7 @@ export default {
         if (code === 200) {
           if (data && data.length) {
             this.mateOption = data
-            setInfoOfTree(this.mateOption, 'childrenList', 'name', 'otherInfo', 2)
+            // setInfoOfTree(this.mateOption, 'childrenList', 'name', 'otherInfo', 2)
             this.mateOption = removeTreeEmptyFiled(this.mateOption, 'childrenList')
           }
         } else {
@@ -508,7 +507,7 @@ export default {
         }
         let errorFlag = false
         _tableData.forEach(v => {
-          const _valid = this.dailyMateCheck ? this.dailyMateValid : this.needValid
+          const _valid = this.provideMateCheck ? this.provideMateValid : this.needValid
           for (const r in _valid) {
             if (_valid[r] && (v[r] === undefined || v[r] === null)) {
               v.rules[r] = true

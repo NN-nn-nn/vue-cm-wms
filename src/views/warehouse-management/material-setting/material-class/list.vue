@@ -100,7 +100,7 @@ export default {
   },
   methods: {
     openDetail: function(id) {
-      this.$router.push({ name: 'WareMaterialClassDetail', query: { id, backRouterName: this.$options.name }})
+      this.$router.push({ name: 'WareMaterialClassDetail', query: { id, backRouterName: this.$options.name, baseType: this.listQuery.formType }})
     },
     /**
      * 删除物料类型

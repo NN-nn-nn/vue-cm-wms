@@ -75,7 +75,7 @@ export default {
         size: 10,
         classId: undefined
       },
-      currentBaseType: MATERIAL_BASE_TYPE.MATERIAL,
+      currentBaseType: MATERIAL_BASE_TYPE.material,
       currentClassId: [],
       total: 0,
       mateLoading: false,

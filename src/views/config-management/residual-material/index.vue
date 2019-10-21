@@ -22,15 +22,15 @@
         <el-card class="box-card">
           <div slot="header" class="card-header">
             <span>钢板</span>
-            <el-button :loading="steelPlateLoading" type="primary" size="small" @click="submitScrap(MATERIAL_BASE_TYPE.STEEL_PLATE)">保存</el-button>
+            <el-button :loading="steelPlateLoading" type="primary" size="small" @click="submitScrap(MATERIAL_BASE_TYPE.steelPlate)">保存</el-button>
           </div>
           <div>
-            <el-form ref="materialForm" :model="formObj[MATERIAL_BASE_TYPE.STEEL_PLATE.index]">
+            <el-form ref="materialForm" :model="formObj[MATERIAL_BASE_TYPE.steelPlate.index]">
               <el-form-item label="长（mm）" :label-width="'100px'" prop="length">
-                <el-input-number v-model="formObj[MATERIAL_BASE_TYPE.STEEL_PLATE.index].length" :min="0" :precision="0" :step="10" label="长度" />
+                <el-input-number v-model="formObj[MATERIAL_BASE_TYPE.steelPlate.index].length" :min="0" :precision="0" :step="10" label="长度" />
               </el-form-item>
               <el-form-item label="宽（mm）" :label-width="'100px'" prop="width">
-                <el-input-number v-model="formObj[MATERIAL_BASE_TYPE.STEEL_PLATE.index].width" :min="0" :precision="0" :step="10" label="宽度" />
+                <el-input-number v-model="formObj[MATERIAL_BASE_TYPE.steelPlate.index].width" :min="0" :precision="0" :step="10" label="宽度" />
               </el-form-item>
             </el-form>
           </div>
@@ -39,12 +39,12 @@
         <el-card class="box-card">
           <div slot="header" class="card-header">
             <span>型钢</span>
-            <el-button :loading="steelLoading" type="primary" size="small" @click="submitScrap(MATERIAL_BASE_TYPE.STEEL)">保存</el-button>
+            <el-button :loading="steelLoading" type="primary" size="small" @click="submitScrap(MATERIAL_BASE_TYPE.steel)">保存</el-button>
           </div>
           <div>
-            <el-form ref="materialForm" :model="formObj[MATERIAL_BASE_TYPE.STEEL.index]">
+            <el-form ref="materialForm" :model="formObj[MATERIAL_BASE_TYPE.steel.index]">
               <el-form-item label="长（mm）" :label-width="'100px'" prop="length">
-                <el-input-number v-model="formObj[MATERIAL_BASE_TYPE.STEEL.index].length" :min="0" :precision="0" :step="10" label="长度" />
+                <el-input-number v-model="formObj[MATERIAL_BASE_TYPE.steel.index].length" :min="0" :precision="0" :step="10" label="长度" />
               </el-form-item>
             </el-form>
           </div>
@@ -53,12 +53,12 @@
         <el-card class="box-card">
           <div slot="header" class="card-header">
             <span>彩卷/带钢</span>
-            <el-button :loading="stripSteelLoading" type="primary" size="small" @click="submitScrap(MATERIAL_BASE_TYPE.STRIP_STEEL)">保存</el-button>
+            <el-button :loading="stripSteelLoading" type="primary" size="small" @click="submitScrap(MATERIAL_BASE_TYPE.stripSteel)">保存</el-button>
           </div>
           <div>
-            <el-form ref="materialForm" :model="formObj[MATERIAL_BASE_TYPE.STRIP_STEEL.index]">
+            <el-form ref="materialForm" :model="formObj[MATERIAL_BASE_TYPE.stripSteel.index]">
               <el-form-item label="长（mm）" :label-width="'100px'" prop="length">
-                <el-input-number v-model="formObj[MATERIAL_BASE_TYPE.STRIP_STEEL.index].length" :min="0" :precision="0" :step="10" label="长度" />
+                <el-input-number v-model="formObj[MATERIAL_BASE_TYPE.stripSteel.index].length" :min="0" :precision="0" :step="10" label="长度" />
               </el-form-item>
             </el-form>
           </div>
@@ -67,12 +67,12 @@
         <el-card class="box-card">
           <div slot="header" class="card-header">
             <span>成品围护</span>
-            <el-button :loading="enclosureLoading" type="primary" size="small" @click="submitScrap(MATERIAL_BASE_TYPE.ENCLOSURE)">保存</el-button>
+            <el-button :loading="enclosureLoading" type="primary" size="small" @click="submitScrap(MATERIAL_BASE_TYPE.enclosure)">保存</el-button>
           </div>
           <div>
-            <el-form ref="materialForm" :model="formObj[MATERIAL_BASE_TYPE.ENCLOSURE.index]">
+            <el-form ref="materialForm" :model="formObj[MATERIAL_BASE_TYPE.enclosure.index]">
               <el-form-item label="长（mm）" :label-width="'100px'" prop="length">
-                <el-input-number v-model="formObj[MATERIAL_BASE_TYPE.ENCLOSURE.index].length" :min="0" :precision="0" :step="10" label="长度" />
+                <el-input-number v-model="formObj[MATERIAL_BASE_TYPE.enclosure.index].length" :min="0" :precision="0" :step="10" label="长度" />
               </el-form-item>
             </el-form>
           </div>
@@ -103,10 +103,10 @@ export default {
     }
   },
   created() {
-    this.formObj[MATERIAL_BASE_TYPE.STEEL_PLATE.index] = { formType: MATERIAL_BASE_TYPE.STEEL_PLATE.index }
-    this.formObj[MATERIAL_BASE_TYPE.STEEL.index] = { formType: MATERIAL_BASE_TYPE.STEEL.index }
-    this.formObj[MATERIAL_BASE_TYPE.STRIP_STEEL.index] = { formType: MATERIAL_BASE_TYPE.STRIP_STEEL.index }
-    this.formObj[MATERIAL_BASE_TYPE.ENCLOSURE.index] = { formType: MATERIAL_BASE_TYPE.ENCLOSURE.index }
+    this.formObj[MATERIAL_BASE_TYPE.steelPlate.index] = { formType: MATERIAL_BASE_TYPE.steelPlate.index }
+    this.formObj[MATERIAL_BASE_TYPE.steel.index] = { formType: MATERIAL_BASE_TYPE.steel.index }
+    this.formObj[MATERIAL_BASE_TYPE.stripSteel.index] = { formType: MATERIAL_BASE_TYPE.stripSteel.index }
+    this.formObj[MATERIAL_BASE_TYPE.enclosure.index] = { formType: MATERIAL_BASE_TYPE.enclosure.index }
     this.getScrap()
   },
   methods: {
@@ -171,16 +171,16 @@ export default {
      * @param loading {boolean}
      */
     loadingBtnOperate: function(index, loading) {
-      if (index === MATERIAL_BASE_TYPE.STEEL_PLATE.index) {
+      if (index === MATERIAL_BASE_TYPE.steelPlate.index) {
         this.steelPlateLoading = loading
       }
-      if (index === MATERIAL_BASE_TYPE.STEEL.index) {
+      if (index === MATERIAL_BASE_TYPE.steel.index) {
         this.steelLoading = loading
       }
-      if (index === MATERIAL_BASE_TYPE.STRIP_STEEL.index) {
+      if (index === MATERIAL_BASE_TYPE.stripSteel.index) {
         this.stripSteelLoading = loading
       }
-      if (index === MATERIAL_BASE_TYPE.ENCLOSURE.index) {
+      if (index === MATERIAL_BASE_TYPE.enclosure.index) {
         this.enclosureLoading = loading
       }
     }

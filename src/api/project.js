@@ -12,7 +12,7 @@ export function fetchProjectGroupByYear(params) {
 // 查询项目入库汇总信息
 export function fetchProjectInbound(params) {
   return request({
-    url: '/storage-list/find/sum-info',
+    url: '/storage-list/find/sum-info-page',
     method: 'get',
     params
   })

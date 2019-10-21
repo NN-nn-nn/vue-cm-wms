@@ -153,7 +153,7 @@ export default {
   data() {
     return {
       props: { value: 'id', label: 'name', children: 'childrenList', expandTrigger: 'hover' },
-      currnetBaseType: MATERIAL_BASE_TYPE.MATERIAL,
+      currnetBaseType: MATERIAL_BASE_TYPE.material,
       searchInp: '',
       page: 1,
       size: 10,

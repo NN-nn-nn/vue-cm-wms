@@ -200,7 +200,7 @@ export default {
         children: 'childrenList',
         expandTrigger: 'hover'
       },
-      currnetBaseType: MATERIAL_BASE_TYPE.STEEL_PLATE,
+      currnetBaseType: MATERIAL_BASE_TYPE.steelPlate,
       searchInp: '',
       totalCount: 0,
       data: [],
@@ -208,7 +208,7 @@ export default {
       multipleSelection: [],
       field: {
         projectId: '',
-        formType: MATERIAL_BASE_TYPE.STEEL_PLATE.index,
+        formType: MATERIAL_BASE_TYPE.steelPlate.index,
         page: 1,
         size: 10
       },
@@ -397,7 +397,7 @@ export default {
         } else {
           paramsArr.forEach(v => {
             delete v.isHistory
-            v.formType = MATERIAL_BASE_TYPE.STEEL_PLATE.index
+            v.formType = MATERIAL_BASE_TYPE.steelPlate.index
             v.detailId = v.materialClassIds[2]
             v.projectId = this.projectId
             v.weight =

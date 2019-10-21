@@ -27,11 +27,11 @@
       :fullscreen="true"
       :before-close="handleClose"
     >
-      <GeneralMat v-if="currrentBaseType.index === MATERIAL_BASE_TYPE.MATERIAL.index" @closeEvent="createVisible = false" />
-      <SteelPlate v-if="currrentBaseType.index === MATERIAL_BASE_TYPE.STEEL_PLATE.index" @closeEvent="createVisible = false" />
-      <Steel v-if="currrentBaseType.index === MATERIAL_BASE_TYPE.STEEL.index" @closeEvent="createVisible = false" />
-      <StripSteel v-if="currrentBaseType.index === MATERIAL_BASE_TYPE.STRIP_STEEL.index" @closeEvent="createVisible = false" />
-      <Enclosure v-if="currrentBaseType.index === MATERIAL_BASE_TYPE.ENCLOSURE.index" @closeEvent="createVisible = false" />
+      <GeneralMat v-if="currrentBaseType.index === MATERIAL_BASE_TYPE.material.index" @closeEvent="createVisible = false" />
+      <SteelPlate v-if="currrentBaseType.index === MATERIAL_BASE_TYPE.steelPlate.index" @closeEvent="createVisible = false" />
+      <Steel v-if="currrentBaseType.index === MATERIAL_BASE_TYPE.steel.index" @closeEvent="createVisible = false" />
+      <StripSteel v-if="currrentBaseType.index === MATERIAL_BASE_TYPE.stripSteel.index" @closeEvent="createVisible = false" />
+      <Enclosure v-if="currrentBaseType.index === MATERIAL_BASE_TYPE.enclosure.index" @closeEvent="createVisible = false" />
       <!-- <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="closeDlg('type_one')">返 回</el-button>
       </span> -->

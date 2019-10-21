@@ -126,7 +126,7 @@ export default {
     return {
       inboundVerify: INBOUND_VERIFY,
       inboundVerifyStatus: INBOUND_VERIFY_STATUS,
-      currentBaseType: MATERIAL_BASE_TYPE.MATERIAL, // 一般物料类型
+      currentBaseType: MATERIAL_BASE_TYPE.material, // 一般物料类型
       retrunVisible: false,
       successVisible: false,
       provideMateCheck: false,
