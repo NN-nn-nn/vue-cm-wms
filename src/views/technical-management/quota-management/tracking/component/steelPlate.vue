@@ -12,29 +12,29 @@
         <el-table-column type="index" label="序号" align="center" width="70" />
         <el-table-column prop="materialCode" label="编号" align="center" width="140">
           <template slot-scope="scope">
-            <el-tag v-if="scope.row.materialCode" size="medium">{{ scope.row.materialCode }}</el-tag>
+            <el-tag size="medium">{{ scope.row.materialCode }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="物料类别" align="center" width="120">
           <el-table-column prop="typeName" label="名称" align="center" width="170">
             <template slot-scope="scope">
-              <span v-if="scope.row.typeName" type="success" size="medium">{{ scope.row.typeName }}</span>
+              <span type="success" size="medium">{{ scope.row.typeName }}</span>
             </template>
           </el-table-column>
           <el-table-column prop="className" label="种类" align="center" width="170">
             <template slot-scope="scope">
-              <span v-if="scope.row.className" type="success" size="medium">{{ scope.row.className }}</span>
+              <span type="success" size="medium">{{ scope.row.className }}</span>
             </template>
           </el-table-column>
           <el-table-column prop="detailName" label="材质" align="center" width="170">
             <template slot-scope="scope">
-              <span v-if="scope.row.detailName" type="success" size="medium">{{ scope.row.detailName }}</span>
+              <span type="success" size="medium">{{ scope.row.detailName }}</span>
             </template>
           </el-table-column>
         </el-table-column>
         <el-table-column :label="`T厚 \n (mm)`" width="160" align="center">
           <template slot-scope="scope">
-            <span>{{ scope.row.thickness }}</span>
+            <span>{{ scope.row.thickness | toFixed(2) }}</span>
           </template>
         </el-table-column>
         <el-table-column :label="`定额总重 \n(kg)`" width="180" align="center">
@@ -151,13 +151,5 @@ export default {
 }
 .green {
   color: #00B050;
-}
-.position-rela {
-  position: relative;
-}
-.dowmload {
-  position:absolute;
-  top: -60px;
-  right: 5px
 }
 </style>

@@ -9,43 +9,43 @@
     <!-- 主要内容容器 -->
     <div class="content-container">
       <el-table v-loading="loading" :data="data" tooltip-effect="dark" stripe style="width: 100%">
-        <el-table-column type="index" label="序号" align="center" width="70" />
+        <el-table-column type="index" label="序号" align="center" width="60" />
         <el-table-column prop="materialCode" label="编号" align="center" width="100">
           <template slot-scope="scope">
-            <el-tag v-if="scope.row.materialCode" size="medium">{{ scope.row.materialCode }}</el-tag>
+            <el-tag size="medium">{{ scope.row.materialCode }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="物料类别" align="center" width="120">
           <el-table-column prop="typeName" label="名称" align="center" width="150">
             <template slot-scope="scope">
-              <span v-if="scope.row.typeName" type="success" size="medium">{{ scope.row.typeName }}</span>
+              <span type="success" size="medium">{{ scope.row.typeName }}</span>
             </template>
           </el-table-column>
           <el-table-column prop="className" label="种类" align="center" width="150">
             <template slot-scope="scope">
-              <span v-if="scope.row.className" type="success" size="medium">{{ scope.row.className }}</span>
+              <span type="success" size="medium">{{ scope.row.className }}</span>
             </template>
           </el-table-column>
           <el-table-column prop="detailName" label="材质" align="center" width="150">
             <template slot-scope="scope">
-              <span v-if="scope.row.detailName" type="success" size="medium">{{ scope.row.detailName }}</span>
+              <span type="success" size="medium">{{ scope.row.detailName }}</span>
             </template>
           </el-table-column>
         </el-table-column>
         <el-table-column label="规格" align="center">
           <el-table-column prop="length" label="长(m)" align="center" width="120">
             <template slot-scope="scope">
-              <span v-if="scope.row.length" size="medium">{{ scope.row.length }}</span>
+              <span size="medium">{{ scope.row.length | toFixed(2) }}</span>
             </template>
           </el-table-column>
           <el-table-column prop="width" label="宽(m)" align="center" width="120">
             <template slot-scope="scope">
-              <span v-if="scope.row.width" size="medium">{{ scope.row.width }}</span>
+              <span size="medium">{{ scope.row.width | toFixed(2) }}</span>
             </template>
           </el-table-column>
           <el-table-column prop="thickness" label="厚(mm)" align="center" width="120">
             <template slot-scope="scope">
-              <span v-if="scope.row.thickness" size="medium">{{ scope.row.thickness }}</span>
+              <span size="medium">{{ scope.row.thickness | toFixed(3) }}</span>
             </template>
           </el-table-column>
         </el-table-column>
@@ -54,17 +54,17 @@
             <el-tag>{{ scope.row.color }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column :label="`定额总重 \n(kg)`" width="160" align="center">
+        <el-table-column :label="`定额总重 \n(kg)`" width="150" align="center">
           <template slot-scope="scope">
             <el-tag>{{ scope.row.quotaWeight | toFixed(3) }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column :label="`实际采购 \n(kg)`" width="160" align="center">
+        <el-table-column :label="`实际采购 \n(kg)`" width="150" align="center">
           <template slot-scope="scope">
             <el-tag>{{ scope.row.actualStorageWeight | toFixed(2) }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column :label="`实际使用 \n(kg)`" width="160" align="center">
+        <el-table-column :label="`实际使用 \n(kg)`" width="150" align="center">
           <template slot-scope="scope">
             <el-tag>{{ scope.row.actualUseWeight | toFixed(2) }}</el-tag>
           </template>
@@ -168,13 +168,5 @@ export default {
 }
 .green {
   color: #00B050;
-}
-.position-rela {
-  position: relative;
-}
-.dowmload {
-  position:absolute;
-  top: -60px;
-  right: 5px
 }
 </style>

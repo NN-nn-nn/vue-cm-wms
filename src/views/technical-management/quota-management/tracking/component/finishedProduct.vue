@@ -12,59 +12,59 @@
         <el-table-column type="index" label="序号" align="center" width="70" />
         <el-table-column prop="materialCode" label="编号" align="center" width="90">
           <template slot-scope="scope">
-            <el-tag v-if="scope.row.materialCode" size="medium">{{ scope.row.materialCode }}</el-tag>
+            <el-tag size="medium">{{ scope.row.materialCode }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="物料类别" align="center" width="120">
           <el-table-column prop="typeName" label="名称" align="center" width="140">
             <template slot-scope="scope">
-              <span v-if="scope.row.typeName" type="success" size="medium">{{ scope.row.typeName }}</span>
+              <span type="success" size="medium">{{ scope.row.typeName }}</span>
             </template>
           </el-table-column>
           <el-table-column prop="className" label="种类" align="center" width="140">
             <template slot-scope="scope">
-              <span v-if="scope.row.className" type="success" size="medium">{{ scope.row.className }}</span>
+              <span type="success" size="medium">{{ scope.row.className }}</span>
             </template>
           </el-table-column>
           <el-table-column prop="detailName" label="材质" align="center" width="140">
             <template slot-scope="scope">
-              <span v-if="scope.row.detailName" type="success" size="medium">{{ scope.row.detailName }}</span>
+              <span type="success" size="medium">{{ scope.row.detailName }}</span>
             </template>
           </el-table-column>
         </el-table-column>
         <el-table-column label="规格" align="center">
           <el-table-column prop="specification" label="型号" align="center" width="120">
             <template slot-scope="scope">
-              <span v-if="scope.row.specification" size="medium">{{ scope.row.specification }}</span>
+              <span size="medium">{{ scope.row.specification }}</span>
             </template>
           </el-table-column>
           <el-table-column prop="length" label="长(m)" align="center" width="120">
             <template slot-scope="scope">
-              <span v-if="scope.row.length" size="medium">{{ scope.row.length }}</span>
+              <span size="medium">{{ scope.row.length | toFixed(2) }}</span>
             </template>
           </el-table-column>
           <el-table-column prop="thickness" label="厚(mm)" align="center" width="120">
             <template slot-scope="scope">
-              <span v-if="scope.row.thickness" size="medium">{{ scope.row.thickness }}</span>
+              <span size="medium">{{ scope.row.thickness | toFixed(3) }}</span>
             </template>
           </el-table-column>
         </el-table-column>
-        <el-table-column label="颜色" align="center">
+        <el-table-column label="颜色" align="center" width="120">
           <template slot-scope="scope">
             <el-tag>{{ scope.row.color }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="定额数量" width="170" align="center">
+        <el-table-column label="定额数量" width="140" align="center">
           <template slot-scope="scope">
             <el-tag>{{ scope.row.quotaNumber }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="实际采购" width="170" align="center">
+        <el-table-column label="实际采购" width="140" align="center">
           <template slot-scope="scope">
             <el-tag>{{ scope.row.actualStorageNumber }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="实际使用" width="170" align="center">
+        <el-table-column label="实际使用" width="140" align="center">
           <template slot-scope="scope">
             <el-tag>{{ scope.row.actualUseNumber }}</el-tag>
           </template>
@@ -168,13 +168,5 @@ export default {
 }
 .green {
   color: #00B050;
-}
-.position-rela {
-  position: relative;
-}
-.dowmload {
-  position:absolute;
-  top: -60px;
-  right: 5px
 }
 </style>
