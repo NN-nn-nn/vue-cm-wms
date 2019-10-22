@@ -17,9 +17,10 @@
         <div class="filter-item">
           <el-cascader
             v-model="currentProjectId"
-            placeholder="试试搜索：2019"
+            placeholder="试试搜索：项目名称"
             :options="projectCascadeList"
             :props="props"
+            :show-all-levels="false"
             filterable
             @change="projectHandle"
           />

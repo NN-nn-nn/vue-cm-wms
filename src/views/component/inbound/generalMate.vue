@@ -199,6 +199,9 @@ export default {
 </script>
 
 <style scoped>
+.content-container {
+  margin-bottom: 80px;
+}
 .filter-item {
   margin-right: 20px;
 }

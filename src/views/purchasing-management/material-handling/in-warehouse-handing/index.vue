@@ -27,11 +27,11 @@
       :fullscreen="true"
       :before-close="handleClose"
     >
-      <GeneralMat v-if="currrentBaseType.index === MATERIAL_BASE_TYPE.material.index" @closeEvent="createVisible = false" />
-      <SteelPlate v-if="currrentBaseType.index === MATERIAL_BASE_TYPE.steelPlate.index" @closeEvent="createVisible = false" />
-      <Steel v-if="currrentBaseType.index === MATERIAL_BASE_TYPE.steel.index" @closeEvent="createVisible = false" />
-      <StripSteel v-if="currrentBaseType.index === MATERIAL_BASE_TYPE.stripSteel.index" @closeEvent="createVisible = false" />
-      <Enclosure v-if="currrentBaseType.index === MATERIAL_BASE_TYPE.enclosure.index" @closeEvent="createVisible = false" />
+      <GeneralMat v-if="currrentBaseType.index === MATERIAL_BASE_TYPE.material.index" ref="inboundComponent" @closeEvent="closeDlg" />
+      <SteelPlate v-if="currrentBaseType.index === MATERIAL_BASE_TYPE.steelPlate.index" ref="inboundComponent" @closeEvent="closeDlg" />
+      <Steel v-if="currrentBaseType.index === MATERIAL_BASE_TYPE.steel.index" ref="inboundComponent" @closeEvent="closeDlg" />
+      <StripSteel v-if="currrentBaseType.index === MATERIAL_BASE_TYPE.stripSteel.index" ref="inboundComponent" @closeEvent="closeDlg" />
+      <Enclosure v-if="currrentBaseType.index === MATERIAL_BASE_TYPE.enclosure.index" ref="inboundComponent" @closeEvent="closeDlg" />
       <!-- <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="closeDlg('type_one')">返 回</el-button>
       </span> -->
@@ -68,6 +68,7 @@ export default {
     handleClose(done) {
       this.$confirm('确认关闭？')
         .then(_ => {
+          this.$refs['inboundComponent'].clearAllValid()
           done()
         })
         .catch(_ => {})
@@ -75,6 +76,7 @@ export default {
     closeDlg(type) {
       this.$confirm('确认关闭？')
         .then(_ => {
+          this.$refs['inboundComponent'].clearAllValid()
           this.createVisible = false
         })
         .catch(_ => {})

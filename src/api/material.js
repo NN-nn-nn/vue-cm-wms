@@ -130,6 +130,15 @@ export function fetchMaterialTree(baseType) {
   })
 }
 
+// 查询物料树(全)
+export function fetchAllMaterialTree(params) {
+  return request({
+    url: '/material-type/tree/listAll',
+    method: 'get',
+    params
+  })
+}
+
 // 获取物料材质列表
 export function fetchScrapList(query) {
   return request({

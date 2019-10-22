@@ -151,7 +151,7 @@
               v-if="scope.row.isHistory =='0'"
               size="mini"
               type="success"
-              icon="el-icon-circle-check-outline"
+              icon="el-icon-circle-plus-outline"
             >确定</el-button>
             <el-button
               v-if="scope.row.isHistory == '0'"
@@ -165,7 +165,7 @@
       </el-table>
       <div class="formulate-btn">
         <el-button type="primary" icon="el-icon-circle-plus-outline" @click="addHandle">添加</el-button>
-        <el-button type="primary" icon="el-icon-circle-check-outline" @click="confirmHandle">确定</el-button>
+        <el-button type="primary" icon="el-icon-circle-plus-outline" @click="confirmHandle">确定</el-button>
       </div>
     </div>
   </div>

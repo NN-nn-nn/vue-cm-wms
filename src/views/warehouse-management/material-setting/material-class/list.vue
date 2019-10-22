@@ -25,7 +25,7 @@
     <!-- 主要内容容器 -->
     <div class="content-container">
       <div id="typeBox" class="type-box">
-        <div v-for="(item, i) in typeList" :id="`type${item.id}`" :key="i" class="type-item" @click="openDetail(item.id)">
+        <div v-for="(item, i) in typeList" :id="`type${item.id}`" :key="i" class="type-item" @click="openDetail(item)">
           <span v-text="item.typeName" />
           <span v-text="item.typeCode" />
           <el-tooltip class="item" effect="dark" content="删除" placement="top-start">
@@ -58,17 +58,31 @@
         <el-button :loading="saveLoadingBtn" type="primary" @click="saveType">保 存</el-button>
       </div>
     </el-dialog>
+
+    <el-drawer
+      :title="`${currentType && currentType.typeName}-${currentType && currentType.typeCode}`"
+      :visible.sync="drawerVisible"
+      direction="rtl"
+      size="80%"
+    >
+      <div slot="title" class="dialog-title">
+        <span style="font-weight:bold;margin-right:10px;color:#606266">{{ `${currentType && currentType.typeName} - ${currentType && currentType.typeCode}` }}</span>
+      </div>
+      <ClassDetail :visible="drawerVisible" :type-id="currentType && currentType.id" :base-type="listQuery.formType" />
+      <!-- <InboundSummary :visible="topDrawerVisible" /> -->
+    </el-drawer>
   </div>
 </template>
 
 <script>
 import UploadBtn from '@/components/UploadSingleFileBtn'
-import { fetchTypeList, delType, createType } from '@/api/material'
+import ClassDetail from './components/detail'
 import { validatorCN, validatorEn } from '@/utils/validatePattern'
+import { fetchTypeList, delType, createType } from '@/api/material'
 
 export default {
   name: 'WareMaterialClassList',
-  components: { UploadBtn },
+  components: { UploadBtn, ClassDetail },
   data() {
     return {
       listQuery: { // 大类查询条件
@@ -89,8 +103,10 @@ export default {
           { pattern: validatorEn.pattern, message: validatorEn.message, trigger: 'blur' }
         ]
       },
+      drawerVisible: false,
       dialogFormVisible: false,
       saveLoadingBtn: false,
+      currentType: undefined,
       typeList: [],
       action: 'https://jsonplaceholder.typicode.com/posts/'
     }
@@ -99,8 +115,10 @@ export default {
     this.getTypeList()
   },
   methods: {
-    openDetail: function(id) {
-      this.$router.push({ name: 'WareMaterialClassDetail', query: { id, backRouterName: this.$options.name, baseType: this.listQuery.formType }})
+    openDetail: function(item) {
+      this.drawerVisible = true
+      this.currentType = item
+      // this.$router.push({ name: 'WareMaterialClassDetail', query: { id, backRouterName: this.$options.name, baseType: this.listQuery.formType }})
     },
     /**
      * 删除物料类型

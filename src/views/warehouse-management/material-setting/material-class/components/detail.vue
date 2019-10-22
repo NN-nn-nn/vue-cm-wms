@@ -55,7 +55,7 @@
                 <el-table-column prop="materialCode" label="代码" align="center" width="180" />
                 <el-table-column label="时间" align="center" width="180">
                   <template slot-scope="scope">
-                    {{ scope.row.createTime | parseTime }}
+                    <span>{{ scope.row.createTime | parseTime }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="操作">
@@ -75,7 +75,7 @@
       </el-tabs>
     </div>
     <!-- 其他模块（例如弹窗等） -->
-    <el-dialog :title="operateMap[operateDlgStatus]" :visible.sync="classDlgVisible" width="500px" @closed="handleClose('classForm')">
+    <el-dialog append-to-body :title="operateMap[operateDlgStatus]" :visible.sync="classDlgVisible" width="500px" @closed="handleClose('classForm')">
       <el-form ref="classForm" :model="classForm" :rules="classRule">
         <el-form-item label="名称" :label-width="'80px'" prop="className">
           <el-input v-model="classForm.className" autocomplete="off" />
@@ -97,7 +97,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog title="添加物料材质" :visible.sync="materialDlgVisible" width="500px" @closed="handleClose('materialForm')">
+    <el-dialog title="添加物料材质" append-to-body :visible.sync="materialDlgVisible" width="500px" @closed="handleClose('materialForm')">
       <el-form ref="materialForm" :model="materialForm" :rules="materialRule">
         <el-form-item label="名称" :label-width="'80px'" prop="detailName">
           <el-input v-model="materialForm.detailName" autocomplete="off" />
@@ -118,7 +118,21 @@ import { fetchUnitList } from '@/api/dictionary'
 import { fetchClassList, createClass, updateClass, delClass, fetchMaterialList, createMaterial, updateMaterial, delMaterial } from '@/api/material'
 
 export default {
-  name: 'WareMaterialClassDetail',
+  name: 'ClassDetailComponent',
+  props: {
+    typeId: {
+      type: Number,
+      default: 0
+    },
+    baseType: {
+      type: Number,
+      default: 0
+    },
+    visible: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       materialBaseType: MATERIAL_BASE_TYPE,
@@ -134,7 +148,7 @@ export default {
         create: '添加种类信息',
         update: '修改种类信息'
       },
-      baseType: 0, // 基础类型
+      // baseType: 0, // 基础类型
       unitDisabled: false, // 单位可选
       currentBaseType: {}, // 当前类型
       baseUnitId: 0,
@@ -172,14 +186,24 @@ export default {
       }
     }
   },
+  watch: {
+    typeId(newVal, oldVal) {
+      this.getClassList()
+    },
+    baseType() {
+      this.unitDisabled = this.materialBaseType.material.index !== this.baseType
+      this.currentBaseType = this.materialBaseNum[this.baseType]
+      this.changeDefaultUnit()
+    },
+    visible(newVal, oldVal) {
+      this.getClassList()
+    }
+  },
   created() {
     this.getUnitList()
   },
   mounted() {
-    this.backRouterName = this.$route.query && this.$route.query.backRouterName
-    this.typeId = this.$route.query && this.$route.query.id
-    this.baseType = this.$route.query && this.$route.query.baseType
-    this.unitDisabled = this.materialBaseType.material !== this.baseType
+    this.unitDisabled = this.materialBaseType.material.index !== this.baseType
     this.getClassList()
     this.currentBaseType = this.materialBaseNum[this.baseType]
   },
@@ -187,10 +211,9 @@ export default {
     openClassDlg: function(status, item) {
       this.operateDlgStatus = status
       if (item && item.id) {
-        this.classForm = Object.assign({ typeId: this.typeId, unitId: this.baseUnitId }, item)
-        console.log(this.classForm)
+        this.classForm = Object.assign({ typeId: this.typeId, unitId: this.baseUnitId || undefined }, item)
       } else {
-        this.classForm = { typeId: this.typeId, unitId: this.baseUnitId }
+        this.classForm = { typeId: this.typeId, unitId: this.baseUnitId || undefined }
       }
       this.classDlgVisible = true
     },
@@ -514,18 +537,23 @@ export default {
                 id: v.id,
                 name: v.name
               }
-              const tempFlag = this.unitDisabled && _new.name && this.currentBaseType && this.currentBaseType.unit === _new.name
-              if (tempFlag) {
-                this.baseUnitId = _new.id
-              }
               return _new
             })
+            this.changeDefaultUnit()
           }
         } else {
           this.$message({
             type: 'error',
             message: message
           })
+        }
+      })
+    },
+    changeDefaultUnit: function() {
+      this.unitList.forEach(v => {
+        const tempFlag = this.unitDisabled && v.name && this.currentBaseType && this.currentBaseType.unit === v.name
+        if (tempFlag) {
+          this.baseUnitId = v.id
         }
       })
     },

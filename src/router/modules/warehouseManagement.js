@@ -45,12 +45,6 @@ const warehouseManagementRouter = {
           meta: { title: '出库记录', roles: ['admin'] }
         },
         {
-          path: '/warehouse-management/material-management/out-warehouse-sum',
-          component: () => import('@/views/warehouse-management/material-management/out-warehouse-sum'),
-          name: 'WareOutWarehouseSum',
-          meta: { title: '出库汇总', roles: ['admin'] }
-        },
-        {
           path: '/warehouse-management/material-management/quit-warehouse-verify',
           component: () => import('@/views/warehouse-management/material-management/quit-warehouse-verify'),
           name: 'WareQuitWarehouseVerify',
@@ -78,14 +72,14 @@ const warehouseManagementRouter = {
               name: 'WareMaterialClassList',
               meta: { title: '分类详情', roles: ['admin'] },
               hidden: true
-            },
-            {
-              path: '/warehouse-management/material-setting/material-class/detail',
-              component: () => import('@/views/warehouse-management/material-setting/material-class/detail'),
-              name: 'WareMaterialClassDetail',
-              meta: { title: '种类详情', roles: ['admin'] },
-              hidden: true
             }
+            // {
+            //   path: '/warehouse-management/material-setting/material-class/detail',
+            //   component: () => import('@/views/warehouse-management/material-setting/material-class/detail'),
+            //   name: 'WareMaterialClassDetail',
+            //   meta: { title: '种类详情', roles: ['admin'] },
+            //   hidden: true
+            // }
           ]
         },
         {

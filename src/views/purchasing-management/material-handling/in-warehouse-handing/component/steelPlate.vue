@@ -154,7 +154,7 @@
             <el-tooltip class="item" effect="dark" :content="`${scope.row.purchasePrice || 0}`" placement="top">
               <div class="mask-td number-input">
                 <div :class="{'mask-red': scope.row.rules.purchasePrice}" />
-                <el-input-number v-model="scope.row.purchasePrice" controls-position="right" :min="0" :step="5" :precision="2" size="mini" style="width:160px" @change="() => {scope.row.rules.purchasePrice = false;calcTotal()}" />
+                <el-input-number v-model="scope.row.purchasePrice" controls-position="right" :min="0" :step="100" :precision="2" size="mini" style="width:160px" @change="() => {scope.row.rules.purchasePrice = false;calcTotal()}" />
               </div>
             </el-tooltip>
           </template>
@@ -241,7 +241,15 @@
             <span>{{ totalAmount | digitUppercase }}</span>
           </div>
         </div>
-        <el-button :loading="submitLoading" type="primary" size="small" @click="submitScrap">提交入库清单</el-button>
+        <el-button type="primary" icon="el-icon-arrow-left" size="small" @click="closeDlg">返回</el-button>
+        <el-popover v-model="successVisible" placement="top" width="160" trigger="click">
+          <p>确认提交？</p>
+          <div style="text-align: right; margin: 0">
+            <el-button size="mini" type="text" @click="successVisible = false">取消</el-button>
+            <el-button type="primary" size="mini" @click="()=> {successVisible = false;submitScrap()}">确定</el-button>
+          </div>
+          <el-button slot="reference" :loading="submitLoading" type="primary" size="small" icon="el-icon-s-promotion" style="margin-left:10px;">提交入库清单</el-button>
+        </el-popover>
       </div>
     </div>
   </div>
@@ -285,6 +293,7 @@ export default {
           }
         }]
       },
+      successVisible: false,
       provideMateCheck: false,
       dailyMateCheck: false,
       props: { value: 'id', label: 'name', children: 'childrenList', expandTrigger: 'hover' }, // 级联列表格式
@@ -491,18 +500,18 @@ export default {
       return new Promise((resolve, reject) => {
         if (!this.dailyMateCheck) {
           if (!this.inboundList.projectId) {
-            this.notifyFun({ message: '请选择入库项目', type: 'warning' })
+            this.notifyFun({ title: `${this.currentBaseType.name}入库`, message: '请选择入库项目或选择日常备料', type: 'warning' })
             reject()
           }
         }
         if (!this.inboundList.storageTime) {
-          this.notifyFun({ message: '请选择入库时间', type: 'warning' })
+          this.notifyFun({ title: `${this.currentBaseType.name}入库`, message: '请选择入库时间', type: 'warning' })
           reject()
         }
         this.clearAllValid()
         const _tableData = JSON.parse(JSON.stringify(this.tableData))
         if (!_tableData || _tableData.length < 1) {
-          this.notifyFun({ message: '请添加入库记录', type: 'warning' })
+          this.notifyFun({ title: `${this.currentBaseType.name}入库`, message: '请添加入库记录', type: 'warning' })
           reject()
         }
         let errorFlag = false
@@ -517,7 +526,7 @@ export default {
         })
         this.tableData = JSON.parse(JSON.stringify(_tableData))
         if (errorFlag) {
-          this.notifyFun({ message: '请修正表格中标红的信息', type: 'warning' })
+          this.notifyFun({ title: `${this.currentBaseType.name}入库`, message: '请修正表格中标红的信息', type: 'warning' })
           reject()
           return
         }
@@ -549,17 +558,23 @@ export default {
     },
     notifyFun: function({ message, type, title }) {
       setTimeout(() => {
-        this.$notify({ message: message, type: type })
+        this.$notify({ title: title, message: message, type: type })
       }, 50)
     },
     changeProvide: function(check) {
       this.inboundList.type = check ? 1 : 0
+    },
+    closeDlg() {
+      this.$emit('closeEvent')
     }
   }
 }
 </script>
 
 <style scoped>
+.content-container {
+  margin-bottom: 60px;
+}
 .filter-item {
   margin-right: 20px;
 }

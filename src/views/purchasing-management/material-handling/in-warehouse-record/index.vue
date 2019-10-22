@@ -28,7 +28,6 @@
             :options="projectCascadeList"
             :props="{ value: 'id', label: 'name', children: 'children', expandTrigger: 'hover' }"
             :disabled="!checkHasProject"
-            clearable
             filterable
             style="width:250px"
             @change="projectChange"

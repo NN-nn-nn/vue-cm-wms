@@ -72,7 +72,7 @@
         </el-table-column>
         <el-table-column prop="province" :label="`单位净重 \n (kg/㎡)`" align="center" width="90">
           <template slot-scope="scope">
-            <el-tag type="warning" size="medium">{{ scope.row.thickness | toFixed(2) }}</el-tag>
+            <el-tag type="warning" size="medium">{{ scope.row.unitNetWeight | toFixed(2) }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="brand" label="品牌" align="center" width="140" />
@@ -217,6 +217,9 @@ export default {
 </script>
 
 <style scoped>
+.content-container {
+  margin-bottom: 80px;
+}
 .filter-item {
   margin-right: 20px;
 }

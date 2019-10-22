@@ -60,7 +60,7 @@
           </el-table-column>
           <el-table-column prop="thickness" label="厚(mm)" align="center" width="80">
             <template slot-scope="scope">
-              <span>{{ scope.row.thickness | toFixed(2) }}</span>
+              <span>{{ scope.row.thickness | toFixed(3) }}</span>
             </template>
           </el-table-column>
         </el-table-column>
@@ -225,6 +225,9 @@ export default {
 </script>
 
 <style scoped>
+.content-container {
+  margin-bottom: 80px;
+}
 .filter-item {
   margin-right: 20px;
 }
