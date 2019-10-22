@@ -1,6 +1,11 @@
 <template>
   <!-- 页面主容器 -->
   <div class="page-container steelPlate">
+    <!-- 查询容器 -->
+    <div class="position-rela">
+      <!-- 右侧box -->
+      <div class="dowmload"><el-button type="primary" class="el-icon-download"> 下载</el-button></div>
+    </div>
     <!-- 主要内容容器 -->
     <div class="content-container">
       <el-table ref="data" v-loading="dataLoading" :data="data" tooltip-effect="dark" stripe style="width: 100%">
@@ -19,7 +24,7 @@
               <div :class="{'mask-red': scope.row.rules.detailId}" />
               <span
                 v-if="!scope.row.isHistory || scope.row.isHistory == 1"
-              >{{ scope.row.typeName&&scope.row.className&&scope.row.detailName? scope.row.typeName +'/'+ scope.row.className +'/'+ scope.row.detailName:'' }}</span>
+              >{{ scope.row.materialName }}</span>
               <el-cascader
                 v-else
                 v-model="scope.row.materialClassIds"
@@ -27,7 +32,7 @@
                 :options="mateOption"
                 :props="props"
                 filterable
-                @change="() =>{materialHandle(scope.row);scope.row.rules.detailId = false}"
+                @change="() =>{materialHandle(scope.row);scope.row.rules.detailId = false;calWeightHandle(scope.$index, scope.row)}"
               />
             </div>
           </template>
@@ -37,8 +42,8 @@
             <template slot-scope="scope">
               <div class="mask-td">
                 <div :class="{'mask-red': scope.row.rules.length}" />
-                <span v-if="!scope.row.isHistory">{{ scope.row.length }}</span>
-                <el-input v-else v-model="scope.row.length" placeholder @change="scope.row.rules.length = false" />
+                <span v-if="!scope.row.isHistory">{{ scope.row.length | toFixed(2) }}</span>
+                <el-input v-else v-model="scope.row.length" placeholder @change="() => {scope.row.rules.length = false;calWeightHandle(scope.$index,scope.row)}" />
               </div>
             </template>
           </el-table-column>
@@ -47,8 +52,8 @@
             <template slot-scope="scope">
               <div class="mask-td">
                 <div :class="{'mask-red': scope.row.rules.width}" />
-                <span v-if="!scope.row.isHistory">{{ scope.row.width }}</span>
-                <el-input v-else v-model="scope.row.width" placeholder @change="scope.row.rules.width = false" />
+                <span v-if="!scope.row.isHistory">{{ scope.row.width | toFixed(2) }}</span>
+                <el-input v-else v-model="scope.row.width" placeholder @change="() => {scope.row.rules.width = false;calWeightHandle(scope.$index,scope.row)}" />
               </div>
             </template>
           </el-table-column>
@@ -56,17 +61,17 @@
             <template slot-scope="scope">
               <div class="mask-td">
                 <div :class="{'mask-red': scope.row.rules.thickness}" />
-                <span v-if="!scope.row.isHistory">{{ scope.row.thickness }}</span>
-                <el-input v-else v-model="scope.row.thickness" placeholder @change="scope.row.rules.thickness = false" />
+                <span v-if="!scope.row.isHistory">{{ scope.row.thickness | toFixed(2) }}</span>
+                <el-input v-else v-model="scope.row.thickness" placeholder @change="() => {scope.row.rules.thickness = false;calWeightHandle(scope.$index,scope.row)}" />
               </div>
             </template>
           </el-table-column>
         </el-table-column>
-        <el-table-column label="数量(张)" width="150" align="center">
+        <el-table-column label="数量(张)" width="130" align="center">
           <template slot-scope="scope">
             <div class="mask-td">
               <div :class="{'mask-red': scope.row.rules.number}" />
-              <span v-if="!scope.row.isHistory">{{ scope.row.number }}</span>
+              <el-tag v-if="!scope.row.isHistory" type="info">{{ scope.row.number }}</el-tag>
               <el-input-number
                 v-else
                 v-model="scope.row.number"
@@ -74,20 +79,20 @@
                 :step="5"
                 :precision="0"
                 size="small"
-                @change="scope.row.rules.number = false"
+                @change="() => {scope.row.rules.number = false;calWeightHandle(scope.$index,scope.row)}"
               />
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="总重(kg)" width="120" align="center">
+        <el-table-column label="总重(T)" width="120" align="center">
           <template slot-scope="scope">
             <el-tag v-if="!scope.row.isHistory">{{ scope.row.weight | toFixed(3) }}</el-tag>
             <el-tag
               v-else
-            >{{ scope.row.length&&scope.row.width&&scope.row.thickness&&scope.row.number? ((scope.row.length)*(scope.row.width)*(scope.row.thickness)*(scope.row.number)*7.85).toFixed(2): 0 }}</el-tag>
+            >{{ scope.row.weight?scope.row.weight: 0 }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="库存查询" width="80" align="center">
+        <el-table-column label="库存查询" width="100" align="center">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -96,25 +101,27 @@
             >查询</el-button>
           </template>
         </el-table-column>
-        <el-table-column label="备注" width="220" align="center">
+        <el-table-column label="备注" width="290" align="center">
           <template slot-scope="scope">
-            <el-tooltip
-              v-if="!scope.row.isHistory"
-              class="item"
-              effect="dark"
-              :content="scope.row.remark"
-              placement="top"
-            >
-              <span>{{ scope.row.remark }}</span>
-            </el-tooltip>
-            <el-tooltip
-              v-else
-              effect="dark"
-              :content="scope.row.remark"
-              placement="top"
-            >
-              <el-input v-model="scope.row.remark" style="200px" />
-            </el-tooltip>
+            <div class="mask-td">
+              <el-tooltip
+                v-if="!scope.row.isHistory"
+                class="item"
+                effect="dark"
+                :content="scope.row.remark"
+                placement="top"
+              >
+                <span>{{ scope.row.remark }}</span>
+              </el-tooltip>
+              <el-tooltip
+                v-else
+                effect="dark"
+                :content="scope.row.remark"
+                placement="top"
+              >
+                <el-input v-model="scope.row.remark" style="200px" />
+              </el-tooltip>
+            </div>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center">
@@ -180,7 +187,8 @@
 </template>
 
 <script>
-import { setInfoOfTree, removeTreeEmptyFiled, getNodeInfoByIds } from '@/utils'
+import { removeTreeEmptyFiled, getNodeInfoByIds, getCascaderNameByIds } from '@/utils'
+import { calcWeightByMateName } from '@/utils/other'
 import { fetchMaterialTree } from '@/api/material'
 import { MATERIAL_BASE_TYPE } from '@/utils/conventionalContent'
 import { qutoList, saveQuto, updateQuto, delQuto } from '@/api/quotaMmanage'
@@ -253,6 +261,7 @@ export default {
   },
   methods: {
     getList() {
+      this.data = []
       this.dataLoading = true
       this.field.projectId = this.projectId
       qutoList(this.field).then(({ data, code, message }) => {
@@ -262,6 +271,7 @@ export default {
             this.data = data
             this.data = this.data.map(v => {
               v.rules = { ...this.rules }
+              v.materialName = (v.typeName && v.className && v.detailName) ? `${v.typeName + ' / ' + v.className + ' / ' + v.detailName}` : ''
               return v
             })
           } else {
@@ -289,13 +299,7 @@ export default {
           if (code === 200) {
             if (data && data.length) {
               this.mateOption = data
-              setInfoOfTree(
-                this.mateOption,
-                'childrenList',
-                'name',
-                'otherInfo',
-                2
-              )
+              // setInfoOfTree(this.mateOption, 'childrenList', 'name', 'otherInfo', 2)
               this.mateOption = removeTreeEmptyFiled(
                 this.mateOption,
                 'childrenList'
@@ -311,7 +315,6 @@ export default {
         })
     },
     materialHandle(item) {
-      console.log(item)
       if (item.materialClassIds && item.materialClassIds.length === 3) {
         const _node = getNodeInfoByIds(
           this.mateOption,
@@ -321,6 +324,19 @@ export default {
         )
         item.materialCode = _node.otherInfo
         item.detailId = item.materialClassIds[2]
+      }
+    },
+    calWeightHandle(index, item) { // 计算总重
+      const length = item.length || 0
+      const width = item.width || 0
+      const thickness = item.thickness || 0
+      const number = item.number || 0
+      const name = getCascaderNameByIds(this.mateOption, item.materialClassIds, 'id', 'childrenList')
+      if (length && width && thickness && number) {
+        item.weight = Number((calcWeightByMateName(length, width, thickness, number, name) / 1000).toFixed(2))
+        this.$set(this.data, index, Object.assign({}, this.data[index]))
+      } else {
+        item.weight = undefined
       }
     },
     queryInventory(index, item) { // 库存查询
@@ -338,10 +354,7 @@ export default {
         item.classId,
         item.detailId
       ]
-      // this.data[index] = Object.assign({}, this.data[index])
       this.$set(this.data, index, Object.assign({}, this.data[index]))
-      // console.log(data, '5555')
-      // this.data = JSON.parse(JSON.stringify(this.data))
     },
     editConfirm(index, item) {
       item.remark = this.data[index].remark
@@ -350,13 +363,7 @@ export default {
         id: item.id,
         number: item.number,
         thickness: item.thickness,
-        weight: (
-          item.length *
-          item.width *
-          item.thickness *
-          item.number *
-          7.85
-        ).toFixed(2),
+        weight: item.weight,
         length: item.length,
         width: item.width,
         unit: item.unit,
@@ -384,7 +391,7 @@ export default {
       paramsArr = this.data.filter(v => {
         return v.isHistory
       })
-      console.log(paramsArr, 'ddd')
+      // console.log(paramsArr, 'ddd')
       if (paramsArr.length) {
         let errorFlag = false
         this.data.forEach(v => {
@@ -405,8 +412,6 @@ export default {
             v.formType = MATERIAL_BASE_TYPE.steelPlate.index
             v.detailId = v.materialClassIds[2]
             v.projectId = this.projectId
-            v.weight =
-            v.length * v.width * v.thickness * 7.85 * v.number.toFixed(2)
           })
           saveQuto(paramsArr).then(res => {
             if (res.code === 200) {
