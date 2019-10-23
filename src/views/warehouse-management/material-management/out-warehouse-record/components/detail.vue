@@ -1,0 +1,184 @@
+<template>
+  <!-- 主要内容容器 -->
+  <div class="content-container">
+    <el-table v-loading="tableLoading" :data="tableData" style="width: 100%" border stripe>
+      <el-table-column label="序号" align="center" type="index" width="80" />
+      <el-table-column prop="materialCode" align="center" label="编号" width="100">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.materialCode" size="medium">{{ scope.row.materialCode }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="物料类别" align="center">
+        <el-table-column prop="typeName" label="名称" align="center" width="90" />
+        <el-table-column prop="className" label="种类" align="center" width="90" />
+        <el-table-column prop="detailName" label="材质" align="center" width="90" />
+        <el-table-column prop="unit" label="单位" align="center" width="90" />
+      </el-table-column>
+      <el-table-column prop="number" :label="`数量 \n (张)`" align="center" width="70" />
+      <el-table-column prop="purchasePrice" :label="`单价 \n (t/元)`" align="center" width="110">
+        <template slot-scope="scope">
+          <span>{{ scope.row.purchasePrice | toFixed(2) }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="purchasePrice" :label="`总价 \n (元)`" align="center" min-width="100">
+        <template slot-scope="scope">
+          <el-tag type="success" size="medium">{{ scope.row.taxIncludedAmount | toFixed(2) }}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="purchasePrice" :label="`出库凭证`" align="center" min-width="120">
+        <template slot-scope="scope">
+          <el-tag type="info" size="medium">{{ scope.row.outboundNo }}</el-tag>
+        </template>
+      </el-table-column>
+    </el-table>
+    <div class="pagination-container">
+      <el-pagination v-show="total > 0" :current-page="listQuery.page" :page-sizes="[10, 20, 30, 50]" :page-size="listQuery.size" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+    </div>
+  </div>
+  <!-- 其他模块（例如弹窗等） -->
+</template>
+
+<script>
+import moment from 'moment'
+import { fetchOutboundRecordDetailByNormal, fetchOutboundRecordDetailByProject } from '@/api/warehouse'
+
+export default {
+  name: 'WareOutboundDetailComponent',
+  props: {
+    visible: {
+      type: Boolean,
+      default: false
+    },
+    queryType: { // 0:常规 1：项目
+      type: Number,
+      default: 0
+    },
+    dateType: {
+      type: Number,
+      default: 1
+    },
+    dateTime: {
+      type: Number,
+      default: 0
+    },
+    projectId: {
+      type: Number,
+      default: 0
+    }
+  },
+  data() {
+    return {
+      listDateType: {
+        month: 1,
+        year: 2
+      },
+      tableLoading: false,
+      tableData: [],
+      listQuery: {
+        startDate: undefined,
+        endDate: undefined,
+        page: 1,
+        size: 10
+      },
+      total: 0
+    }
+  },
+  watch: {
+    visible(newVal, oldVal) {
+      if (newVal) {
+        this.handleFilter()
+      }
+    },
+    queryType(newVal, oldVal) {
+      this.handleFilter()
+    },
+    dateType(newVal, oldVal) {
+      this.handleFilter()
+    },
+    dateTime(newVal, oldVal) {
+      this.handleFilter()
+    },
+    projectId(newVal, oldVal) {
+      this.handleFilter()
+    }
+  },
+  mounted() {
+    this.getList()
+  },
+  methods: {
+    getList: function() {
+      if (this.queryType === 0) {
+        this.getDataByNormal()
+      } else {
+        this.getDataByProject()
+      }
+    },
+    getDataByProject: function() {
+      const _listQuery = {
+        page: this.listQuery.page,
+        size: this.listQuery.size,
+        projectId: this.projectId
+      }
+      this.tableLoading = true
+      fetchOutboundRecordDetailByProject(_listQuery).then(({ data, code, message }) => {
+        if (code === 200) {
+          this.tableData = []
+          if (data && data.data && data.data.length) {
+            this.tableData = data.data
+          }
+          this.total = data.totalCount
+        } else {
+          this.$message({ message: message, type: 'error' })
+        }
+        this.tableLoading = false
+      }).catch(e => {
+        this.tableLoading = false
+        this.$message({ message: '获取详情失败', type: 'error' })
+      })
+    },
+    getDataByNormal: function() {
+      if (this.dateType === this.listDateType.year) {
+        this.listQuery.startDate = moment(this.dateTime).startOf('month').format('YYYY-MM-DD')
+        this.listQuery.endDate = moment(this.dateTime).endOf('month').format('YYYY-MM-DD')
+      } else {
+        this.listQuery.startDate = moment(this.dateTime).startOf('date').format('YYYY-MM-DD')
+        this.listQuery.endDate = moment(this.dateTime).endOf('date').format('YYYY-MM-DD')
+      }
+      this.tableLoading = true
+      fetchOutboundRecordDetailByNormal(this.listQuery).then(({ data, code, message }) => {
+        if (code === 200) {
+          this.tableData = []
+          if (data && data.data && data.data.length) {
+            this.tableData = data.data
+          }
+          this.total = data.totalCount
+        } else {
+          this.$message({ message: message, type: 'error' })
+        }
+        this.tableLoading = false
+      }).catch(e => {
+        this.tableLoading = false
+        this.$message({ message: '获取详情失败', type: 'error' })
+      })
+    },
+    // 搜索界面
+    handleFilter: function() {
+      this.listQuery.page = 1
+      this.getList()
+    },
+    // page组件相关
+    handleSizeChange: function(val) {
+      this.listQuery.size = val
+      this.getList()
+    },
+    handleCurrentChange: function(val) {
+      this.listQuery.page = val
+      this.getList()
+    }
+  }
+}
+</script>
+
+<style scoped>
+
+</style>

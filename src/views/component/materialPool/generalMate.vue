@@ -27,11 +27,6 @@
         </el-table-column>
         <el-table-column prop="color" label="颜色" align="center" width="100" />
         <el-table-column prop="number" :label="`数量 \n (张)`" align="center" width="70" />
-        <el-table-column prop="totalLength" :label="`总长度 \n (m)`" align="center" width="80">
-          <template slot-scope="scope">
-            <span>{{ scope.row.totalLength | toFixed(2) }}</span>
-          </template>
-        </el-table-column>
         <el-table-column prop="purchasePrice" :label="`采购单价 \n (t/元)`" align="center" width="110">
           <template slot-scope="scope">
             <div class="mask-td number-input">

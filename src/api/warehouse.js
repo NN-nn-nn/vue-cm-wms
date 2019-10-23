@@ -4,29 +4,29 @@
 import request from '@/utils/request'
 
 // 获取物料池
-export function fetchMaterialPool(query) {
+export function fetchMaterialPool(params) {
   return request({
     url: '/materialPool/actions/query',
     method: 'get',
-    params: query
+    params
   })
 }
 
 // 获取物料名称
-export function fetchList(query) {
+export function fetchList(params) {
   return request({
     url: '/storage-list/find/list',
     method: 'get',
-    params: query
+    params
   })
 }
 
 // 获取物料名称
-export function fetchDetailList(query) {
+export function fetchDetailList(params) {
   return request({
     url: '/storage-list/get',
     method: 'get',
-    params: query
+    params
   })
 }
 
@@ -58,11 +58,11 @@ export function createOutbound(data) {
 }
 
 // 获取出库单
-export function fetchOutboundOrder(query) {
+export function fetchOutboundOrder(params) {
   return request({
     url: '/outboundDetail/actions/query',
     method: 'get',
-    params: query
+    params
   })
 }
 
@@ -99,5 +99,50 @@ export function materialMove(data) {
     url: '/materialPool/moveHouse',
     method: 'post',
     data
+  })
+}
+
+// 获取出库单
+export function fetchOutboundRecordByNormal(params) {
+  return request({
+    url: '/outboundDetail/record/list',
+    method: 'get',
+    params
+  })
+}
+
+// 获取出库记录（常规）
+export function fetchOutboundRecordDetailByNormal(params) {
+  return request({
+    url: '/outboundDetail/record/details',
+    method: 'get',
+    params
+  })
+}
+
+// 获取出库记录（项目）
+export function fetchOutboundRecordDetailByProject(params) {
+  return request({
+    url: '/outboundDetail/project/record/details',
+    method: 'get',
+    params
+  })
+}
+
+// 获取废料/归还甲方日期列表
+export function fetchReturnOrScrapMateDateList(params) {
+  return request({
+    url: '/materialMoveHouse/history/record/list',
+    method: 'get',
+    params
+  })
+}
+
+// 获取废料/归还甲方详情
+export function fetchReturnOrScrapMateDetail(params) {
+  return request({
+    url: '/materialMoveHouse/history/record/details',
+    method: 'get',
+    params
   })
 }

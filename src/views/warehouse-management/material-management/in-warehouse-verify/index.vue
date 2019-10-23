@@ -97,7 +97,7 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button type="primary" size="small" icon="el-icon-view" @click="openDetail(scope.row)">查看</el-button>
-            <el-button type="success" icon="el-icon-download" size="small">下载</el-button>
+            <el-button type="success" :loading="exportLoad" icon="el-icon-download" size="small" @click="downloadExcel(scope.row)">下载</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -135,17 +135,19 @@ import { changeProjectToCascadeByYear } from '@/utils/other'
 import { MATERIAL_BASE_TYPE, MATERIAL_BASE_NUM, INBOUND_VERIFY_STATUS } from '@/utils/conventionalContent'
 import { fetchProjectGroupByYear } from '@/api/project'
 import { fetchList } from '@/api/warehouse'
+import { exportInboundExcelByOrderId } from '@/api/exportFiles'
 export default {
   name: 'WareInWarehouseVerify',
   components: { GeneralMat, SteelPlate, Steel, StripSteel, Enclosure },
   data() {
     return {
-      detailVisible: false,
-      currentInbound: {},
       MATERIAL_BASE_TYPE,
       materialBaseNum: MATERIAL_BASE_NUM,
       inboundVerifyStatus: INBOUND_VERIFY_STATUS,
+      exportLoad: false,
       checkHasProject: false,
+      detailVisible: false,
+      currentInbound: {},
       currentProjectId: [], // 当前项目id：[年份,项目id]
       projectCascadeList: [], // 项目级联列表
       listLoading: false, // 列表load
@@ -169,6 +171,15 @@ export default {
     this.dataChange()
   },
   methods: {
+    downloadExcel: function(row) {
+      this.exportLoad = true
+      exportInboundExcelByOrderId({ id: row.id }).then(() => {
+        this.exportLoad = false
+      }).catch(e => {
+        this.exportLoad = false
+        this.$message({ message: '导出失败', type: 'error' })
+      })
+    },
     getList: function() {
       this.listLoading = true
       fetchList(this.listQuery).then(({ data, code, message }) => {

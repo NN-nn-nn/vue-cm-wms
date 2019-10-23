@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
 import { Loading } from 'element-ui'
+import { downloadFiles } from '@/utils'
 import { apiResultCode } from '@/utils/conventionalContent'
 import router from '@/router'
 import store from '@/store'
@@ -108,6 +109,13 @@ service.interceptors.response.use(
       setTimeout(() => {
         window.location.reload()
       }, 100)
+    } else if (res.code === 200) {
+      return res
+    }
+
+    if (response.config.responseType === 'blob' || response.config.responseType === 'arraybuffer') {
+      downloadFiles(response)
+      return
     } else {
       return res
     }

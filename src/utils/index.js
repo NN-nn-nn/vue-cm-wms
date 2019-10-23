@@ -510,3 +510,21 @@ export function formatExcelDate(numb) {
   time.setYear(time.getFullYear() - 70)
   return time.getTime()
 }
+
+export function downloadFiles(res) {
+  const data = res.data
+  if (!data) {
+    return
+  }
+  const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' }) // application/vnd.openxmlformats-officedocument.spreadsheetml.sheet这里表示xlsx类型
+  const downloadElement = document.createElement('a')
+  const href = window.URL.createObjectURL(blob) // 创建下载的链接
+  downloadElement.href = href
+  // 获取文件名
+  const fileName = res.headers && res.headers['content-disposition'] ? `${decodeURI(res.headers['content-disposition'].split('=')[1])}` : `${new Date().getTime()}.xlsx`// 处理文件名乱码问题
+  downloadElement.download = fileName // 下载后文件名
+  document.body.appendChild(downloadElement)
+  downloadElement.click() // 点击下载
+  document.body.removeChild(downloadElement) // 下载完成移除元素
+  window.URL.revokeObjectURL(href) // 释放掉blob对象
+}

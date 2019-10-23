@@ -41,7 +41,7 @@
             <span>型钢</span>
             <el-button :loading="steelLoading" type="primary" size="small" @click="submitScrap(MATERIAL_BASE_TYPE.steel)">保存</el-button>
           </div>
-          <div>
+          <div style="height:116px;">
             <el-form ref="materialForm" :model="formObj[MATERIAL_BASE_TYPE.steel.index]">
               <el-form-item label="长（mm）" :label-width="'100px'" prop="length">
                 <el-input-number v-model="formObj[MATERIAL_BASE_TYPE.steel.index].length" :min="0" :precision="0" :step="10" label="长度" />

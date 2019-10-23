@@ -17,6 +17,7 @@
             <el-tag v-if="scope.row.materialCode" size="medium">{{ scope.row.materialCode }}</el-tag>
           </template>
         </el-table-column>
+        <el-table-column prop="projectName" label="项目名称" align="center" width="210" />
         <el-table-column label="物料名称" align="center" width="210">
           <template slot-scope="scope">
             <span>{{ `${scope.row.typeName} - ${scope.row.className} - ${scope.row.detailName}` }}</span>
@@ -24,7 +25,7 @@
         </el-table-column>
         <el-table-column prop="unit" label="单位" align="center" width="80" />
         <el-table-column prop="weight" label="重量" align="center" width="80" />
-        <el-table-column prop="number" label="出库数量" align="center" width="220">
+        <el-table-column prop="number" label="出库数量" align="center" width="80">
           <template slot-scope="scope">
             <template v-if="scope.row.edit">
               <div class="edit-item">
