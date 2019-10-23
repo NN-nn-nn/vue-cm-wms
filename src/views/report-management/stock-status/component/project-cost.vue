@@ -11,14 +11,14 @@
       <div class="filter-right-box">右</div>
     </div>
     <!-- 主要内容容器 -->
-    <div class="content-container">主要内容主要内容</div>
+    <div class="content-container">项目</div>
     <!-- 其他模块（例如弹窗等） -->
   </div>
 </template>
 
 <script>
 export default {
-  name: 'StockStatus',
+  name: 'ReportManagementProject',
   data() {
     return {}
   }

@@ -182,6 +182,46 @@
         <el-button type="primary" icon="el-icon-success" @click="confirmHandle">确定添加</el-button>
       </div>
     </div>
+    <!-- 查询库存 -->
+    <div>
+      <el-dialog title="物料池信息" :visible.sync="invenQueryVisible" width="70%">
+        <el-table v-loading="invenLoading" :data="inventoryData">
+          <el-table-column type="index" label="序号" align="center" width="70" />
+          <el-table-column property="materialCode" label="编号" align="center" width="100" />
+          <el-table-column label="物料类别" align="center">
+            <el-table-column property="typeName" label="名称" width="130" align="center">
+              <template slot-scope="scope"><div class="mask-td">{{ scope.row.typeName }}</div></template>
+            </el-table-column>
+            <el-table-column property="className" label="种类" width="130" align="center">
+              <template slot-scope="scope">{{ scope.row.className }}</template>
+            </el-table-column>
+            <el-table-column property="detailName" label="材质" width="130" align="center">
+              <template slot-scope="scope">{{ scope.row.detailName }}</template>
+            </el-table-column>
+          </el-table-column>
+          <el-table-column label="规格" align="center">
+            <el-table-column property="length" label="长(m)" width="140" align="center" />
+            <el-table-column property="width" label="宽(m)" width="140" align="center" />
+            <el-table-column property="thickness" label="厚(mm)" width="140" align="center" />
+          </el-table-column>
+          <el-table-column property="theoryThickness" :label="`理论厚度 \n (mm)`" width="140" align="center" />
+          <el-table-column property="number" label="数量" align="center" />
+          <el-table-column property="weight" label="总重(t)" align="center" />
+        </el-table>
+        <div class="page-nation">
+          <el-pagination
+            v-if="invenTotal>0"
+            :current-page="invenParams.page"
+            :page-sizes="[10, 20, 30, 40]"
+            :page-size="invenParams.size"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="invenTotal"
+            @size-change="invenSizeChange"
+            @current-change="invenPageChange"
+          />
+        </div>
+      </el-dialog>
+    </div>
   </div>
 
 </template>
@@ -191,7 +231,7 @@ import { removeTreeEmptyFiled, getNodeInfoByIds, getCascaderNameByIds } from '@/
 import { calcWeightByMateName } from '@/utils/other'
 import { fetchMaterialTree } from '@/api/material'
 import { MATERIAL_BASE_TYPE } from '@/utils/conventionalContent'
-import { qutoList, saveQuto, updateQuto, delQuto } from '@/api/quotaMmanage'
+import { qutoList, saveQuto, updateQuto, delQuto, queryInventory } from '@/api/quotaMmanage'
 export default {
   name: 'TechQuotaFormuSteelPlate',
   props: {
@@ -211,6 +251,7 @@ export default {
       currnetBaseType: MATERIAL_BASE_TYPE.steelPlate,
       searchInp: '',
       totalCount: 0,
+      invenTotal: 0,
       data: [],
       mateOption: [],
       multipleSelection: [],
@@ -244,7 +285,16 @@ export default {
         thickness: true,
         number: true
       },
-      dataLoading: false
+      dataLoading: false,
+      invenParams: {
+        page: 1,
+        size: 10,
+        detailId: '',
+        thickness: ''
+      },
+      invenQueryVisible: false,
+      inventoryData: [],
+      invenLoading: false
     }
   },
   watch: {
@@ -340,7 +390,33 @@ export default {
       }
     },
     queryInventory(index, item) { // 库存查询
-
+      this.invenQueryVisible = true
+      this.invenLoading = true
+      this.invenParams.detailId = item.detailId
+      this.invenParams.thickness = item.thickness
+      this.inventoryList()
+    },
+    inventoryList() { // 查询库存信息
+      queryInventory(this.invenParams).then(({ data, code, message }) => {
+        if (code === 200) {
+          this.invenLoading = false
+          this.inventoryData = data.data
+          this.invenTotal = data.totalCount
+        } else {
+          this.invenLoading = false
+          this.$message.error('获取失败')
+        }
+      }).catch(e => {
+        this.invenLoading = false
+      })
+    },
+    invenPageChange(val) {
+      this.invenParams.page = val
+      this.inventoryList()
+    },
+    invenSizeChange(val) {
+      this.invenParams.size = val
+      this.inventoryList()
     },
     exportHandle() { // 记录导出
     },

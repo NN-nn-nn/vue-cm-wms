@@ -295,3 +295,9 @@ aside {
   top: -60px;
   right: 5px
 }
+
+// 统计报表
+.statistics-report .el-radio-button__orig-radio:checked+.el-radio-button__inner {
+  background: #304156;
+  border-color: #304156;
+}

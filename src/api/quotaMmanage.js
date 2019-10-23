@@ -52,3 +52,30 @@ export function quotaTrackList(query) {
     params: query
   })
 }
+
+// 导出物料定额制定
+export function exportFormulate(query) {
+  return request({
+    url: '/material-quota/record/export',
+    method: 'get',
+    params: query
+  })
+}
+
+// 导出物料定额跟踪
+export function exportTracking(query) {
+  return request({
+    url: '/material-quota/record/export-track',
+    method: 'get',
+    params: query
+  })
+}
+
+// 查询库存信息
+export function queryInventory(query) {
+  return request({
+    url: '/material-quota/find/page-pool',
+    method: 'get',
+    params: query
+  })
+}

@@ -1,6 +1,6 @@
 <template>
   <!-- 页面主容器 -->
-  <div class="page-container">
+  <div class="page-container statistics-report">
     <!-- 查询容器 -->
     <div class="filter-container">
       <!-- 左侧box -->
@@ -10,33 +10,58 @@
     </div>
     <!-- 主要内容容器 -->
     <div class="content-container">
-      <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
-        <el-tab-pane label="库存状态" name="first">库存状态</el-tab-pane>
-        <el-tab-pane label="物料使用分析" name="second">物料使用分析</el-tab-pane>
-        <el-tab-pane label="生产成本分析" name="third">生产成本分析</el-tab-pane>
-        <el-tab-pane label="项目成本分析" name="fourth">项目成本分析</el-tab-pane>
-      </el-tabs>
+      <el-radio-group v-model="activeName" @change="handleClick">
+        <el-radio-button v-for="(item, index) in statisticList" :key="index" :label="item.value" :value="item.value">
+          <svg-icon :icon-class="item.icon" /> {{ item.label }}
+        </el-radio-button>
+      </el-radio-group>
     </div>
     <!-- 其他模块（例如弹窗等） -->
+    <inventory v-if="activeName === 'inventory'" />
+    <purchase v-else-if="activeName === 'purchase'" />
+    <materials v-else-if="activeName === 'materials'" />
+    <project v-else-if="activeName === 'project'" />
+    <product v-else-if="activeName === 'product'" />
+    <utilityFee v-else />
+
   </div>
 </template>
 
 <script>
+import inventory from './stock-status/component/inventory'
+import purchase from './stock-status/component/purchase'
+import materials from './stock-status/component/materials'
+import project from './stock-status/component/project-cost'
+import product from './stock-status/component/product-cost'
+import utilityFee from './stock-status/component/utility-fee'
+import { STATISTIC_LIST } from '@/utils/reportTabList'
 export default {
   name: 'ReportManagement',
+  components: {
+    inventory,
+    purchase,
+    materials,
+    project,
+    product,
+    utilityFee
+  },
   data() {
     return {
-      activeName: 'first'
+      activeName: 'inventory',
+      statisticList: STATISTIC_LIST
     }
   },
   methods: {
-    handleClick(tab, event) {
-      console.log(tab, event)
+    handleClick(item) {
+      console.log(item)
     }
   }
 }
 </script>
 
 <style scoped>
-
+.statistics-report .svg-icon{
+  width: 2.3rem;
+  font-size: 18px;
+}
 </style>
