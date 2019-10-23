@@ -24,32 +24,24 @@
           <el-table-column prop="className" label="种类" align="center" width="90" />
           <el-table-column prop="detailName" label="材质" align="center" width="90" />
         </el-table-column>
+        <el-table-column prop="color" label="颜色" align="center" width="100" />
         <el-table-column label="规格" align="center">
-          <el-table-column prop="length" label="长(m)" align="center" width="70">
+          <el-table-column prop="specification" label="型号" align="center" width="100" />
+          <el-table-column prop="length" label="长(m)" align="center" width="100">
             <template slot-scope="scope">
               <span>{{ scope.row.length | toFixed(2) }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="width" label="宽(m)" align="center" width="70">
-            <template slot-scope="scope">
-              <span>{{ scope.row.width | toFixed(2) }}</span>
-            </template>
-          </el-table-column>
           <el-table-column prop="thickness" label="厚(mm)" align="center" width="70">
             <template slot-scope="scope">
-              <span>{{ scope.row.thickness | toFixed(2) }}</span>
+              <span>{{ scope.row.thickness | toFixed(3) }}</span>
             </template>
           </el-table-column>
         </el-table-column>
-        <el-table-column prop="theoryThickness" :label="`理论 \n 厚度 \n (mm)`" align="center" width="70">
-          <template slot-scope="scope">
-            <span>{{ scope.row.theoryThickness }}</span>
-          </template>
-        </el-table-column>
         <el-table-column prop="number" :label="`数量 \n (张)`" align="center" width="70" />
-        <el-table-column prop="weight" :label="`总重 \n (t)`" align="center" width="80">
+        <el-table-column prop="totalLength" :label="`总长度 \n (m)`" align="center" width="80">
           <template slot-scope="scope">
-            <span>{{ scope.row.weight | toFixed(3) }}</span>
+            <span>{{ scope.row.totalLength | toFixed(2) }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="purchasePrice" :label="`采购单价 \n (t/元)`" align="center" width="110">
@@ -62,7 +54,6 @@
           </template>
         </el-table-column>
         <el-table-column prop="brand" label="品牌" align="center" width="140" />
-        <el-table-column prop="furnaceLotNumber" label="炉批号" align="center" min-width="210" />
         <el-table-column v-if="materialMoveMode" prop="purchasePrice" :label="`含税总额 \n (元)`" align="center" width="90">
           <template slot-scope="scope">
             <el-tag type="success" size="medium">{{ (scope.row.weight || 0 ) * (scope.row.purchasePrice || 0) | toFixed(2) }}</el-tag>
@@ -113,20 +104,15 @@
           <el-tag v-if="currentMaterial.materialCode" size="small" style="margin-left:5px">{{ currentMaterial.materialCode }}</el-tag>
         </el-form-item>
         <el-form-item label="物料尺寸">
-          <span>{{ `${currentMaterial.length} * ${currentMaterial.width} * ${currentMaterial.thickness}` }}</span>
-          <el-tag size="small" style="margin-left:5px">{{ `长(m) * 宽(m) * 厚(mm)` }}</el-tag>
+          <span>{{ `${currentMaterial.length} * ${currentMaterial.thickness}` }}</span>
+          <el-tag size="small" style="margin-left:5px">{{ `长(m) * 厚(mm)` }}</el-tag>
+          <el-tag size="small" type="warning" style="margin-left:5px">{{ `${currentMaterial.specification}` }}</el-tag>
         </el-form-item>
         <el-form-item label="库存">
           <span>{{ `${currentMaterial.number}` }}</span>
         </el-form-item>
-        <el-form-item v-if="handingOutForm.outboundType === 1" label="截取方式" prop="cutOffType">
-          <el-radio-group v-model="handingOutForm.cutOffType" @change="handingOutForm.cutOffLength = undefined">
-            <el-radio :label="0">取长(m)</el-radio>
-            <el-radio :label="1">取宽(m)</el-radio>
-          </el-radio-group>
-        </el-form-item>
         <el-form-item v-if="handingOutForm.outboundType === 1" label="截取长度" prop="cutOffLength">
-          <el-input-number v-model="handingOutForm.cutOffLength" :precision="2" :step="0.5" :min="0" :max="handingOutForm.cutOffType === 0 ? currentMaterial.length : currentMaterial.width" />
+          <el-input-number v-model="handingOutForm.cutOffLength" :precision="2" :step="1" :min="0" :max="currentMaterial.length" />
         </el-form-item>
         <el-form-item label="出库数量" prop="number">
           <el-input-number v-model="handingOutForm.number" :precision="0" :step="1" :min="1" :max="currentMaterial.number" />
@@ -142,12 +128,12 @@
 
 <script>
 import { MATERIAL_BASE_TYPE, INBOUND_VERIFY, INBOUND_VERIFY_STATUS, MATERIAL_POOL_TYPE, MATERIAL_MOVE_TYPE, MATERIAL_INBOUND_TYPE } from '@/utils/conventionalContent'
-import { printSteelPlateLabel } from '@/utils/print'
+import { printEnclosureLabel } from '@/utils/print'
 import { changeProjectToCascadeByYear } from '@/utils/other'
 import { fetchMaterialPool, createOutbound, materialMove } from '@/api/warehouse'
 import { fetchProjectGroupByYear } from '@/api/project'
 export default {
-  name: 'PoolSteelPlateComponent',
+  name: 'PoolEnclosureComponent',
   props: {
     baseType: {
       type: Number,
@@ -193,7 +179,7 @@ export default {
       materialPoolType: MATERIAL_POOL_TYPE,
       materialMoveType: MATERIAL_MOVE_TYPE,
       materialInboundType: MATERIAL_INBOUND_TYPE,
-      currentBaseType: MATERIAL_BASE_TYPE.steelPlate, // 钢板
+      currentBaseType: MATERIAL_BASE_TYPE.enclosure, // 钢板
       handingOutVisible: false,
       submitLoading: false, // 提交load
       tableLoading: false, // 列表加载
@@ -319,10 +305,8 @@ export default {
       if (!item) {
         return
       }
-      printSteelPlateLabel({
-        length: item.length.toFixed(2),
-        width: item.width.toFixed(2),
-        thickness: item.thickness.toFixed(2),
+      printEnclosureLabel({
+        specification: item.specification,
         material: item.detailName,
         projectName: item.projectName,
         qrCode: JSON.stringify({

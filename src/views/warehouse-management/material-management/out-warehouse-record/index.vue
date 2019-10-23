@@ -11,7 +11,14 @@
       <div class="filter-right-box">右</div>
     </div>
     <!-- 主要内容容器 -->
-    <div class="content-container">主要内容主要内容</div>
+    <div class="content-container">
+      <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane label="用户管理" name="first">常规出库汇总</el-tab-pane>
+        <el-tab-pane label="配置管理" name="second">物料出库汇总</el-tab-pane>
+        <el-tab-pane label="角色管理" name="third">角色管理</el-tab-pane>
+        <el-tab-pane label="定时任务补偿" name="fourth">定时任务补偿</el-tab-pane>
+      </el-tabs>
+    </div>
     <!-- 其他模块（例如弹窗等） -->
   </div>
 </template>

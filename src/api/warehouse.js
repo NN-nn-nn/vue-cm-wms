@@ -94,11 +94,10 @@ export function createOutboundOrder(params) {
 }
 
 // 物料搬家
-export function materialMove(params, data) {
+export function materialMove(data) {
   return request({
     url: '/materialPool/moveHouse',
     method: 'post',
-    params,
     data
   })
 }

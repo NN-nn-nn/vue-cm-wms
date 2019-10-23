@@ -7,13 +7,13 @@
       <div class="filter-left-box">
         <div class="filter-item">
           <el-radio-group v-model="listQuery.materialPoolType" size="medium" @change="getList">
-            <el-radio-button :label="0">整料库存</el-radio-button>
-            <el-radio-button :label="1">余料库存</el-radio-button>
+            <el-radio-button :label="materialPoolType.entire">整料库存</el-radio-button>
+            <el-radio-button :label="materialPoolType.remainder" :disabled="currentClassId[0] == materialBaseType.material.index">余料库存</el-radio-button>
           </el-radio-group>
         </div>
         <div class="filter-item">
           <el-radio-group v-model="checkHasProject" size="medium" @change="inboundTypeChange">
-            <el-radio-button :label="false" :disabled="materialMoveMode && (listQuery.moveType != 2)">常规入库</el-radio-button>
+            <el-radio-button :label="false" :disabled="materialMoveMode && (listQuery.moveType != materialMoveType.scrap)">常规入库</el-radio-button>
             <el-radio-button :label="true">项目入库</el-radio-button>
           </el-radio-group>
         </div>
@@ -57,7 +57,6 @@
       <template v-if="currentClassId[0] == materialBaseType.steelPlate.index">
         <SteelPlate
           ref="pool"
-          :visible="currentClassId[0] === materialBaseType.steelPlate.index"
           :project-id="listQuery.projectId"
           :pool-type="listQuery.materialPoolType"
           :base-type="currentClassId[0]"
@@ -69,16 +68,56 @@
         />
       </template>
       <template v-if="currentClassId[0] == materialBaseType.steel.index">
-        型钢
+        <Steel
+          ref="pool"
+          :project-id="listQuery.projectId"
+          :pool-type="listQuery.materialPoolType"
+          :base-type="currentClassId[0]"
+          :type-id="currentClassId[1]"
+          :class-id="currentClassId[2]"
+          :detail-id="currentClassId[3]"
+          :material-move-mode="materialMoveMode"
+          :move-type="listQuery.moveType"
+        />
       </template>
       <template v-if="currentClassId[0] == materialBaseType.stripSteel.index">
-        彩卷
+        <StripSteel
+          ref="pool"
+          :project-id="listQuery.projectId"
+          :pool-type="listQuery.materialPoolType"
+          :base-type="currentClassId[0]"
+          :type-id="currentClassId[1]"
+          :class-id="currentClassId[2]"
+          :detail-id="currentClassId[3]"
+          :material-move-mode="materialMoveMode"
+          :move-type="listQuery.moveType"
+        />
       </template>
       <template v-if="currentClassId[0] == materialBaseType.enclosure.index">
-        成品围护
+        <Enclosure
+          ref="pool"
+          :project-id="listQuery.projectId"
+          :pool-type="listQuery.materialPoolType"
+          :base-type="currentClassId[0]"
+          :type-id="currentClassId[1]"
+          :class-id="currentClassId[2]"
+          :detail-id="currentClassId[3]"
+          :material-move-mode="materialMoveMode"
+          :move-type="listQuery.moveType"
+        />
       </template>
       <template v-if="currentClassId[0] == materialBaseType.material.index">
-        一般
+        <GeneralMate
+          ref="pool"
+          :project-id="listQuery.projectId"
+          :pool-type="listQuery.materialPoolType"
+          :base-type="currentClassId[0]"
+          :type-id="currentClassId[1]"
+          :class-id="currentClassId[2]"
+          :detail-id="currentClassId[3]"
+          :material-move-mode="materialMoveMode"
+          :move-type="listQuery.moveType"
+        />
       </template>
     </div>
 
@@ -88,9 +127,9 @@
         <el-popover v-model="moveVisible" trigger="click" placement="top" width="150">
           <div style="display:flex;flex-direction:column;justify-content:space-between;align-items:center;height:100px;">
             <el-radio-group v-model="listQuery.moveType" style="height:300px;">
-              <el-radio v-show="listQuery.projectId" :label="0">常规物料仓</el-radio>
-              <el-radio v-show="listQuery.projectId" :label="1">归还甲方</el-radio>
-              <el-radio :label="2">设为废料</el-radio>
+              <el-radio v-show="listQuery.projectId" :label="materialMoveType.common">常规物料仓</el-radio>
+              <el-radio v-show="listQuery.projectId" :label="materialMoveType.partyA">归还甲方</el-radio>
+              <el-radio :label="materialMoveType.scrap">设为废料</el-radio>
             </el-radio-group>
           </div>
           <div style="text-align: right; margin: 0">
@@ -106,7 +145,7 @@
             <el-button size="mini" type="text" @click="confirmMoveVisible = false">取消</el-button>
             <el-button type="primary" size="mini" @click="()=> {confirmMoveVisible = false;materialMove()}">确定</el-button>
           </div>
-          <el-button v-show="materialMoveMode" slot="reference" icon="el-icon-box" type="success" size="medium" style="margin-left:10px">{{ `确认搬家[${moveType[listQuery.moveType]}]` }}</el-button>
+          <el-button v-show="materialMoveMode" slot="reference" icon="el-icon-box" type="success" size="medium" style="margin-left:10px">{{ `确认搬家[${materialMoveIndexType[listQuery.moveType]}]` }}</el-button>
         </el-popover>
       </div>
     </div>
@@ -121,39 +160,41 @@
         <span style="font-weight:bold;margin-right:10px;">{{ `出库单` }}</span>
         <el-tag type="success" size="small">出库日期：{{ new Date() | parseTime('{y}-{m}-{d} {h}:{i}') }}</el-tag>
       </div>
-      <OrderList :visible="drawerVisible" />
+      <OrderList :visible="drawerVisible" @inboundEvent="inboundResult" />
     </el-drawer>
   </div>
 </template>
 
 <script>
+import GeneralMate from '@/views/component/materialPool/generalMate'
 import SteelPlate from '@/views/component/materialPool/steelPlate'
+import Enclosure from '@/views/component/materialPool/enclosure'
+import StripSteel from '@/views/component/materialPool/stripSteel'
+import Steel from '@/views/component/materialPool/steel'
 import OrderList from '@/views/component/materialPool/orderList'
 import { removeTreeEmptyFiled, setInfoOfTree } from '@/utils'
 import { changeProjectToCascadeByYear } from '@/utils/other'
-import { MATERIAL_BASE_TYPE, MATERIAL_BASE_NUM } from '@/utils/conventionalContent'
+import { MATERIAL_BASE_TYPE, MATERIAL_BASE_NUM, MATERIAL_POOL_TYPE, MATERIAL_MOVE_TYPE, MATERIAL_MOVE_INDEX_TYPE } from '@/utils/conventionalContent'
 import { fetchAllMaterialTree } from '@/api/material'
 import { fetchProjectGroupByYear } from '@/api/project'
 
 export default {
   name: 'WareMaterialWarehouse',
-  components: { SteelPlate, OrderList },
+  components: { SteelPlate, Steel, OrderList, StripSteel, Enclosure, GeneralMate },
   data() {
     return {
       materialBaseType: MATERIAL_BASE_TYPE,
       materialBaseNum: MATERIAL_BASE_NUM,
-      moveType: {
-        0: '常规物料仓',
-        1: '归还甲方',
-        2: '设为废料'
-      },
+      materialPoolType: MATERIAL_POOL_TYPE,
+      materialMoveType: MATERIAL_MOVE_TYPE,
+      materialMoveIndexType: MATERIAL_MOVE_INDEX_TYPE,
       props: { value: 'id', label: 'name', children: 'childrenList', expandTrigger: 'hover', checkStrictly: true },
       listQuery: { // 大类查询条件
         materialPoolType: 0,
         page: 1,
         size: 10,
         classId: undefined,
-        moveType: 2
+        moveType: undefined
       },
       confirmMoveVisible: false, // 确认搬家
       materialMoveMode: false, // 进入物料搬家模式
@@ -172,8 +213,14 @@ export default {
   created() {
     this.getMaterialClassTree()
     this.getProjectYearCascade()
+    this.listQuery.moveType = this.materialMoveType.scrap
   },
   methods: {
+    inboundResult: function(data) {
+      if (data) {
+        this.$refs['pool'].getList()
+      }
+    },
     /**
      * 获取物料列表-根据大类id
      */
@@ -185,11 +232,11 @@ export default {
     },
     setMaterialMove: function() {
       this.materialMoveMode = true
-      this.$notify({ title: '物料仓', message: '进入物料搬家模式, 常规物料仓和归还甲方情况下，无法切换至常规入库信息', type: 'success' })
+      this.$notify({ title: '物料仓-物料搬家', message: '进入物料搬家模式, 常规物料仓和归还甲方情况下，无法切换至常规入库信息', type: 'success' })
     },
     exitMaterialMoveMode: function() {
       this.materialMoveMode = false
-      this.$notify({ title: '物料仓', message: '退出物料搬家模式', type: 'warning' })
+      this.$notify({ title: '物料仓-物料搬家', message: '退出物料搬家模式', type: 'warning' })
     },
     getMaterialClassTree: function() {
       fetchAllMaterialTree().then(({ data, code, message }) => {
@@ -241,14 +288,14 @@ export default {
           this.currentProjectId.push(this.projectCascadeList[0].children[0].id)
           this.listQuery.projectId = this.currentProjectId[1]
           if (!this.materialMoveMode) {
-            this.listQuery.moveType = 0
+            this.listQuery.moveType = this.materialMoveType.common
           }
         }
       } else {
         this.currentProjectId = []
         this.listQuery.projectId = undefined
         if (!this.materialMoveMode) {
-          this.listQuery.moveType = 2
+          this.listQuery.moveType = this.materialMoveType.scrap
         }
       }
     },

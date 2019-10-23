@@ -11,10 +11,11 @@
             <span>项目：</span>
             <el-cascader
               v-model="currentProjectId"
-              placeholder="试试搜索：2019"
+              placeholder="项目名称"
               :options="projectCascadeList"
               :props="{ value: 'id', label: 'name', children: 'children', expandTrigger: 'hover' }"
               :disabled="dailyMateCheck"
+              :show-all-levels="false"
               clearable
               filterable
               style="width:250px"

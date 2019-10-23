@@ -38,8 +38,89 @@ export function printSteelPlateLabel({ length, width, thickness, material, proje
               </td>
           </tr>
           <tr>
-              <td style="padding: 0 8pt;box-sizing:border-box;height: 2mm;width: 28mm;">材质：${material}</td>
-              <td style="padding: 0 8pt;box-sizing:border-box;height: 2mm;width: 28mm;">${projectName}</td>
+              <td style="box-sizing:border-box;height: 2mm;width: 28mm;">材质：${material}</td>
+              <td style="box-sizing:border-box;height: 2mm;width: 28mm;">${projectName}</td>
+          </tr>
+        </table>
+      </body>
+    </html>`
+    LODOP.SET_PRINT_PAGESIZE(1, 800, 120, '1') /* 纸张大小*/
+    LODOP.ADD_PRINT_HTM(2, 2, '100%', '100%', strHtml)
+    LODOP.ADD_PRINT_BARCODE('1.1mm', '65mm', '14mm', '14mm', 'QRCode', qrCode)
+    LODOP.SET_PRINT_STYLEA(0, 'QRCodeVersion', 5)
+    LODOP.PRINT()
+    // LODOP.PREVIEW()/* 打印预览*/
+  })
+}
+
+export function printSteelLabel({ specification, material, projectName, qrCode }) {
+  getLODOP().then(() => {
+    const strHtml =
+    `<!DOCTYPE html>
+      <body>
+        <table border="1" style="font-family:\'微软雅黑\';border-collapse:collapse;border:solid 1pt;text-align: center;vertical-align:middle;font-size: 9pt;color: black;" bordercolor="#000000">
+          <tr>
+              <td style="padding: 0 8pt;box-sizing:border-box;height: 6mm;width: 62mm;font-size: 12pt;" colspan="2;">${specification}</td>
+              <td style="padding: 0 8pt;box-sizing:border-box;height: 6mm;width: 16mm;" rowspan="2">
+              </td>
+          </tr>
+          <tr>
+              <td style="box-sizing:border-box;height: 2mm;width: 28mm;">${material}</td>
+              <td style="box-sizing:border-box;height: 2mm;width: 28mm;">${projectName}</td>
+          </tr>
+        </table>
+      </body>
+    </html>`
+    LODOP.SET_PRINT_PAGESIZE(1, 800, 120, '1') /* 纸张大小*/
+    LODOP.ADD_PRINT_HTM(2, 2, '100%', '100%', strHtml)
+    LODOP.ADD_PRINT_BARCODE('1.1mm', '65mm', '14mm', '14mm', 'QRCode', qrCode)
+    LODOP.SET_PRINT_STYLEA(0, 'QRCodeVersion', 5)
+    LODOP.PRINT()
+    // LODOP.PREVIEW()/* 打印预览*/
+  })
+}
+
+export function printStripSteelLabel({ width, thickness, color, brand, projectName, qrCode }) {
+  getLODOP().then(() => {
+    const strHtml =
+    `<!DOCTYPE html>
+      <body>
+        <table border="1" style="font-family:\'微软雅黑\';border-collapse:collapse;border:solid 1pt;text-align: center;vertical-align:middle;font-size: 9pt;color: black;" bordercolor="#000000">
+          <tr>
+              <td style="padding: 0 8pt;box-sizing:border-box;height: 6mm;width: 62mm;font-size: 12pt;" colspan="2;">${width} * ${thickness} &nbsp;<span style="display:inline-block;font-size:7pt;margin-top:1px">${color}</span></td>
+              <td style="padding: 0 8pt;box-sizing:border-box;height: 6mm;width: 16mm;" rowspan="2">
+              </td>
+          </tr>
+          <tr>
+              <td style="box-sizing:border-box;height: 2mm;width: 28mm;">${brand}</td>
+              <td style="box-sizing:border-box;height: 2mm;width: 28mm;">${projectName}</td>
+          </tr>
+        </table>
+      </body>
+    </html>`
+    LODOP.SET_PRINT_PAGESIZE(1, 800, 120, '1') /* 纸张大小*/
+    LODOP.ADD_PRINT_HTM(2, 2, '100%', '100%', strHtml)
+    LODOP.ADD_PRINT_BARCODE('1.1mm', '65mm', '14mm', '14mm', 'QRCode', qrCode)
+    LODOP.SET_PRINT_STYLEA(0, 'QRCodeVersion', 5)
+    LODOP.PRINT()
+    // LODOP.PREVIEW()/* 打印预览*/
+  })
+}
+
+export function printEnclosureLabel({ specification, material, projectName, qrCode }) {
+  getLODOP().then(() => {
+    const strHtml =
+    `<!DOCTYPE html>
+      <body>
+        <table border="1" style="font-family:\'微软雅黑\';border-collapse:collapse;border:solid 1pt;text-align: center;vertical-align:middle;font-size: 9pt;color: black;" bordercolor="#000000">
+          <tr>
+              <td style="padding: 0 8pt;box-sizing:border-box;height: 6mm;width: 62mm;font-size: 12pt;" colspan="2;">${material}</td>
+              <td style="padding: 0 8pt;box-sizing:border-box;height: 6mm;width: 16mm;" rowspan="2">
+              </td>
+          </tr>
+          <tr>
+              <td style="box-sizing:border-box;height: 2mm;width: 28mm;">${specification}</td>
+              <td style="box-sizing:border-box;height: 2mm;width: 28mm;">${projectName}</td>
           </tr>
         </table>
       </body>

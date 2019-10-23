@@ -10,6 +10,30 @@ const dictionaryType = {
   EnterPrise: 0
 }
 
+// 物料池类型 整料/余料
+const MATERIAL_POOL_TYPE = {
+  entire: 0,
+  remainder: 1
+}
+
+// 物料搬家类型
+const MATERIAL_MOVE_TYPE = {
+  common: 0,
+  partyA: 1,
+  scrap: 2
+}
+const MATERIAL_MOVE_INDEX_TYPE = {
+  0: '常规物料仓',
+  1: '归还甲方',
+  2: '设为废料'
+}
+
+// 物料入库类型 正常/甲供
+const MATERIAL_INBOUND_TYPE = {
+  normal: 0,
+  partyA: 1
+}
+
 const MATERIAL_BASE_TYPE = {
   steelPlate: { index: 0, name: '钢板', value: 'steelPlate', icon: 'steel-plate', unit: 'kg' },
   steel: { index: 1, name: '型钢', value: 'steel', icon: 'steel', unit: 'kg' },
@@ -74,4 +98,4 @@ const DATE_PICKER_OPTION = {
   }]
 }
 
-export { apiResultCode, dictionaryType, MATERIAL_BASE_TYPE, MATERIAL_BASE_NUM, MATERIAL_DENSITY, INBOUND_VERIFY_STATUS, INBOUND_VERIFY, DATE_PICKER_OPTION }
+export { apiResultCode, dictionaryType, MATERIAL_BASE_TYPE, MATERIAL_BASE_NUM, MATERIAL_DENSITY, INBOUND_VERIFY_STATUS, INBOUND_VERIFY, DATE_PICKER_OPTION, MATERIAL_POOL_TYPE, MATERIAL_MOVE_TYPE, MATERIAL_MOVE_INDEX_TYPE, MATERIAL_INBOUND_TYPE }

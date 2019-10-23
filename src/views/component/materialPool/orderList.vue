@@ -37,8 +37,8 @@
         </el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button v-if="scope.row.edit" type="success" size="small" icon="el-icon-circle-plus-outline" @click="confirmEdit(scope.row)">保存</el-button>
-            <el-button v-else type="primary" size="small" icon="el-icon-edit" @click="scope.row.edit=!scope.row.edit">编辑</el-button>
+            <!-- <el-button v-if="scope.row.edit" type="success" size="small" icon="el-icon-circle-plus-outline" @click="confirmEdit(scope.row)">保存</el-button>
+            <el-button v-else type="primary" size="small" icon="el-icon-edit" @click="scope.row.edit=!scope.row.edit">编辑</el-button> -->
             <el-button :loading="deleteLoadingBtn" icon="el-icon-delete" size="small" type="danger" @click="handleDelete(scope.row.id)"> 删除 </el-button>
           </template>
         </el-table-column>
@@ -116,6 +116,7 @@ export default {
         if (code === 200) {
           this.$message({ message: '出库成功', type: 'success' })
           this.submitAble = false
+          this.$emit('inboundEvent', true)
           this.printOrder()
         } else {
           this.$message({ message: message, type: 'error' })

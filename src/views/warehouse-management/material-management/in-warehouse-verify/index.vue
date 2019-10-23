@@ -28,6 +28,7 @@
             :options="projectCascadeList"
             :props="{ value: 'id', label: 'name', children: 'children', expandTrigger: 'hover' }"
             :disabled="!checkHasProject"
+            :show-all-levels="false"
             filterable
             style="width:250px"
             @change="projectChange"
