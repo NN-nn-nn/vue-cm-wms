@@ -7,7 +7,7 @@ import request from '@/utils/request'
  */
 export function fetchListByBaseType(baseType) {
   return request({
-    url: '/supplier/find/list-simple',
+    url: '/cost-supplier/find/list-simple',
     method: 'get',
     params: { classification: baseType }
   })
@@ -16,7 +16,7 @@ export function fetchListByBaseType(baseType) {
 // 创建供应商
 export function save(data) {
   return request({
-    url: '/supplier/save',
+    url: '/cost-supplier/save',
     method: 'post',
     data
   })
@@ -25,7 +25,7 @@ export function save(data) {
 // 更新
 export function update(data) {
   return request({
-    url: '/supplier/update',
+    url: '/cost-supplier/update',
     method: 'put',
     data
   })
@@ -34,7 +34,7 @@ export function update(data) {
 // 查询供应商列表
 export function list(query) {
   return request({
-    url: '/supplier/find/page-list',
+    url: '/cost-supplier/find/page-list',
     method: 'get',
     params: query
   })
@@ -43,7 +43,7 @@ export function list(query) {
 //  供应商详情
 export function detail(query) {
   return request({
-    url: '/supplier/find/get',
+    url: '/cost-supplier/find/get',
     method: 'get',
     params: query
   })
@@ -52,7 +52,7 @@ export function detail(query) {
 // 通过id删除
 export function delItem(data) {
   return request({
-    url: '/supplier/delete?id=' + data.id,
+    url: '/cost-supplier/delete?id=' + data.id,
     method: 'delete'
   })
 }
