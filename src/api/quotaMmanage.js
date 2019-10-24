@@ -58,15 +58,17 @@ export function exportFormulate(query) {
   return request({
     url: '/material-quota/record/export',
     method: 'get',
+    responseType: 'blob',
     params: query
   })
 }
 
 // 导出物料定额跟踪
-export function exportTracking(query) {
+export function downloadTracking(query) {
   return request({
     url: '/material-quota/record/export-track',
     method: 'get',
+    responseType: 'blob',
     params: query
   })
 }

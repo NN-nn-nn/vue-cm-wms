@@ -4,7 +4,7 @@
     <!-- 查询容器 -->
     <div class="position-rela">
       <!-- 右侧box -->
-      <div class="dowmload"><el-button type="primary" class="el-icon-download"> 下载</el-button></div>
+      <div class="dowmload"><el-button type="primary" :loading="downLoading" class="el-icon-download" @click.native="dowmLoadHandle">下载 </el-button></div>
     </div>
     <!-- 主要内容容器 -->
     <div class="content-container">
@@ -76,7 +76,7 @@
   </div>
 </template>
 <script>
-import { quotaTrackList } from '@/api/quotaMmanage'
+import { quotaTrackList, downloadTracking } from '@/api/quotaMmanage'
 export default {
   name: 'TechQuotaTrackSteel',
   props: {
@@ -95,7 +95,8 @@ export default {
         formType: 1,
         page: 1,
         size: 10
-      }
+      },
+      downLoading: false
     }
   },
   watch: {
@@ -134,6 +135,23 @@ export default {
     pageChange(val) {
       this.field.page = val
       this.getList()
+    },
+    dowmLoadHandle() { // 下载
+      if (this.data.length) {
+        this.downLoading = true
+        const paraData = {
+          projectId: this.projectId,
+          formType: this.field.formType
+        }
+        downloadTracking(paraData).then(() => {
+          this.downLoading = false
+        }).catch(e => {
+          this.downLoading = false
+          this.$message.error('下载失败！')
+        })
+      } else {
+        this.$message.warning('暂没有数据可以下载')
+      }
     }
   }
 }

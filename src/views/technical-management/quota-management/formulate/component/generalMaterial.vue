@@ -4,11 +4,11 @@
     <!-- 查询容器 -->
     <div class="position-rela">
       <!-- 右侧box -->
-      <div class="dowmload"><el-button type="primary" class="el-icon-download" @click.native="dowmLoadHandle">下载 </el-button></div>
+      <div class="dowmload"><el-button type="primary" :loading="downLoading" class="el-icon-download" @click.native="dowmLoadHandle">下载 </el-button></div>
     </div>
     <!-- 主要内容容器 -->
     <div class="content-container">
-      <el-table ref="data" v-loading="dataLoading" :data="data" tooltip-effect="dark" stripe border :header-cell-style="headerBg" style="width: 100%">
+      <el-table ref="data" v-loading="dataLoading" max-height="600" :data="data" tooltip-effect="dark" stripe border :header-cell-style="headerBg" style="width: 100%">
         <el-table-column type="index" label="序号" align="center" width="70" />
         <el-table-column label="日期" align="center" width="100">
           <template slot-scope="scope">{{ scope.row.createTime | parseTime('{y}-{m}-{d}') }}</template>
@@ -66,19 +66,21 @@
         </el-table-column>
         <el-table-column label="数量(张)" width="140" align="center">
           <template slot-scope="scope">
-            <div class="mask-td">
-              <div :class="{'mask-red': scope.row.rules.number}" />
-              <el-tag v-if="!scope.row.isHistory" type="info">{{ scope.row.number }}</el-tag>
-              <el-input-number
-                v-else
-                v-model="scope.row.number"
-                :min="0"
-                :step="5"
-                :precision="0"
-                size="small"
-                @change="scope.row.rules.number = false"
-              />
-            </div>
+            <el-tooltip class="item" effect="dark" :content="`${scope.row.number || 0}`" placement="top">
+              <div class="mask-td">
+                <div :class="{'mask-red': scope.row.rules.number}" />
+                <el-tag v-if="!scope.row.isHistory" type="info">{{ scope.row.number }}</el-tag>
+                <el-input-number
+                  v-else
+                  v-model="scope.row.number"
+                  :min="0"
+                  :step="5"
+                  :precision="0"
+                  size="small"
+                  @change="scope.row.rules.number = false"
+                />
+              </div>
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column label="库存查询" width="120" align="center">
@@ -97,7 +99,7 @@
                 v-if="!scope.row.isHistory"
                 class="item"
                 effect="dark"
-                :content="scope.row.remark"
+                :content="`${scope.row.remark || '暂无数据'}`"
                 placement="top"
               >
                 <span>{{ scope.row.remark }}</span>
@@ -105,7 +107,7 @@
               <el-tooltip
                 v-else
                 effect="dark"
-                :content="scope.row.remark"
+                :content="`${scope.row.remark || '暂无数据'}`"
                 placement="top"
               >
                 <el-input v-model="scope.row.remark" style="200px" />
@@ -168,30 +170,37 @@
       </div>
       <div class="formulate-btn">
         <el-button type="warning" icon="el-icon-circle-plus-outline" @click="addDefaultHandle">继续添加</el-button>
-        <el-button type="primary" icon="el-icon-success" @click="confirmHandle">确定添加</el-button>
+        <!-- <el-popover v-model="successVisible" placement="top" width="160" trigger="click">
+          <p>确认添加？</p>
+          <div style="text-align: right; margin: 0">
+            <el-button size="mini" type="text" @click="successVisible = false">取消</el-button>
+            <el-button type="primary" size="mini" @click="()=> {successVisible = false;confirmHandle()}">确定</el-button>
+          </div> -->
+        <el-button slot="reference" :loading="submitLoading" type="primary" icon="el-icon-success" style="margin-left:10px;" @click="confirmHandle">确认新增</el-button>
+        <!-- </el-popover> -->
       </div>
     </div>
     <!-- 查询库存 -->
     <div>
-      <el-dialog title="物料池信息" :visible.sync="invenQueryVisible" width="55%">
-        <el-table v-loading="invenLoading" :data="inventoryData">
+      <el-dialog title="一般物料" :visible.sync="invenQueryVisible" width="50%">
+        <el-table v-loading="invenLoading" :data="inventoryData" height="400">
           <el-table-column type="index" label="序号" align="center" width="70" />
           <el-table-column property="materialCode" label="编号" align="center" width="100" />
           <el-table-column label="物料类别" align="center">
-            <el-table-column property="typeName" label="名称" width="140" align="center">
+            <el-table-column property="typeName" label="名称" width="120" align="center">
               <template slot-scope="scope"><div class="mask-td">{{ scope.row.typeName }}</div></template>
             </el-table-column>
-            <el-table-column property="className" label="种类" width="140" align="center">
+            <el-table-column property="className" label="种类" width="120" align="center">
               <template slot-scope="scope">{{ scope.row.className }}</template>
             </el-table-column>
-            <el-table-column property="detailName" label="材质" width="140" align="center">
+            <el-table-column property="detailName" label="材质" width="120" align="center">
               <template slot-scope="scope">{{ scope.row.detailName }}</template>
             </el-table-column>
-            <el-table-column property="unit" label="单位" width="130" align="center">
+            <el-table-column property="unit" label="单位" width="120" align="center">
               <template slot-scope="scope">{{ scope.row.unit }}</template>
             </el-table-column>
           </el-table-column>
-          <el-table-column property="color" label="颜色" width="140" align="center" />
+          <el-table-column property="color" label="颜色" width="120" align="center" />
           <el-table-column property="number" label="数量" align="center" />
         </el-table>
         <div class="page-nation">
@@ -216,7 +225,7 @@
 import { setInfoOfTree, removeTreeEmptyFiled, getNodeInfoByIds } from '@/utils'
 import { fetchMaterialTree } from '@/api/material'
 import { MATERIAL_BASE_TYPE } from '@/utils/conventionalContent'
-import { qutoList, saveQuto, updateQuto, delQuto, queryInventory } from '@/api/quotaMmanage'
+import { qutoList, saveQuto, updateQuto, delQuto, queryInventory, exportFormulate } from '@/api/quotaMmanage'
 export default {
   name: 'TechQuotaFormuGeneral',
   props: {
@@ -266,6 +275,7 @@ export default {
         number: true
       },
       dataLoading: false,
+      downLoading: false,
       invenParams: {
         page: 1,
         size: 10,
@@ -274,7 +284,9 @@ export default {
       },
       invenQueryVisible: false,
       inventoryData: [],
-      invenLoading: false
+      invenLoading: false,
+      successVisible: false,
+      submitLoading: false
     }
   },
   watch: {
@@ -363,12 +375,12 @@ export default {
     },
     queryInventory(index, item) { // 库存查询
       this.invenQueryVisible = true
-      this.invenLoading = true
       this.invenParams.detailId = item.detailId
       this.invenParams.condition = item.color
       this.inventoryList()
     },
     inventoryList() { // 查询库存信息
+      this.invenLoading = true
       queryInventory(this.invenParams).then(({ data, code, message }) => {
         if (code === 200) {
           this.invenLoading = false
@@ -390,12 +402,18 @@ export default {
       this.invenParams.size = val
       this.inventoryList()
     },
-    dowmLoadHandle() { // 记录导出
-      // const downParam = {
-      //   projectId: this.projectId,
-      //   formType: MATERIAL_BASE_TYPE.material.index,
-      //   Authorization: getToken()
-      // }
+    dowmLoadHandle() { // 下载
+      this.downLoading = true
+      const paraData = {
+        projectId: this.projectId,
+        formType: this.currnetBaseType.index
+      }
+      exportFormulate(paraData).then(() => {
+        this.downLoading = false
+      }).catch(e => {
+        this.downLoading = false
+        this.$message.error('下载失败！')
+      })
     },
     addDefaultHandle() { // 继续添加
       this.data.push({ ...this.defaultObj })
@@ -459,20 +477,26 @@ export default {
           this.notifyFun({ message: '请新增钢板', type: 'warning' })
           return
         } else {
+          this.submitLoading = true
           paramsArr.forEach(v => {
             delete v.isHistory
             v.formType = MATERIAL_BASE_TYPE.material.index
             v.detailId = v.materialClassIds[2]
             v.projectId = this.projectId
           })
+
           saveQuto(paramsArr).then(res => {
             if (res.code === 200) {
+              this.submitLoading = false
               this.$message.success('添加成功!')
               this.getList()
             } else {
+              this.submitLoading = false
               this.$message.error('添加失败!')
             }
-          }).catch(e => {})
+          }).catch(e => {
+            this.submitLoading = false
+          })
         }
       } else {
         this.notifyFun({ message: '无新增数据添加', type: 'warning' })

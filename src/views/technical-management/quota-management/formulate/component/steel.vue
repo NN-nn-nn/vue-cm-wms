@@ -3,11 +3,11 @@
   <div class="page-container steelPlate">
     <div class="position-rela">
       <!-- 右侧box -->
-      <div class="dowmload"><el-button type="primary" class="el-icon-download"> 下载</el-button></div>
+      <div class="dowmload"><el-button type="primary" :loading="downLoading" class="el-icon-download" @click.native="dowmLoadHandle">下载 </el-button></div>
     </div>
     <!-- 主要内容容器 -->
     <div class="content-container">
-      <el-table ref="data" v-loading="dataLoading" :data="data" tooltip-effect="dark" stripe style="width: 100%">
+      <el-table ref="data" v-loading="dataLoading" max-height="600" :data="data" tooltip-effect="dark" stripe style="width: 100%">
         <el-table-column type="index" label="序号" align="center" width="70" />
         <el-table-column label="日期" align="center" width="100">
           <template slot-scope="scope">{{ scope.row.createTime | parseTime('{y}-{m}-{d}') }}</template>
@@ -80,7 +80,7 @@
                 v-if="!scope.row.isHistory"
                 class="item"
                 effect="dark"
-                :content="scope.row.remark"
+                :content="`${scope.row.remark || '暂无数据'}`"
                 placement="top"
               >
                 <span>{{ scope.row.remark }}</span>
@@ -88,7 +88,7 @@
               <el-tooltip
                 v-else
                 effect="dark"
-                :content="scope.row.remark"
+                :content="`${scope.row.remark || '暂无数据'}`"
                 placement="top"
               >
                 <el-input v-model="scope.row.remark" style="200px" />
@@ -151,8 +151,46 @@
       </div>
       <div class="formulate-btn">
         <el-button type="warning" icon="el-icon-circle-plus-outline" @click="addDefaultHandle">继续添加</el-button>
-        <el-button type="primary" icon="el-icon-success" @click="confirmHandle">确定添加</el-button>
+        <el-button type="primary" :loading="submitLoading" icon="el-icon-success" @click="confirmHandle">确定添加</el-button>
       </div>
+    </div>
+    <!-- 查询库存 -->
+    <div>
+      <el-dialog title="型钢物料" :visible.sync="invenQueryVisible" width="55%">
+        <el-table v-loading="invenLoading" :data="inventoryData" height="500">
+          <el-table-column type="index" label="序号" align="center" width="70" />
+          <el-table-column property="materialCode" label="编号" align="center" width="100" />
+          <el-table-column label="物料类别" align="center">
+            <el-table-column property="typeName" label="名称" width="120" align="center">
+              <template slot-scope="scope"><div class="mask-td">{{ scope.row.typeName }}</div></template>
+            </el-table-column>
+            <el-table-column property="className" label="种类" width="120" align="center">
+              <template slot-scope="scope">{{ scope.row.className }}</template>
+            </el-table-column>
+            <el-table-column property="detailName" label="材质" width="120" align="center">
+              <template slot-scope="scope">{{ scope.row.detailName }}</template>
+            </el-table-column>
+          </el-table-column>
+          <el-table-column label="规格" align="center">
+            <el-table-column property="specification" label="规格" width="130" align="center" />
+            <el-table-column property="length" label="定尺长度(m)" width="130" align="center" />
+          </el-table-column>
+          <el-table-column property="number" label="数量" align="center" />
+          <el-table-column property="weight" :label="`总重 \n(kg)`" align="center" />
+        </el-table>
+        <div class="page-nation">
+          <el-pagination
+            v-if="invenTotal>0"
+            :current-page="invenParams.page"
+            :page-sizes="[10, 20, 30, 40]"
+            :page-size="invenParams.size"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="invenTotal"
+            @size-change="invenSizeChange"
+            @current-change="invenPageChange"
+          />
+        </div>
+      </el-dialog>
     </div>
   </div>
 
@@ -162,7 +200,7 @@
 import { removeTreeEmptyFiled, getNodeInfoByIds } from '@/utils'
 import { fetchMaterialTree } from '@/api/material'
 import { MATERIAL_BASE_TYPE } from '@/utils/conventionalContent'
-import { qutoList, saveQuto, updateQuto, delQuto } from '@/api/quotaMmanage'
+import { qutoList, saveQuto, updateQuto, delQuto, queryInventory, exportFormulate } from '@/api/quotaMmanage'
 export default {
   name: 'TechQuotaFormuSteel',
   props: {
@@ -182,6 +220,7 @@ export default {
       currnetBaseType: MATERIAL_BASE_TYPE.steel,
       searchInp: '',
       totalCount: 0,
+      invenTotal: 0,
       data: [],
       mateOption: [],
       multipleSelection: [],
@@ -212,7 +251,18 @@ export default {
         specification: true,
         weight: true
       },
-      dataLoading: false
+      dataLoading: false,
+      downLoading: false,
+      invenParams: {
+        page: 1,
+        size: 10,
+        detailId: '',
+        condition: ''
+      },
+      invenQueryVisible: false,
+      inventoryData: [],
+      invenLoading: false,
+      submitLoading: false
     }
   },
   watch: {
@@ -294,9 +344,46 @@ export default {
       }
     },
     queryInventory(index, item) { // 库存查询
-
+      this.invenQueryVisible = true
+      this.invenParams.detailId = item.detailId
+      this.invenParams.condition = item.specification
+      this.inventoryList()
     },
-    exportHandle() { // 记录导出
+    inventoryList() { // 查询库存信息
+      this.invenLoading = true
+      queryInventory(this.invenParams).then(({ data, code, message }) => {
+        if (code === 200) {
+          this.invenLoading = false
+          this.inventoryData = data.data
+          this.invenTotal = data.totalCount
+        } else {
+          this.invenLoading = false
+          this.$message.error('获取失败')
+        }
+      }).catch(e => {
+        this.invenLoading = false
+      })
+    },
+    invenPageChange(val) {
+      this.invenParams.page = val
+      this.inventoryList()
+    },
+    invenSizeChange(val) {
+      this.invenParams.size = val
+      this.inventoryList()
+    },
+    dowmLoadHandle() { // 下载
+      this.downLoading = true
+      const paraData = {
+        projectId: this.projectId,
+        formType: this.currnetBaseType.index
+      }
+      exportFormulate(paraData).then(() => {
+        this.downLoading = false
+      }).catch(e => {
+        this.downLoading = false
+        this.$message.error('下载失败！')
+      })
     },
     addDefaultHandle() { // 继续添加
       this.data.push({ ...this.defaultObj })
@@ -361,6 +448,7 @@ export default {
           this.notifyFun({ message: '请新增钢板', type: 'warning' })
           return
         } else {
+          this.submitLoading = true
           paramsArr.forEach(v => {
             delete v.isHistory
             v.formType = MATERIAL_BASE_TYPE.steel.index
@@ -369,12 +457,16 @@ export default {
           })
           saveQuto(paramsArr).then(res => {
             if (res.code === 200) {
+              this.submitLoading = false
               this.$message.success('添加成功!')
               this.getList()
             } else {
+              this.submitLoading = false
               this.$message.error('添加失败!')
             }
-          }).catch(e => {})
+          }).catch(e => {
+            this.submitLoading = false
+          })
         }
       } else {
         this.notifyFun({ message: '无新增数据添加', type: 'warning' })
