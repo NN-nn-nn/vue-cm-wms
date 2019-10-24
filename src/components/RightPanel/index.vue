@@ -141,5 +141,6 @@ export default {
     font-size: 24px;
     line-height: 48px;
   }
+  opacity: 0.4;
 }
 </style>
