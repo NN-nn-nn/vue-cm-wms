@@ -35,6 +35,7 @@
 
 <script>
 import { fetchReturnOrScrapMateDetail } from '@/api/warehouse'
+import { MATERIAL_BASE_TYPE } from '@/utils/conventionalContent'
 
 export default {
   name: 'WareOutboundReturnDetailComponent',
@@ -58,6 +59,7 @@ export default {
   },
   data() {
     return {
+      materialBaseType: MATERIAL_BASE_TYPE,
       tableLoading: false,
       tableData: [],
       listQuery: {
@@ -88,7 +90,18 @@ export default {
           this.tableData = []
           if (data && data.data && data.data.length) {
             this.tableData = data.data.map(v => {
-              v.newSpecification = v.specification
+              if (+v.formType === this.materialBaseType.material.index) {
+                v.newSpecification = v.specification
+              }
+              if (+v.formType === this.materialBaseType.steelPlate.index || +v.formType === this.materialBaseType.stripSteel.index) {
+                v.newSpecification = `${v.length} * ${v.width} * ${v.thickness}`
+              }
+              if (+v.formType === this.materialBaseType.steel.index) {
+                v.newSpecification = `${v.specification} * ${v.length}`
+              }
+              if (+v.formType === this.materialBaseType.enclosure.index) {
+                v.newSpecification = `${v.specification} * ${v.length} * ${v.thickness}`
+              }
               return v
             })
           }
