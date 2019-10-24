@@ -134,8 +134,110 @@ export function printEnclosureLabel({ specification, material, projectName, qrCo
   })
 }
 
-export function printOutboundOrder({ date, orderNo, projectName, list }) {
+// 打印出库单
+export function printOutboundOrder({ date, orderNo, list, number = 2 }) {
+  if (!list || !list.length) return
   getLODOP().then(() => {
+    let strHtml =
+    `<!DOCTYPE html>
+    <head>
+      <style type="text/css">
+      .list-container {
+        font-size: 10pt;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        width: 70mm;
+      }
+      .header-box {
+        width: 100%;
+        height: 18mm;
+        font-size: 15pt;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+      }
+      .table-box {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 2mm 2mm;
+      }
+      .table-box >table {
+        text-align:center
+      }
+      .other-box {
+        width: 100%;
+        height: 16mm;
+        box-sizing: border-box;
+        padding: 1.5mm 2mm;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: flex-start;
+        border-top:1pt dashed;
+        border-bottom:1pt dashed;
+      }
+      .list-footer {
+        width: 100%;
+        height: 30mm;
+        box-sizing: border-box;
+        padding: 2mm 2mm;
+        border-top:1pt dashed;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: flex-start;
+        margin-top: 20mm;
+      }
+      .list-footer >span {
+        display: inline-block;
+        width: 50%;
+      }
+      </style>
+    </head>
+    <body>
+    <div class="list-container">
+        <div class="header-box">
+          <span>领料凭证</span>
+        </div>
+        <div class="other-box">
+          <span>出库日期：${date}</span>
+          <span>出库单号：${orderNo}</span>
+        </div>
+        <div class="table-box">
+          <table id="tbl" border="0" width="100%" rules="none" frame="void">
+            <tr>
+              <th>序号</th>
+              <th>编号</th>
+              <th>规格</th>
+              <th>单位</th>
+              <th>数量</th>
+            </tr>`
+    for (const i in list) {
+      strHtml += `<tr>
+              <td>${Number(i) + 1}</td>
+              <td>${list[i].materialCode}</td>
+              <td>${list[i].newSpecification}</td>
+              <td>${list[i].unit}</td>
+              <td>${list[i].number}</td>
+            </tr>`
+    }
+    strHtml += `
+          </table>
+        </div>
+        <div class="list-footer">
+          <span>办理人：</span>
+          <span>领料人：</span>
+        </div>
+        <div>-</div>
+      </div>
+    </body>
+  </html>`
 
+    LODOP.ADD_PRINT_HTM(0, 0, '100%', '100%', strHtml)
+    LODOP.SET_PRINT_COPIES(number)
+    LODOP.PRINT()
   })
 }

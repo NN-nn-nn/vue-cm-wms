@@ -48,13 +48,16 @@
     <!-- 其他模块（例如弹窗等） -->
     <div v-if="tableData && tableData.length" class="footer-drawer">
       <el-button v-if="submitAble" :loading="submitLoading" icon="el-icon-s-promotion" type="success" @click="submitOutboundOrder">提交出库单(并打印)</el-button>
-      <el-button v-else :loading="submitLoading" icon="el-icon-s-promotion" type="success" @click="printOrder">打印</el-button>
+      <el-button v-else :loading="submitLoading" icon="el-icon-s-promotion" type="success" @click="printOrder(1)">打印</el-button>
     </div>
   </div>
 </template>
 
 <script>
 import { updateOutboundOrderItem, deleteOrderItem, fetchOutboundOrder, createOutboundOrder } from '@/api/warehouse'
+import { parseTime } from '@/utils'
+import { printOutboundOrder } from '@/utils/print'
+import { MATERIAL_BASE_TYPE } from '@/utils/conventionalContent'
 export default {
   name: 'PoolOrderComponent',
   props: {
@@ -65,12 +68,15 @@ export default {
   },
   data() {
     return {
+      materialBaseType: MATERIAL_BASE_TYPE,
       submitAble: true,
       deleteLoadingBtn: false,
       submitLoading: false,
       tableLoading: false,
       tableData: [],
-      listQuery: {}
+      listQuery: {},
+      currentPrintDate: undefined,
+      currentPrintOrderNo: undefined
     }
   },
   watch: {
@@ -115,9 +121,11 @@ export default {
       this.submitLoading = true
       createOutboundOrder({ id: this.tableData[0].outboundId }).then(({ data, code, message }) => {
         if (code === 200) {
-          this.$message({ message: '出库成功', type: 'success' })
+          this.currentPrintDate = parseTime(data.outboundTime || new Date(), '{y}-{m}-{d} {h}:{i}')
+          this.currentPrintOrderNo = data.outboundNo
           this.submitAble = false
           this.$emit('inboundEvent', true)
+          this.$notify({ title: '出库单', message: '出库成功，将自动打印两份领料凭证', type: 'success' })
           this.printOrder()
         } else {
           this.$message({ message: message, type: 'error' })
@@ -129,8 +137,29 @@ export default {
         console.log(e)
       })
     },
-    printOrder: function() {
-
+    printOrder: function(number = 2) {
+      const list = this.tableData.map(v => {
+        if (+v.formType === this.materialBaseType.material.index) {
+          v.newSpecification = v.specification
+        }
+        if (+v.formType === this.materialBaseType.steelPlate.index || +v.formType === this.materialBaseType.stripSteel.index) {
+          v.newSpecification = `${v.length} * ${v.width} * ${v.thickness}`
+        }
+        if (+v.formType === this.materialBaseType.steel.index) {
+          v.newSpecification = `${v.specification} * ${v.length}`
+        }
+        if (+v.formType === this.materialBaseType.enclosure.index) {
+          v.newSpecification = `${v.specification} * ${v.length} * ${v.thickness}`
+        }
+        return v
+      })
+      const printData = {
+        date: this.currentPrintDate,
+        orderNo: this.currentPrintOrderNo,
+        list: list,
+        number: number
+      }
+      printOutboundOrder(printData)
     },
     handleDelete: function(id) {
       this.deleteLoadingBtn = true
