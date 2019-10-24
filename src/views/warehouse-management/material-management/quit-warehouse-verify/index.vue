@@ -87,7 +87,7 @@
             <span>{{ scope.row.outWarehouseTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="outWarehouseListNo" label="入库凭证号" align="center" />
+        <el-table-column prop="outWarehouseListNo" label="退库凭证号" align="center" />
         <el-table-column prop="totalPrice" label="退库额(元)" align="center" />
         <el-table-column prop="className" label="状态" align="center">
           <template slot-scope="scope">
