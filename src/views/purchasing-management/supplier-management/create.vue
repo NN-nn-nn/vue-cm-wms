@@ -284,6 +284,7 @@ export default {
       })
     },
     selArea(val) {
+      console.log(val)
       this.ruleForm.state = val[0]
       this.ruleForm.city = val[1]
       this.ruleForm.region = val[2]
@@ -329,16 +330,35 @@ export default {
           type: 'array' // binary
         })
         const sheet = XLSX.utils.sheet_to_json(zzexcel.Sheets[zzexcel.SheetNames[0]])
-        console.log(sheet)
         sheet.forEach(v => {
           if (v.供应商入库登记表 === '供应商全称*') {
             this.ruleForm.name = v.__EMPTY
             this.ruleForm.shortName = v.__EMPTY_2
           } else if (v.供应商入库登记表 === '详细地址*') {
-            this.ruleForm.state = v.__EMPTY
-            this.ruleForm.city = v.__EMPTY_1
+            this.ruleForm.state = v.__EMPTY.split('省')[0]
+            this.ruleForm.city = v.__EMPTY_1.split('市')[0]
             this.ruleForm.region = v.__EMPTY_2
             this.ruleForm.address = v.__EMPTY_4
+            const addressArr = []
+            this.options.forEach((v, index) => {
+              if (v.name === this.ruleForm.state) {
+                addressArr.push(v.id)
+                console.log(v.id, typeof v.id)
+              }
+              v.cityList && v.cityList.forEach(c => {
+                if (c.name === this.ruleForm.city) {
+                  addressArr.push(c.id)
+                  console.log(c.id)
+                }
+                c.cityList && c.cityList.forEach(r => {
+                  if (r.name === this.ruleForm.region) {
+                    addressArr.push(r.id)
+                    console.log(r.id)
+                  }
+                })
+              })
+            })
+            this.ruleForm.area = addressArr
           } else if (v.供应商入库登记表 === '社会统一代码*') {
             this.ruleForm.socialCode = v.__EMPTY
             this.ruleForm.registrationDate = formatExcelDate(v.__EMPTY_2)
@@ -375,7 +395,7 @@ export default {
             })
           }
         })
-        console.log(this.ruleForm.supplierClassification)
+        console.log(this.ruleForm.area)
       }
     }
   }
