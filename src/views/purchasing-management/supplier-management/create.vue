@@ -139,7 +139,8 @@
               <input type="file" class="file-export" @change="choseFile($event)">
             </div>
             <el-button type="primary" @click="submitForm('ruleForm')">&nbsp; 添加</el-button>
-            <el-button @click="resetForm('ruleForm')">&nbsp; 重置</el-button>
+            <el-button type="warning" @click="resetForm('ruleForm')">&nbsp; 重置</el-button>
+            <el-button type="success" @click="goBack">&nbsp; 返回</el-button>
           </div>
 
         </el-form>
@@ -261,6 +262,9 @@ export default {
     this.getList()
   },
   methods: {
+    goBack() {
+      this.$router.go(-1)
+    },
     getList() {
       getProvice().then(res => {
         this.options = res.data
@@ -335,29 +339,31 @@ export default {
             this.ruleForm.name = v.__EMPTY
             this.ruleForm.shortName = v.__EMPTY_2
           } else if (v.供应商入库登记表 === '详细地址*') {
-            this.ruleForm.state = v.__EMPTY.split('省')[0]
-            this.ruleForm.city = v.__EMPTY_1.split('市')[0]
+            this.ruleForm.state = v.__EMPTY
+            this.ruleForm.city = v.__EMPTY_1
             this.ruleForm.region = v.__EMPTY_2
             this.ruleForm.address = v.__EMPTY_4
             const addressArr = []
+            const state = v.__EMPTY.split('省')[0]
+            const city = v.__EMPTY_1.split('市')[0]
             this.options.forEach((v, index) => {
-              if (v.name === this.ruleForm.state) {
+              if (v.name === state) {
                 addressArr.push(v.id)
-                console.log(v.id, typeof v.id)
               }
               v.cityList && v.cityList.forEach(c => {
-                if (c.name === this.ruleForm.city) {
+                if (c.name === city) {
                   addressArr.push(c.id)
-                  console.log(c.id)
                 }
                 c.cityList && c.cityList.forEach(r => {
                   if (r.name === this.ruleForm.region) {
                     addressArr.push(r.id)
-                    console.log(r.id)
                   }
                 })
               })
             })
+            this.ruleForm.state = addressArr[0] ? addressArr[0] : ''
+            this.ruleForm.city = addressArr[1] ? addressArr[1] : ''
+            this.ruleForm.region = addressArr[2] ? addressArr[2] : ''
             this.ruleForm.area = addressArr
           } else if (v.供应商入库登记表 === '社会统一代码*') {
             this.ruleForm.socialCode = v.__EMPTY
