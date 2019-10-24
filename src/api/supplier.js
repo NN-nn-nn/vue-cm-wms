@@ -65,3 +65,21 @@ export function getProvice(query) {
     params: query
   })
 }
+
+// 交易记录按天查询
+// export function getRecord(query) {
+//   return request({
+//     url: '/storage-list/page/supplier-storage',
+//     method: 'get',
+//     params: query
+//   })
+// }
+
+//  交易记录按年查询
+export function getRecord(query) {
+  return request({
+    url: '/storage-list/page/supplier-storage-year',
+    method: 'get',
+    params: query
+  })
+}

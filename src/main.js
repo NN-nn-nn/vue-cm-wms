@@ -20,6 +20,8 @@ import './utils/error-log' // 错误日志
 import * as filters from './filters' // 全局过滤器
 import { parseTime, digitUppercase } from './utils'
 
+import echarts from 'echarts'
+Vue.prototype.$echarts = echarts
 /**
  *如果您不想使用模拟服务器
  *您想将MockJs用于模拟api
