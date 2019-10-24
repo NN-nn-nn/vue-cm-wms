@@ -10,7 +10,7 @@
     </div>
     <!-- 主要内容容器 -->
     <div class="content-container">
-      <el-radio-group v-model="activeName" @change="handleClick">
+      <el-radio-group v-model="activeName">
         <el-radio-button v-for="(item, index) in statisticList" :key="index" :label="item.value" :value="item.value">
           <svg-icon :icon-class="item.icon" /> {{ item.label }}
         </el-radio-button>
@@ -52,9 +52,6 @@ export default {
     }
   },
   methods: {
-    handleClick(item) {
-      console.log(item)
-    }
   }
 }
 </script>

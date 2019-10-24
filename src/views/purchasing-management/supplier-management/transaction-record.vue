@@ -6,107 +6,142 @@
       <!-- 左侧box -->
       <div class="filter-left-box">
         <div class="filter-item">
-          <div>时间范围：</div>
+          <div style="margin-top: 25px">年份筛选：</div>
           <div class="block">
             <el-date-picker
-              v-model="date"
-              type="daterange"
+              v-model="filed.year"
+              type="year"
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
+              @change="selectDateHandle"
             />
           </div>
-          <el-input v-model="searchInp" class="search" clearable filterable placeholder="请输入您要搜索的内容" />
+          <!-- <el-input v-model="searchInp" class="search" clearable filterable placeholder="请输入您要搜索的内容" /> -->
         </div>
       </div>
-      <!-- 右侧box -->
-      <div class="filter-right-box"><el-button type="primary">查询</el-button></div>
     </div>
     <!-- 主要内容容器 -->
     <div class="content-container">
-      <el-button class="export" type="primary" @click="exportHandle">记录导出</el-button>
       <el-table
-        ref="multipleTable"
+        v-loading="loading"
         :data="data"
         tooltip-effect="dark"
         style="width: 100%"
-        @selection-change="handleSelectionChange"
+        stripe
+        border
+        :header-cell-style="headerBg"
       >
-        <el-table-column
-          type="selection"
-          width="55"
-        />
         <el-table-column
           type="index"
           label="序号"
-          width="80"
+          width="130"
+          align="center"
         />
         <el-table-column
-          label="交易日期"
-          width="180"
+          label="供应商"
+          align="center"
         >
-          <template slot-scope="scope">{{ scope.row.date }}</template>
+          <template slot-scope="scope">{{ scope.row.supplierName }}</template>
         </el-table-column>
         <el-table-column
-          prop="name"
-          label="供应商简称"
-          width="220"
+          prop="formTypeName"
+          label="采购物料"
+          align="center"
         />
         <el-table-column
           prop="address"
-          label="采购金额(万元)"
+          label="交易时间"
+          align="center"
           show-overflow-tooltip
+        ><template slot-scope="scope">{{ scope.row.storageTime }}</template></el-table-column>
+        <el-table-column
+          prop="totalMoney"
+          label="交易金额(元)"
+          align="center"
         />
       </el-table>
+      <div class="block">
+        <el-pagination
+          :current-page="filed.page"
+          :page-sizes="[10, 20, 30, 40]"
+          :page-size="filed.size"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="totalCount"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
+      </div>
+      <el-button style="float: right" type="primary" @click="goBack">返回</el-button>
     </div>
   </div>
 </template>
 
 <script>
+import moment from 'moment'
+import { getRecord } from '@/api/supplier'
+import { supplierType } from '@/utils/commonType'
 export default {
   name: 'SupplierManagementTranRecord',
   data() {
     return {
+      headerBg: { 'background': '#fafafa' },
       date: '',
       searchInp: '',
-      data: [{
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-08',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-06',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-07',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }],
-      multipleSelection: []
+      data: [],
+      multipleSelection: [],
+      filed: {
+        supplierId: '',
+        year: moment(new Date()).format('YYYY'),
+        page: 1,
+        size: 10
+      },
+      totalCount: 0,
+      loading: false
     }
   },
+  mounted() {
+    this.getList()
+    this.filed.supplierId = this.$route.query.id
+  },
   methods: {
-    handleSelectionChange(val) {
-      this.multipleSelection = val
+    getList() { // 记录导出
+      this.loading = true
+      getRecord(this.filed).then(({ data, message, code }) => {
+        if (code === 200) {
+          this.loading = false
+          this.data = data.data
+          this.totalCount = data.totalCount
+          this.data = this.data.map((v, index) => {
+            supplierType.forEach(item => {
+              if (Number(item.value) === Number(v.formType)) {
+                v.formTypeName = item.label
+              }
+            })
+            return v
+          })
+        } else {
+          this.loading = false
+          this.$message.error('数据获取失败！')
+        }
+      }).catch(e => {
+        this.loading = false
+      })
     },
-    exportHandle() { // 记录导出
-
+    handleSizeChange(val) {
+      this.filed.size = val
+      this.getList()
+    },
+    handleCurrentChange(val) {
+      this.filed.page = val
+      this.getList()
+    },
+    selectDateHandle(val) {
+      this.filed.year = moment(val).format('YYYY')
+      this.getList()
+    },
+    goBack() {
+      this.$router.go(-1)
     }
   }
 }
@@ -129,5 +164,9 @@ export default {
 }
 .export {
   margin-bottom: 20px;
+}
+.block {
+  text-align: center;
+  margin-top: 30px;
 }
 </style>

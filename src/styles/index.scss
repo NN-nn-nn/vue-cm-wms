@@ -301,3 +301,11 @@ aside {
   background: #304156;
   border-color: #304156;
 }
+
+.myEcharts .title-flex {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 70px 0 90px;
+  font-weight: 700;
+  font-size: 20px;
+}

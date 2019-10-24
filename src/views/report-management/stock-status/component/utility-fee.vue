@@ -1,6 +1,6 @@
 <template>
   <!-- 页面主容器 -->
-  <div class="page-container">
+  <div class="page-container myEcharts">
     <!-- 查询容器 -->
     <div class="filter-container">
       <!-- 左侧box -->

@@ -91,7 +91,7 @@
                 size="mini"
                 class="el-icon-document"
                 type="info"
-                @click="goRecord()"
+                @click="goRecord(scope.row.id)"
               > 交易记录
               </el-button>
             </template>
@@ -183,8 +183,8 @@ export default {
       this.delId = id
       this.delShow = true
     },
-    goRecord() {
-      this.$router.push({ path: '/purchasing-management/supplier-management/transaction-record', query: { userId: 123 }})
+    goRecord(id) {
+      this.$router.push({ path: '/purchasing-management/supplier-management/transaction-record', query: { id: id }})
     },
     checkDetail(item) { // 查看详情
       this.detailShow = true
