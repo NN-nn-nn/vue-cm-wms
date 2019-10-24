@@ -22,7 +22,7 @@
         <div>
           <p><span class="style">法定代表人：</span>{{ info.legalRepresentative }}</p>
           <p><span class="style">注册资本：</span>{{ info.registeredCapital }}</p>
-          <p><span class="style">企业类型：</span>{{ info.enterpriseType }}</p>
+          <p><span class="style">企业类型：</span>{{ info.enterpriseTypeName }}</p>
         </div>
         <div>
           <p><span class="style">开户行名称：</span>{{ info.firstBankName }}</p>
@@ -71,6 +71,7 @@
 <script>
 import { detail, delItem } from '@/api/supplier'
 import { supplierType } from '@/utils/commonType'
+import { fetchEnterpriseTypeList } from '@/api/dictionary'
 
 export default {
   name: 'SuppperManagementBulletBox',
@@ -94,7 +95,8 @@ export default {
     return {
       info: {},
       loading: false,
-      supplierClassType: ''
+      supplierClassType: '',
+      enterpriseList: [] // 企业类型
     }
   },
   watch: {
@@ -113,6 +115,11 @@ export default {
   mounted() {},
   methods: {
     getInfo() {
+      fetchEnterpriseTypeList().then(res => {
+        if (res.code === 200) {
+          this.enterpriseList = res.data
+        }
+      })
       this.loading = true
       const params = {
         id: this.id
@@ -132,6 +139,11 @@ export default {
           })
         })
         this.info.supplierClassType = this.supplierClassType
+        this.enterpriseList.filter(v => {
+          if (Number(v.value) === Number(this.info.enterpriseType)) {
+            this.info.enterpriseTypeName = v.name
+          }
+        })
       }).catch(e => {
         this.loading = false
       })
