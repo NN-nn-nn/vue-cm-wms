@@ -32,7 +32,7 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button type="primary" size="small" icon="el-icon-view" @click="openDetail(scope.row)">查看</el-button>
-            <el-button type="success" :loading="exportLoad" icon="el-icon-download" size="small" @click="downloadExcel(scope.row)">下载</el-button>
+            <el-button type="success" :loading="exportLoad[scope.$index]" icon="el-icon-download" size="small" @click="downloadExcel(scope.row,scope.$index)">下载</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -81,7 +81,7 @@ export default {
       materialMoveIndexType: MATERIAL_MOVE_INDEX_TYPE,
       pickerOptions: MONTH_PICKER_OPTION,
       tableLoading: false,
-      exportLoad: false,
+      exportLoad: [],
       drawerVisible: false,
       currentRow: {},
       tableData: [],
@@ -106,17 +106,17 @@ export default {
       this.drawerVisible = true
       this.currentRow = row
     },
-    downloadExcel: function(row) {
-      this.exportLoad = true
+    downloadExcel: function(row, index) {
+      this.$set(this.exportLoad, index, true)
       const query = {
         projectId: row.projectId,
         date: row.statisticalDate,
         type: this.queryType
       }
       exportReturnOrScrapExcel(query).then(() => {
-        this.exportLoad = false
+        this.$set(this.exportLoad, index, false)
       }).catch(e => {
-        this.exportLoad = false
+        this.$set(this.exportLoad, index, false)
         this.$message({ message: '导出失败', type: 'error' })
       })
     },

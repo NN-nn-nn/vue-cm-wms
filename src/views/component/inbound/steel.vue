@@ -14,7 +14,7 @@
         </div>
         <div class="filter-item">
           <div class="list-info-item">
-            <span>入库时间：</span>
+            <span>入库单提交时间：</span>
             <span>{{ listDetail.storageTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
           </div>
         </div>
@@ -143,7 +143,7 @@ export default {
     return {
       inboundVerify: INBOUND_VERIFY,
       inboundVerifyStatus: INBOUND_VERIFY_STATUS,
-      currentBaseType: MATERIAL_BASE_TYPE.steel, // 钢板
+      currentBaseType: MATERIAL_BASE_TYPE.steel, // 型钢
       retrunVisible: false,
       successVisible: false,
       provideMateCheck: false,
@@ -192,7 +192,7 @@ export default {
       this.submitLoading = true
       verifyInboundList(submitData).then(({ data, code, message }) => {
         if (code === 200) {
-          const _message = `审核${this.inboundVerifyStatus[status]}`
+          const _message = `当前入库单${this.inboundVerifyStatus[status]}`
           this.$message({ message: _message, type: 'success' })
           this.getList()
           this.updateListInfo(status)

@@ -101,7 +101,7 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button type="primary" size="small" icon="el-icon-view" @click="openDetail(scope.row)">查看</el-button>
-            <el-button type="success" :loading="exportLoad" icon="el-icon-download" size="small" @click="downloadExcel(scope.row)">下载</el-button>
+            <el-button type="success" :loading="exportLoad[scope.$index]" icon="el-icon-download" size="small" @click="downloadExcel(scope.row,scope.$index)">下载</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -111,12 +111,12 @@
     </div>
     <!-- 其他模块（例如弹窗等） -->
     <el-dialog
-      :title="`${ materialBaseNum[currentInbound.formType] ? materialBaseNum[currentInbound.formType].name : ''}入库审核：${currentInbound.storageListNo}`"
+      :title="`${ materialBaseNum[currentInbound.formType] ? materialBaseNum[currentInbound.formType].name : ''}入库详情：${currentInbound.storageListNo}`"
       :visible.sync="detailVisible"
       :fullscreen="true"
     >
       <div slot="title" class="dialog-title">
-        <span>{{ `${ materialBaseNum[currentInbound.formType] ? materialBaseNum[currentInbound.formType].name : ''}入库审核：${currentInbound.storageListNo}` }}</span>
+        <span>{{ `${ materialBaseNum[currentInbound.formType] ? materialBaseNum[currentInbound.formType].name : ''}入库详情：${currentInbound.storageListNo}` }}</span>
         <el-tag effect="dark" :type="currentInbound.status == 1 ? 'success' : currentInbound.status == 2 ? 'danger' : 'warning'" size="small">{{ inboundVerifyStatus[currentInbound.status] }}</el-tag>
       </div>
       <GeneralMat v-if="currentInbound.formType === MATERIAL_BASE_TYPE.material.index" :detail-id="currentInbound.id" @closeEvent="detailVisible = false" @refreshEvent="refreshInfo" />
@@ -159,7 +159,7 @@ export default {
       materialBaseNum: MATERIAL_BASE_NUM,
       inboundVerifyStatus: INBOUND_VERIFY_STATUS,
       checkHasProject: false,
-      exportLoad: false,
+      exportLoad: [],
       topDrawerVisible: false,
       detailVisible: false,
       currentInbound: {},
@@ -186,12 +186,12 @@ export default {
     this.dataChange()
   },
   methods: {
-    downloadExcel: function(row) {
-      this.exportLoad = true
+    downloadExcel: function(row, index) {
+      this.$set(this.exportLoad, index, true)
       exportInboundExcelByOrderId({ id: row.id }).then(() => {
-        this.exportLoad = false
+        this.$set(this.exportLoad, index, false)
       }).catch(e => {
-        this.exportLoad = false
+        this.$set(this.exportLoad, index, false)
         this.$message({ message: '导出失败', type: 'error' })
       })
     },

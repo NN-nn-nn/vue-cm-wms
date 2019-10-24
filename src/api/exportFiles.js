@@ -39,4 +39,12 @@ export function exportReturnOrScrapExcel(params) {
     params
   })
 }
-
+// 导出退库记录
+export function exportReturnWarehouseExcel(params) {
+  return request({
+    url: '/out-warehouse-list/record/export',
+    method: 'get',
+    responseType: 'blob',
+    params
+  })
+}

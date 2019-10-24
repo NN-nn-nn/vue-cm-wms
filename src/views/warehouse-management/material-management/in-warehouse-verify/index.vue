@@ -97,7 +97,7 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button type="primary" size="small" icon="el-icon-view" @click="openDetail(scope.row)">查看</el-button>
-            <el-button type="success" :loading="exportLoad" icon="el-icon-download" size="small" @click="downloadExcel(scope.row)">下载</el-button>
+            <el-button type="success" :loading="exportLoad[scope.$index]" icon="el-icon-download" size="small" @click="downloadExcel(scope.row,scope.$index)">下载</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -144,7 +144,7 @@ export default {
       MATERIAL_BASE_TYPE,
       materialBaseNum: MATERIAL_BASE_NUM,
       inboundVerifyStatus: INBOUND_VERIFY_STATUS,
-      exportLoad: false,
+      exportLoad: [],
       checkHasProject: false,
       detailVisible: false,
       currentInbound: {},
@@ -171,12 +171,12 @@ export default {
     this.dataChange()
   },
   methods: {
-    downloadExcel: function(row) {
-      this.exportLoad = true
+    downloadExcel: function(row, index) {
+      this.$set(this.exportLoad, index, true)
       exportInboundExcelByOrderId({ id: row.id }).then(() => {
-        this.exportLoad = false
+        this.$set(this.exportLoad, index, false)
       }).catch(e => {
-        this.exportLoad = false
+        this.$set(this.exportLoad, index, false)
         this.$message({ message: '导出失败', type: 'error' })
       })
     },

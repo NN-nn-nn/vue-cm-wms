@@ -175,7 +175,7 @@ export default {
       materialPoolType: MATERIAL_POOL_TYPE,
       materialMoveType: MATERIAL_MOVE_TYPE,
       materialInboundType: MATERIAL_INBOUND_TYPE,
-      currentBaseType: MATERIAL_BASE_TYPE.stripSteel, // 钢板
+      currentBaseType: MATERIAL_BASE_TYPE.stripSteel, // 带钢
       handingOutVisible: false,
       submitLoading: false, // 提交load
       tableLoading: false, // 列表加载

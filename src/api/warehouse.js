@@ -146,3 +146,40 @@ export function fetchReturnOrScrapMateDetail(params) {
     params
   })
 }
+
+// 退库办理
+export function createReturnList(data) {
+  return request({
+    url: '/out-warehouse-list/save',
+    method: 'post',
+    data
+  })
+}
+
+// 分页查询退库清单
+export function fetchReturnList(params) {
+  return request({
+    url: '/out-warehouse-list/find/list',
+    method: 'get',
+    params
+  })
+}
+
+// 查询退库清单详情
+export function fetchReturnDetailList(params) {
+  return request({
+    url: '/out-warehouse-list/get',
+    method: 'get',
+    params
+  })
+}
+
+// 审核退库清单
+export function verifyReturnList(data) {
+  return request({
+    url: '/out-warehouse-list/check',
+    method: 'put',
+    data
+  })
+}
+

@@ -14,13 +14,13 @@
         </div>
         <div class="filter-item">
           <div class="list-info-item">
-            <span>入库单提交时间：</span>
+            <span>退库提交时间：</span>
             <span>{{ listDetail.storageTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
           </div>
         </div>
         <div class="filter-item">
           <div class="list-info-item">
-            <span>入库人：</span>
+            <span>退库申请人：</span>
             <span>{{ listDetail.createUserName }}</span>
           </div>
         </div>
@@ -42,56 +42,24 @@
           </template>
         </el-table-column>
         <el-table-column label="物料类别" align="center">
-          <el-table-column prop="typeName" label="名称" align="center" width="90" />
-          <el-table-column prop="className" label="种类" align="center" width="90" />
-          <el-table-column prop="detailName" label="材质" align="center" width="90" />
+          <el-table-column prop="typeName" label="名称" align="center" width="120" />
+          <el-table-column prop="className" label="种类" align="center" width="120" />
+          <el-table-column prop="detailName" label="材质" align="center" width="120" />
+          <el-table-column prop="unit" label="单位" align="center" width="90" />
         </el-table-column>
-        <el-table-column label="规格" align="center">
-          <el-table-column prop="length" label="长(m)" align="center" width="70">
-            <template slot-scope="scope">
-              <span>{{ scope.row.length | toFixed(2) }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="width" label="宽(m)" align="center" width="70">
-            <template slot-scope="scope">
-              <span>{{ scope.row.width | toFixed(2) }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="thickness" label="厚(mm)" align="center" width="70">
-            <template slot-scope="scope">
-              <span>{{ scope.row.thickness | toFixed(2) }}</span>
-            </template>
-          </el-table-column>
-        </el-table-column>
-        <el-table-column prop="theoryThickness" :label="`理论 \n 厚度 \n (mm)`" align="center" width="70">
-          <template slot-scope="scope">
-            <span>{{ scope.row.theoryThickness }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="number" :label="`数量 \n (张)`" align="center" width="70" />
-        <el-table-column prop="weight" :label="`总重 \n (t)`" align="center" width="80">
-          <template slot-scope="scope">
-            <span>{{ scope.row.weight | toFixed(3) }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="purchasePrice" :label="`采购单价 \n (t/元)`" align="center" width="90">
+        <el-table-column prop="number" label="数量" align="center" width="110" />
+        <el-table-column prop="purchasePrice" :label="`采购单价(元)`" align="center" width="90">
           <template slot-scope="scope">
             <span>{{ scope.row.purchasePrice | toFixed(2) }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="taxIncludedAmount" :label="`含税总额 \n (元)`" align="center" width="100">
+        <el-table-column prop="taxIncludedAmount" :label="`总价(元)`" align="center" width="100">
           <template slot-scope="scope">
             <el-tag type="success" size="medium">{{ scope.row.taxIncludedAmount | toFixed(2) }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="province" :label="`单位净重 \n (kg/㎡)`" align="center" width="90">
-          <template slot-scope="scope">
-            <el-tag type="warning" size="medium">{{ scope.row.unitNetWeight | toFixed(2) }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="brand" label="品牌" align="center" width="140" />
-        <el-table-column prop="supplierName" label="供应商" align="center" min-width="140" />
-        <el-table-column prop="furnaceLotNumber" label="炉批号" align="center" width="210" />
+        <el-table-column prop="brand" label="品牌" align="center" width="200" />
+        <el-table-column prop="supplierName" label="供应商" align="center" />
       </el-table>
     </div>
     <div class="footer-toolbar">
@@ -116,7 +84,7 @@
               <p>确认退回？</p>
               <div style="text-align: right; margin: 0">
                 <el-button size="mini" type="text" @click="retrunVisible = false">取消</el-button>
-                <el-button type="primary" size="mini" @click="()=> {retrunVisible = false;submitVerifyResult(inboundVerify.return)}">确定</el-button>
+                <el-button type="primary" size="mini" @click="()=> {retrunVisible = false;submitVerifyResult(returnVerify.return)}">确定</el-button>
               </div>
               <el-button slot="reference" :loading="submitLoading" type="danger" icon="el-icon-circle-close">退回</el-button>
             </el-popover>
@@ -124,7 +92,7 @@
               <p>确认通过？</p>
               <div style="text-align: right; margin: 0">
                 <el-button size="mini" type="text" @click="successVisible = false">取消</el-button>
-                <el-button type="primary" size="mini" @click="()=> {successVisible = false;submitVerifyResult(inboundVerify.success)}">确定</el-button>
+                <el-button type="primary" size="mini" @click="()=> {successVisible = false;submitVerifyResult(returnVerify.success)}">确定</el-button>
               </div>
               <el-button slot="reference" :loading="submitLoading" type="success" icon="el-icon-circle-check">通过</el-button>
             </el-popover>
@@ -139,10 +107,10 @@
 </template>
 
 <script>
-import { MATERIAL_BASE_TYPE, INBOUND_VERIFY, INBOUND_VERIFY_STATUS } from '@/utils/conventionalContent'
-import { fetchDetailList, verifyInboundList } from '@/api/warehouse'
+import { MATERIAL_BASE_TYPE, RETURN_VERIFY } from '@/utils/conventionalContent'
+import { fetchReturnDetailList, verifyReturnList } from '@/api/warehouse'
 export default {
-  name: 'InboundSteelPlateComponent',
+  name: 'InboundGeneralMateComponent',
   props: {
     detailId: {
       type: Number,
@@ -155,9 +123,8 @@ export default {
   },
   data() {
     return {
-      inboundVerify: INBOUND_VERIFY,
-      inboundVerifyStatus: INBOUND_VERIFY_STATUS,
-      currentBaseType: MATERIAL_BASE_TYPE.steelPlate, // 钢板
+      returnVerify: RETURN_VERIFY,
+      currentBaseType: MATERIAL_BASE_TYPE.material, // 一般物料类型
       retrunVisible: false,
       successVisible: false,
       provideMateCheck: false,
@@ -181,7 +148,7 @@ export default {
     getList() {
       this.tableLoading = true
       this.tableData = []
-      fetchDetailList({ id: this.detailId }).then(({ data, code, message }) => {
+      fetchReturnDetailList({ id: this.detailId }).then(({ data, code, message }) => {
         if (code === 200) {
           if (data) {
             this.listDetail = data
@@ -191,11 +158,10 @@ export default {
         } else {
           this.$message({ message: message, type: 'error' })
         }
-
         this.tableLoading = false
       }).catch(() => {
-        this.$message({ message: '获取清单详情失败', type: 'error' })
         this.tableLoading = false
+        this.$message({ message: '获取清单详情失败', type: 'error' })
       })
     },
     submitVerifyResult(status) {
@@ -204,9 +170,9 @@ export default {
         status: status
       }
       this.submitLoading = true
-      verifyInboundList(submitData).then(({ data, code, message }) => {
+      verifyReturnList(submitData).then(({ data, code, message }) => {
         if (code === 200) {
-          const _message = `当前入库单${this.inboundVerifyStatus[status]}`
+          const _message = `当前退库单${status ? '已通过' : '已退回'}`
           this.$message({ message: _message, type: 'success' })
           this.getList()
           this.updateListInfo(status)

@@ -34,6 +34,18 @@ const MATERIAL_INBOUND_TYPE = {
   partyA: 1
 }
 
+const MATERIAL_RETURN_STATUS = {
+  verify: { index: 0, name: '未审核', tip: 'warning' },
+  success: { index: 1, name: '已通过', tip: 'success' },
+  error: { index: 2, name: '已退回', tip: 'danger' }
+}
+
+const MATERIAL_RETURN_INDEX_STATUS = {
+  0: { name: '未审核', tip: 'warning' },
+  1: { name: '已通过', tip: 'success' },
+  2: { name: '已退回', tip: 'danger' }
+}
+
 const MATERIAL_BASE_TYPE = {
   steelPlate: { index: 0, name: '钢板', value: 'steelPlate', icon: 'steel-plate', unit: 'kg' },
   steel: { index: 1, name: '型钢', value: 'steel', icon: 'steel', unit: 'kg' },
@@ -67,6 +79,11 @@ const INBOUND_VERIFY = {
   unfinished: 0,
   success: 1,
   return: 2
+}
+
+const RETURN_VERIFY = {
+  success: true,
+  return: false
 }
 
 // 日期选择配置
@@ -122,4 +139,4 @@ const MONTH_PICKER_OPTION = {
   }]
 }
 
-export { apiResultCode, dictionaryType, MATERIAL_BASE_TYPE, MATERIAL_BASE_NUM, MATERIAL_DENSITY, INBOUND_VERIFY_STATUS, INBOUND_VERIFY, DATE_PICKER_OPTION, MONTH_PICKER_OPTION, MATERIAL_POOL_TYPE, MATERIAL_MOVE_TYPE, MATERIAL_MOVE_INDEX_TYPE, MATERIAL_INBOUND_TYPE }
+export { apiResultCode, dictionaryType, RETURN_VERIFY, MATERIAL_RETURN_STATUS, MATERIAL_RETURN_INDEX_STATUS, MATERIAL_BASE_TYPE, MATERIAL_BASE_NUM, MATERIAL_DENSITY, INBOUND_VERIFY_STATUS, INBOUND_VERIFY, DATE_PICKER_OPTION, MONTH_PICKER_OPTION, MATERIAL_POOL_TYPE, MATERIAL_MOVE_TYPE, MATERIAL_MOVE_INDEX_TYPE, MATERIAL_INBOUND_TYPE }

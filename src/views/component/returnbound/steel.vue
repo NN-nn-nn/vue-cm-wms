@@ -14,7 +14,7 @@
         </div>
         <div class="filter-item">
           <div class="list-info-item">
-            <span>入库单提交时间：</span>
+            <span>入库时间：</span>
             <span>{{ listDetail.storageTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
           </div>
         </div>
@@ -34,11 +34,18 @@
     </div>
     <!-- 主要内容容器 -->
     <div class="content-container">
-      <el-table v-loading="tableLoading" :data="listDetail.detailList" max-height="600" style="width: 100%" border stripe>
+      <el-table v-loading="tableLoading" :data="listDetail.detailList" max-height="600" style="width: 100%" border stripe @selection-change="handleSelectionChange">
+        <el-table-column align="center" type="selection" width="55" :selectable="(row,index) =>{return row.checkAble}" />
         <el-table-column label="序号" align="center" type="index" width="80" />
         <el-table-column prop="materialCode" align="center" label="编号" width="120">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.materialCode" size="medium">{{ scope.row.materialCode }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="className" label="状态" align="center" width="100">
+          <template slot-scope="scope">
+            <el-tag v-if="scope.row.returnStatus == 0" :type="materialReturnIndexStatus[scope.row.status].tip" size="medium">{{ materialReturnIndexStatus[scope.row.status].name }}</el-tag>
+            <el-tag v-else type="warning" size="medium">正在办理</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="物料类别" align="center">
@@ -47,34 +54,20 @@
           <el-table-column prop="detailName" label="材质" align="center" width="90" />
         </el-table-column>
         <el-table-column label="规格" align="center">
-          <el-table-column prop="length" label="长(m)" align="center" width="70">
+          <el-table-column prop="specification" label="规格" align="center" width="120" />
+          <el-table-column prop="width" label="定尺长度(m)" align="center" width="100">
             <template slot-scope="scope">
               <span>{{ scope.row.length | toFixed(2) }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="width" label="宽(m)" align="center" width="70">
-            <template slot-scope="scope">
-              <span>{{ scope.row.width | toFixed(2) }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="thickness" label="厚(mm)" align="center" width="70">
-            <template slot-scope="scope">
-              <span>{{ scope.row.thickness | toFixed(2) }}</span>
-            </template>
-          </el-table-column>
         </el-table-column>
-        <el-table-column prop="theoryThickness" :label="`理论 \n 厚度 \n (mm)`" align="center" width="70">
-          <template slot-scope="scope">
-            <span>{{ scope.row.theoryThickness }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="number" :label="`数量 \n (张)`" align="center" width="70" />
+        <el-table-column prop="number" :label="`数量 \n (根)`" align="center" width="70" />
         <el-table-column prop="weight" :label="`总重 \n (t)`" align="center" width="80">
           <template slot-scope="scope">
             <span>{{ scope.row.weight | toFixed(3) }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="purchasePrice" :label="`采购单价 \n (t/元)`" align="center" width="90">
+        <el-table-column prop="purchasePrice" :label="`采购单价 \n (元)`" align="center" width="90">
           <template slot-scope="scope">
             <span>{{ scope.row.purchasePrice | toFixed(2) }}</span>
           </template>
@@ -111,26 +104,16 @@
           </div>
         </div>
         <div class="submit-item">
-          <template v-if="isVerify && listDetail.status === 0">
-            <el-popover v-model="retrunVisible" placement="top" width="160" trigger="click">
-              <p>确认退回？</p>
-              <div style="text-align: right; margin: 0">
-                <el-button size="mini" type="text" @click="retrunVisible = false">取消</el-button>
-                <el-button type="primary" size="mini" @click="()=> {retrunVisible = false;submitVerifyResult(inboundVerify.return)}">确定</el-button>
-              </div>
-              <el-button slot="reference" :loading="submitLoading" type="danger" icon="el-icon-circle-close">退回</el-button>
-            </el-popover>
+          <template v-if="isVerify">
+            <el-button type="primary" icon="el-icon-arrow-left" @click="closeDlg">返回</el-button>
             <el-popover v-model="successVisible" placement="top" width="160" trigger="click">
-              <p>确认通过？</p>
+              <p>确认退库？</p>
               <div style="text-align: right; margin: 0">
                 <el-button size="mini" type="text" @click="successVisible = false">取消</el-button>
-                <el-button type="primary" size="mini" @click="()=> {successVisible = false;submitVerifyResult(inboundVerify.success)}">确定</el-button>
+                <el-button type="primary" size="mini" @click="()=> {successVisible = false;submitResult()}">确定</el-button>
               </div>
-              <el-button slot="reference" :loading="submitLoading" type="success" icon="el-icon-circle-check">通过</el-button>
+              <el-button slot="reference" :loading="submitLoading" type="danger" icon="el-icon-circle-check">确认退库</el-button>
             </el-popover>
-          </template>
-          <template v-else>
-            <el-button type="primary" icon="el-icon-arrow-left" @click="closeDlg">返回</el-button>
           </template>
         </div>
       </div>
@@ -139,10 +122,10 @@
 </template>
 
 <script>
-import { MATERIAL_BASE_TYPE, INBOUND_VERIFY, INBOUND_VERIFY_STATUS } from '@/utils/conventionalContent'
-import { fetchDetailList, verifyInboundList } from '@/api/warehouse'
+import { MATERIAL_BASE_TYPE, MATERIAL_RETURN_STATUS, MATERIAL_RETURN_INDEX_STATUS } from '@/utils/conventionalContent'
+import { fetchDetailList, createReturnList } from '@/api/warehouse'
 export default {
-  name: 'InboundSteelPlateComponent',
+  name: 'InboundSteelComponent',
   props: {
     detailId: {
       type: Number,
@@ -155,9 +138,9 @@ export default {
   },
   data() {
     return {
-      inboundVerify: INBOUND_VERIFY,
-      inboundVerifyStatus: INBOUND_VERIFY_STATUS,
-      currentBaseType: MATERIAL_BASE_TYPE.steelPlate, // 钢板
+      materialReturnStatus: MATERIAL_RETURN_STATUS,
+      materialReturnIndexStatus: MATERIAL_RETURN_INDEX_STATUS,
+      currentBaseType: MATERIAL_BASE_TYPE.steel, // 型钢
       retrunVisible: false,
       successVisible: false,
       provideMateCheck: false,
@@ -165,7 +148,9 @@ export default {
       submitLoading: false, // 提交load
       tableLoading: false, // 列表加载
       tableData: [], // 列表数据
+      multipleSelection: [], // 选中的数据
       listDetail: {}, // 入库清单
+      submitData: {},
       totalAmount: 0 // 总金额
     }
   },
@@ -185,8 +170,13 @@ export default {
         if (code === 200) {
           if (data) {
             this.listDetail = data
-            this.listDetail.detailList = this.listDetail.detailList || []
+            this.listDetail.detailList = data.detailList.map(v => {
+              v.checkAble = v.returnStatus !== 1 || (v.returnStatus === 0 && v.status !== this.materialReturnStatus.success.index)
+              return v
+            })
             this.listDetail.provideMateCheck = this.listDetail.type === 1
+            this.submitData.projectId = this.listDetail.projectId || undefined
+            this.submitData.formType = this.listDetail.formType
           }
         } else {
           this.$message({ message: message, type: 'error' })
@@ -198,16 +188,21 @@ export default {
         this.tableLoading = false
       })
     },
-    submitVerifyResult(status) {
-      const submitData = {
-        id: this.detailId,
-        status: status
+    submitResult(status) {
+      if (!this.multipleSelection || !this.multipleSelection.length) {
+        this.$message({ message: '请选择要退库的物料', type: 'warning' })
+        return
       }
+      this.submitData.outWarehouseTime = new Date().getTime()
+      this.submitData.detailList = this.multipleSelection.map(v => {
+        return {
+          storageListDetailId: v.id
+        }
+      })
       this.submitLoading = true
-      verifyInboundList(submitData).then(({ data, code, message }) => {
+      createReturnList(this.submitData).then(({ data, code, message }) => {
         if (code === 200) {
-          const _message = `当前入库单${this.inboundVerifyStatus[status]}`
-          this.$message({ message: _message, type: 'success' })
+          this.$message({ message: '操作成功', type: 'success' })
           this.getList()
           this.updateListInfo(status)
         } else {
@@ -225,6 +220,18 @@ export default {
     },
     closeDlg() {
       this.$emit('closeEvent')
+    },
+    toggleSelection(rows) {
+      if (rows) {
+        rows.forEach(row => {
+          this.$refs.multipleTable.toggleRowSelection(row)
+        })
+      } else {
+        this.$refs.multipleTable.clearSelection()
+      }
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val
     }
   }
 }

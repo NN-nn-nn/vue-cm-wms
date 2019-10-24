@@ -47,7 +47,14 @@
     </div>
     <!-- 其他模块（例如弹窗等） -->
     <div v-if="tableData && tableData.length" class="footer-drawer">
-      <el-button v-if="submitAble" :loading="submitLoading" icon="el-icon-s-promotion" type="success" @click="submitOutboundOrder">提交出库单(并打印)</el-button>
+      <el-popover v-if="submitAble" v-model="confirmVisible" placement="top" width="160" trigger="click">
+        <p>确认提交？提交后将会打印2张领料凭证</p>
+        <div style="text-align: right; margin: 0">
+          <el-button size="mini" type="text" @click="confirmVisible = false">取消</el-button>
+          <el-button type="primary" size="mini" @click="()=> {confirmVisible = false;submitOutboundOrder()}">确定</el-button>
+        </div>
+        <el-button slot="reference" :loading="submitLoading" icon="el-icon-s-promotion" type="success">提交出库单(并打印)</el-button>
+      </el-popover>
       <el-button v-else :loading="submitLoading" icon="el-icon-s-promotion" type="success" @click="printOrder(1)">打印</el-button>
     </div>
   </div>
@@ -69,6 +76,7 @@ export default {
   data() {
     return {
       materialBaseType: MATERIAL_BASE_TYPE,
+      confirmVisible: false,
       submitAble: true,
       deleteLoadingBtn: false,
       submitLoading: false,

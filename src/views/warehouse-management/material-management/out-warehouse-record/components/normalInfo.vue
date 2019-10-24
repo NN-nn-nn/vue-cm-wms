@@ -48,7 +48,7 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button type="primary" size="small" icon="el-icon-view" @click="openDetail(scope.row)">查看</el-button>
-            <el-button type="success" icon="el-icon-download" size="small" @click="downloadExcel">下载</el-button>
+            <el-button type="success" :loading="exportLoad[scope.$index]" icon="el-icon-download" size="small" @click="downloadExcel(scope.$index)">下载</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -99,6 +99,7 @@ export default {
         type: undefined,
         yearAndMonthDate: undefined
       },
+      exportLoad: [],
       currentTime: undefined
     }
   },
@@ -115,7 +116,7 @@ export default {
     this.getList()
   },
   methods: {
-    downloadExcel: function() {
+    downloadExcel: function(index) {
       const queryData = {}
       queryData.type = this.listQuery.type
       queryData.companyId = 1
@@ -126,7 +127,11 @@ export default {
         queryData.startDate = moment(this.dateTime).startOf('date').format('YYYY-MM-DD')
         queryData.endDate = moment(this.dateTime).endOf('date').format('YYYY-MM-DD')
       }
-      exportOutboundExcelByNormal(queryData).catch(e => {
+      this.$set(this.exportLoad, index, true)
+      exportOutboundExcelByNormal(queryData).then(() => {
+        this.$set(this.exportLoad, index, false)
+      }).catch(e => {
+        this.$set(this.exportLoad, index, false)
         this.$message({ message: '导出失败', type: 'error' })
       })
     },
