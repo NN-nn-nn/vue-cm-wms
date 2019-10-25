@@ -123,9 +123,9 @@
               <el-upload
                 ref="upload"
                 class="upload-demo"
-                action="https://jsonplaceholder.typicode.com/posts/"
-                :on-change="handleChange"
-                :auto-upload="false"
+                :http-request="httpUpLoadRquest"
+                :before-upload="beforeUpLoad"
+                action="111"
               >
                 <el-button size="small" type="primary">上传附件</el-button>
                 <span slot="tip" class="el-upload__tip">可上传PDF文件和图片文件</span>
@@ -135,12 +135,12 @@
 
           <div class="btn">
             <div class="file">
-              导入
+              导入表格
               <input type="file" class="file-export" @change="choseFile($event)">
             </div>
-            <el-button type="primary" @click="submitForm('ruleForm')">&nbsp; 添加</el-button>
-            <el-button type="warning" @click="resetForm('ruleForm')">&nbsp; 重置</el-button>
-            <el-button type="success" @click="goBack">&nbsp; 返回</el-button>
+            <el-button type="primary" class="el-icon-circle-plus-outline" @click="submitForm('ruleForm')">&nbsp; 添加供应商</el-button>
+            <el-button type="warning" icon="el-icon-refresh" @click="resetForm('ruleForm')">&nbsp; 重置表单</el-button>
+            <el-button type="success" icon="el-icon-back" @click="goBack">&nbsp; 返回</el-button>
           </div>
 
         </el-form>
@@ -151,7 +151,7 @@
 <script>
 import { formatExcelDate } from '@/utils'
 import { validatorEmail, validatorTel, validatorBankAcount } from '@/utils/validatePattern'
-import { getProvice, save } from '@/api/supplier'
+import { getProvice, save, exportAnnex } from '@/api/supplier'
 import { fetchEnterpriseTypeList, fetchSupplierTypeList } from '@/api/dictionary'
 import XLSX from 'xlsx'
 export default {
@@ -255,7 +255,7 @@ export default {
         children: 'cityList'
       },
       excelData: {},
-      fileList: [{ name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' }, { name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' }]
+      fileList: []
     }
   },
   mounted() {
@@ -288,15 +288,68 @@ export default {
       })
     },
     selArea(val) {
-      console.log(val)
       this.ruleForm.state = val[0]
       this.ruleForm.city = val[1]
       this.ruleForm.region = val[2]
+      this.options.forEach((v, index) => {
+        if (v.id === val[0]) {
+          this.ruleForm.stateName = v.name
+        }
+        v.cityList && v.cityList.forEach(c => {
+          if (c.id === val[1]) {
+            this.ruleForm.cityName = c.name
+          }
+          if (val[2]) {
+            c.cityList && c.cityList.forEach(r => {
+              if (r.id === val[2]) {
+                this.ruleForm.regionName = r.name
+              }
+            })
+          } else {
+            this.ruleForm.regionName = ''
+          }
+        })
+      })
+    },
+    beforeUpLoad(file) {
+      if (file.name.length > 50) {
+        this.$message({
+          message: '文件名非法，请修改文件名后再次上传',
+          type: 'warning'
+        })
+        return false
+      }
+    },
+    httpUpLoadRquest(params) { // 自定义上传
+      if (params.file.name.length > 50) {
+        this.$message({
+          message: '文件名非法，请修改文件名后再次上传',
+          type: 'warning'
+        })
+        this.$refs.upload.abort(params.file)
+        return false
+      }
+      const formData = new FormData()
+      formData.append('file', params.file)
+      formData.append('fileType', 1)
+      exportAnnex(formData).then((res) => {
+        if (res.status === 200) {
+          this.$message.success('文件上传成功')
+          this.$refs.upload.clearFiles()
+        } else {
+          this.$message.error(res.message)
+          this.$refs.upload.clearFiles()
+        }
+      }).catch(e => {
+        this.$message.error(e)
+      })
     },
     handleChange(file, fileList) {
-      console.log(file)
+      // const formData = new FormData()
+      // formData.append('upload_files', params.file)
     },
     submitForm(formName) {
+      console.log(this.ruleForm)
       this.$refs[formName].validate((valid) => {
         if (valid) {
           console.log(this.ruleForm)
@@ -401,7 +454,6 @@ export default {
             })
           }
         })
-        console.log(this.ruleForm.area)
       }
     }
   }
@@ -416,6 +468,9 @@ export default {
   display: flex;
   margin-bottom: 20px;
 }
+.demo-ruleForm .rule-row:last-child {
+  margin-bottom: 0px;
+}
 .form .el-form-item {
   width: 30%;
   margin-right: 30px;
@@ -427,8 +482,7 @@ export default {
   text-align: center;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  margin-right: 50px;
+  justify-content: center;
 }
 .file {
   position: relative;
@@ -438,6 +492,7 @@ export default {
   padding: 8px 24px;
   overflow: hidden;
   color: #ffffff;
+  font-size: 14px;
   line-height: 20px;
   margin: 10px 10px;
 }
@@ -451,7 +506,7 @@ export default {
 }
 .file:hover {
   background: #46a6ff;
-    border-color: #46a6ff;
-    color: #fff;
+  border-color: #46a6ff;
+  color: #fff;
 }
 </style>

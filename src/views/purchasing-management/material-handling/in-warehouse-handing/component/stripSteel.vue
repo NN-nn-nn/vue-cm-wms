@@ -110,7 +110,7 @@
               <el-tooltip class="item" effect="dark" :content="`${scope.row.width || 0}`" placement="top">
                 <div class="mask-td number-input">
                   <div :class="{'mask-red': scope.row.rules.width}" />
-                  <el-input-number v-model="scope.row.width" controls-position="right" :min="0" :step="0.5" :precision="2" size="mini" @change="() => {scope.row.rules.width = false;}" />
+                  <el-input-number v-model="scope.row.width" controls-position="right" :min="0" :step="0.5" :precision="3" size="mini" @change="() => {scope.row.rules.width = false;}" />
                 </div>
               </el-tooltip>
             </template>

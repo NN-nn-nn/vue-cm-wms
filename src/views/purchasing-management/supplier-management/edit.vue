@@ -16,6 +16,7 @@
           <div class="rule-row">
             <el-form-item label="选择地区" prop="area">
               <el-cascader
+                ref="caseArea"
                 v-model="ruleForm.area"
                 style="width: 260px"
                 :options="options"
@@ -267,7 +268,9 @@ export default {
             this.ruleForm.state = this.ruleForm.stateId
             this.ruleForm.city = this.ruleForm.cityId
             this.ruleForm.region = this.ruleForm.regionId
-
+            // delete this.ruleForm.stateId
+            // delete this.ruleForm.cityId
+            // delete this.ruleForm.regionId
             this.ruleForm.enterpriseType = this.ruleForm.enterpriseType.toString()
             const supplierArr = this.ruleForm.supplierClassification.split('"')
 
@@ -275,6 +278,7 @@ export default {
               if (index % 2 !== 0) arr.push(v)
             })
             this.ruleForm.supplierClassification = arr
+            console.log(this.ruleForm)
           }
         })
       }
@@ -300,9 +304,31 @@ export default {
       })
     },
     selArea(val) {
-      this.ruleForm.state = val[0]
-      this.ruleForm.city = val[1]
-      this.ruleForm.region = val[2]
+      this.ruleForm.state = val[0] || ''
+      this.ruleForm.city = val[1] || ''
+      this.ruleForm.region = val[2] || ''
+      this.ruleForm.stateId = val[0] || ''
+      this.ruleForm.cityId = val[1] || ''
+      this.ruleForm.regionId = val[2] || ''
+      this.options.forEach((v, index) => {
+        if (v.id === val[0]) {
+          this.ruleForm.stateName = v.name
+        }
+        v.cityList && v.cityList.forEach(c => {
+          if (c.id === val[1]) {
+            this.ruleForm.cityName = c.name
+          }
+          if (val[2]) {
+            c.cityList && c.cityList.forEach(r => {
+              if (r.id === val[2]) {
+                this.ruleForm.regionName = r.name
+              }
+            })
+          } else {
+            this.ruleForm.regionName = ''
+          }
+        })
+      })
     },
     enterpriseChange(val) {
       this.enterpriseList.filter(v => {
@@ -315,6 +341,7 @@ export default {
       console.log(file)
     },
     submitForm(formName) {
+      console.log(this.ruleForm)
       this.$refs[formName].validate((valid) => {
         if (valid) {
           update(this.ruleForm).then(res => {
@@ -322,8 +349,10 @@ export default {
               this.$message.success('更新成功！')
               this.$router.go(-1)
             } else {
-              this.$message.error('更新失败！')
+              this.$message.error(res.message)
             }
+          }).catch(e => {
+            this.$message.error(e)
           })
         } else {
           return false

@@ -112,7 +112,7 @@
 </template>
 
 <script>
-import { validatorCN } from '@/utils/validatePattern'
+// import { validatorCN } from '@/utils/validatePattern'
 import { MATERIAL_BASE_TYPE, MATERIAL_BASE_NUM } from '@/utils/conventionalContent'
 import { fetchUnitList } from '@/api/dictionary'
 import { fetchClassList, createClass, updateClass, delClass, fetchMaterialList, createMaterial, updateMaterial, delMaterial } from '@/api/material'
@@ -170,8 +170,8 @@ export default {
       classRule: { // 物料种类表单验证
         className: [
           { required: true, message: '请输入种类名称', trigger: 'blur' },
-          { min: 1, max: 7, message: '请输入1-7个字', trigger: 'blur' },
-          { pattern: validatorCN.pattern, message: validatorCN.message, trigger: 'blur' }
+          { min: 1, max: 7, message: '请输入1-7个字', trigger: 'blur' }
+          // { pattern: validatorCN.pattern, message: validatorCN.message, trigger: 'blur' }
         ],
         unitId: [
           { required: true, message: '请选择单位', trigger: 'blur' }
