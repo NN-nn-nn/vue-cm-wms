@@ -83,3 +83,12 @@ export function getRecord(query) {
     params: query
   })
 }
+
+//  上传附件
+export function exportAnnex(data) {
+  return request({
+    url: '/attachments',
+    method: 'post',
+    data
+  })
+}

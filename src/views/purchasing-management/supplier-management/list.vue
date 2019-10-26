@@ -5,7 +5,9 @@
     <div class="filter-container">
       <div class="filter-left-box">
         <div class="filter-item">
-          <el-input v-model="searchInp" placeholder="请输入搜索名称" clearable filterable />
+          <el-input v-model="dataParam.shortName" placeholder="请输入供应商名称" class="input-with-select" @keyup.enter.native="serachHandle">
+            <el-button slot="append" type="warning" icon="el-icon-search" @click="serachHandle" />
+          </el-input>
         </div>
       </div>
       <div class="filter-right-box"><el-button class="el-icon-circle-plus-outline" type="primary" @click="goCreate"> 添加供应商</el-button></div>
@@ -23,11 +25,13 @@
           <el-table-column
             type="index"
             label="序号"
-            width="50"
+            width="70"
+            align="center"
           />
           <el-table-column
             label="录入时间"
-            width="160"
+            width="150"
+            align="center"
           >
             <template slot-scope="scope">
               <span style="margin-left: 10px">{{ scope.row.createTime | parseTime('{y}-{m}-{d}') }}</span>
@@ -36,6 +40,7 @@
           <el-table-column
             label="编号"
             width="180"
+            align="center"
           >
             <template slot-scope="scope">
               <span style="margin-left: 10px">{{ scope.row.supplierCode }}</span>
@@ -44,6 +49,7 @@
           <el-table-column
             label="供应商简称"
             width="190"
+            align="center"
           >
             <template slot-scope="scope">
               <span style="margin-left: 10px">{{ scope.row.shortName }}</span>
@@ -51,20 +57,25 @@
           </el-table-column>
           <el-table-column
             label="地区"
+            align="center"
           >
             <template slot-scope="scope">
-              <span style="margin-left: 10px">{{ scope.row.address }}</span>
+              <el-tooltip class="item" effect="dark" :content="`${scope.row.address ? scope.row.address: '暂无数据'}`" placement="top-start">
+                <span style="margin-left: 10px">{{ scope.row.address }}</span>
+              </el-tooltip>
+
             </template>
           </el-table-column>
           <el-table-column
             label="供应商分类"
             width="280"
+            align="center"
           >
             <template slot-scope="scope">
               <span style="margin-left: 10px">{{ scope.row.supplierClassType }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作">
+          <el-table-column label="操作" align="center">
             <template slot-scope="scope">
               <el-button
                 size="mini"
@@ -90,7 +101,7 @@
               <el-button
                 size="mini"
                 class="el-icon-document"
-                type="info"
+                type="success"
                 @click="goRecord(scope.row.id)"
               > 交易记录
               </el-button>
@@ -100,10 +111,10 @@
       </template>
       <div class="pagination">
         <el-pagination
-          :current-page="page"
+          :current-page="dataParam.page"
           :page-sizes="[10, 20, 30, 40, 50]"
           :total="totalCount"
-          :page-size="size"
+          :page-size="dataParam.size"
           layout="total, sizes, prev, pager, next, jumper"
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
@@ -111,7 +122,7 @@
       </div>
     </div>
     <!-- 详情页弹窗 -->
-    <bullet-box :id="id" :del-id="delId" :show="detailShow" :del-show="delShow" @closeBox="closeBox" /></div>
+    <bullet-box :id="id" :del-id="delId" :show="detailShow" :del-show="delShow" @getList="getList" @closeBox="closeBox" /></div>
 </template>
 
 <script>
@@ -126,13 +137,15 @@ export default {
   data() {
     return {
       data: [],
-      searchInp: '',
       id: null,
       delId: null,
       detailShow: false,
       delShow: false,
-      page: 1,
-      size: 10,
+      dataParam: {
+        page: 1,
+        size: 10,
+        shortName: ''
+      },
       totalCount: 0,
       loading: false,
       supplierClassType: ''
@@ -144,7 +157,8 @@ export default {
   methods: {
     getList() {
       this.loading = true
-      list().then(res => {
+
+      list(this.dataParam).then(res => {
         if (res.code === 200) {
           this.loading = false
           this.data = res.data.data
@@ -195,10 +209,16 @@ export default {
       this.delShow = false
     },
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`)
+      this.dataParam.size = val
+      this.getList()
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
+      this.dataParam.page = val
+      this.getList()
+    },
+    serachHandle() { // 搜索
+      this.dataParam.page = 1
+      this.getList()
     }
   }
 }
@@ -206,7 +226,7 @@ export default {
 
 <style scoped>
 .pagination {
-  text-align: right;
-  margin-top: 20px;
+  text-align: center;
+  margin-top: 30px;
 }
 </style>

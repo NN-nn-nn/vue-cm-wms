@@ -89,6 +89,7 @@
             <el-button
               size="mini"
               type="primary"
+              icon="el-icon-view"
               @click="queryInventory(scope.$index, scope.row)"
             >查询</el-button>
           </template>

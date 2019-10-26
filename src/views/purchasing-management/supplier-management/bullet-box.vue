@@ -12,7 +12,7 @@
           <p> <span class="style">供应商编号：</span>{{ info.supplierCode }}</p>
         </div>
         <div>
-          <p><span class="style">详细地址：</span>{{ info.address }}</p>
+          <p style="width: 80%"><span class="style">详细地址：</span>{{ info.address }}</p>
         </div>
         <div>
           <p><span class="style">社会统一代码：</span>{{ info.socialCode }}</p>
@@ -144,6 +144,11 @@ export default {
             this.info.enterpriseTypeName = v.name
           }
         })
+        if (this.info.regionName === '') {
+          this.info.address = this.info.stateName + '市' + this.info.cityName + '区' + this.info.address
+        } else {
+          this.info.address = this.info.stateName + '省' + this.info.cityName + '市' + this.info.regionName + this.info.address
+        }
       }).catch(e => {
         this.loading = false
       })
@@ -156,8 +161,9 @@ export default {
       delItem(params).then(res => {
         if (res.code === 200) {
           this.$message.success('删除成功!')
+          this.$emit('getList')
         } else {
-          this.$message.error('删除失败!')
+          this.$message.error(res.message)
         }
       }).catch(e => {
         this.$message.error('数据接口失败或网络失败!')

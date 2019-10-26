@@ -99,6 +99,7 @@
             <el-button
               size="mini"
               type="primary"
+              icon="el-icon-view"
               @click="queryInventory(scope.$index, scope.row)"
             >查询</el-button>
           </template>
@@ -180,7 +181,7 @@
         />
       </div>
       <div class="formulate-btn">
-        <el-button type="warning" icon="el-icon-circle-plus-outline" @click="addDefaultHandle">继续添加</el-button>
+        <el-button type="success" icon="el-icon-circle-plus-outline" @click="addDefaultHandle">继续添加</el-button>
         <el-button type="primary" :loading="submitLoading" icon="el-icon-success" @click="confirmHandle">确定添加</el-button>
       </div>
     </div>

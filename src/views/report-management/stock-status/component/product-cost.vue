@@ -28,7 +28,7 @@
       >
         <el-table-column prop="month" label="月份" align="center" />
         <el-table-column prop="output" :label="`产量 \n (t)`" align="center" />
-        <el-table-column prop="labor" label="消耗明细(不含主材和油漆)" width="130">
+        <el-table-column prop="labor" label="消耗明细(不含主材和油漆)" width="130" align="center">
           <el-table-column prop="date" label="劳保用品" width="130" />
           <el-table-column prop="date" label="焊接材料" width="130" />
           <el-table-column prop="date" label="生产耗材" width="130" />
