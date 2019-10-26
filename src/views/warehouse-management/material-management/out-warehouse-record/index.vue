@@ -7,7 +7,7 @@
         <el-tab-pane label="常规出库汇总" name="0">
           <NormalRecord :visible="activeName == 0" />
         </el-tab-pane>
-        <el-tab-pane label="物料出库汇总" name="1">
+        <el-tab-pane label="项目出库汇总" name="1">
           <ProjectRecord :visible="activeName == 1" />
         </el-tab-pane>
         <el-tab-pane label="归还清单" name="2">

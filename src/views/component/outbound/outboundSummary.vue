@@ -26,14 +26,14 @@
     <!-- 主要内容容器 -->
     <div class="content-container">
       <el-table v-loading="tableLoading" :data="tableData" max-height="700" style="width: 100%" border stripe>
-        <el-table-column label="序号" align="center" type="index" width="80" />
-        <el-table-column prop="projectName" align="center" label="项目" />
-        <el-table-column prop="typeName" label="入库总额(万元)" align="center">
+        <el-table-column label="序号" align="center" type="index" min-width="80" />
+        <el-table-column prop="projectName" align="center" label="项目" min-width="100" />
+        <el-table-column prop="price" label="入库总额(万元)" align="center" min-width="100">
           <template slot-scope="scope">
             <el-tag type="success" size="medium">{{ scope.row.price }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center">
+        <el-table-column label="操作" align="center" min-width="100">
           <template slot-scope="scope">
             <el-button :loading="exportLoad" type="success" icon="el-icon-download" size="small" @click="downloadExcel(scope.row)">下载</el-button>
           </template>
@@ -100,7 +100,7 @@ export default {
         if (code === 200) {
           if (data && data.data && data.data.length) {
             this.tableData = data.data.map(v => {
-              v.price = (v.totalPrice / 10000).toFixed(2)
+              v.price = (v.taxIncludedAmount / 10000).toFixed(2)
               return v
             })
             this.total = data.totalCount

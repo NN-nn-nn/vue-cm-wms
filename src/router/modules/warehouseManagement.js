@@ -32,12 +32,12 @@ const warehouseManagementRouter = {
           name: 'WareInWarehouseVerify',
           meta: { title: '入库审核', roles: ['admin'] }
         },
-        {
-          path: '/warehouse-management/material-management/in-warehouse-record',
-          component: () => import('@/views/warehouse-management/material-management/in-warehouse-record'),
-          name: 'WareInWarehouseRecord',
-          meta: { title: '入库记录', roles: ['admin'] }
-        },
+        // {
+        //   path: '/warehouse-management/material-management/in-warehouse-record',
+        //   component: () => import('@/views/warehouse-management/material-management/in-warehouse-record'),
+        //   name: 'WareInWarehouseRecord',
+        //   meta: { title: '入库记录', roles: ['admin'] }
+        // },
         {
           path: '/warehouse-management/material-management/out-warehouse-record',
           component: () => import('@/views/warehouse-management/material-management/out-warehouse-record'),

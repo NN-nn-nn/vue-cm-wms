@@ -49,6 +49,6 @@ export function calcWeightByMateName(length, width, thick, number = 1, name) {
   if (name && name.indexOf('不锈钢') > -1) {
     density = MATERIAL_DENSITY.STAINLESS_STEEL
   }
-  weight = Number((length * width * thick * density * number).toFixed(3))
+  weight = Number((length * width * thick * density * number).toFixed(5))
   return weight
 }

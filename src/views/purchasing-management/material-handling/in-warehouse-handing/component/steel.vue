@@ -60,15 +60,15 @@
     <!-- 主要内容容器 -->
     <div class="content-container">
       <el-table :data="tableData" max-height="600" style="width: 100%" border stripe>
-        <el-table-column label="序号" align="center" type="index" width="50" />
-        <el-table-column prop="province" align="center" label="编号" width="90">
+        <el-table-column label="序号" align="center" type="index" min-width="50" />
+        <el-table-column prop="province" align="center" label="编号" min-width="90">
           <template slot-scope="scope">
             <div class="mask-td">
               <el-tag v-if="scope.row.materialCode" size="medium">{{ scope.row.materialCode }}</el-tag>
             </div>
           </template>
         </el-table-column>
-        <el-table-column :label="`物料类别 \n [名称/种类/材质]`" align="center" width="260">
+        <el-table-column :label="`物料类别 \n [名称/种类/材质]`" align="center" min-width="260">
           <template slot-scope="scope">
             <div class="mask-td">
               <div :class="{'mask-red': scope.row.rules.detailId}" />
@@ -85,7 +85,7 @@
           </template>
         </el-table-column>
         <el-table-column label="规格" align="center">
-          <el-table-column label="规格" align="center" width="150">
+          <el-table-column label="规格" align="center" min-width="150">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" :content="`${scope.row.specification || '暂未填写'}`" placement="top">
                 <div class="mask-td number-input">
@@ -95,7 +95,7 @@
               </el-tooltip>
             </template>
           </el-table-column>
-          <el-table-column :label="`定尺长度(m)`" align="center" width="100">
+          <el-table-column :label="`定尺长度(m)`" align="center" min-width="100">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" :content="`${scope.row.length || 0}`" placement="top">
                 <div class="mask-td number-input">
@@ -107,7 +107,7 @@
           </el-table-column>
         </el-table-column>
 
-        <el-table-column prop="province" :label="`数量 \n (根)`" align="center" width="85">
+        <el-table-column prop="province" :label="`数量 \n (根)`" align="center" min-width="85">
           <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" :content="`${scope.row.number || 0}`" placement="top">
               <div class="mask-td number-input">
@@ -118,18 +118,18 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="province" :label="`总重 \n (t)`" align="center" width="100">
+        <el-table-column prop="province" :label="`总重 \n (t)`" align="center" min-width="120">
           <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" :content="`${scope.row.weight || 0}`" placement="top">
               <div class="mask-td number-input">
                 <div :class="{'mask-red': scope.row.rules.weight}" />
-                <el-input-number v-model="scope.row.weight" controls-position="right" :min="0" :step="0.5" :precision="3" size="mini" @change="() => {scope.row.rules.weight = false;calcNetWeight(scope.row)}" />
+                <el-input-number v-model="scope.row.weight" controls-position="right" :min="0" :step="0.5" :precision="5" size="mini" @change="() => {scope.row.rules.weight = false;calcTotal();calcNetWeight(scope.row)}" />
               </div>
             </el-tooltip>
           </template>
         </el-table-column>
 
-        <el-table-column prop="province" :label="`采购单价 \n (t/元)`" align="center" width="120">
+        <el-table-column prop="province" :label="`采购单价 \n (t/元)`" align="center" min-width="120">
           <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" :content="`${scope.row.purchasePrice || 0}`" placement="top">
               <div class="mask-td number-input">
@@ -140,7 +140,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="province" :label="`含税总额 \n (元)`" align="center" width="100">
+        <el-table-column prop="province" :label="`含税总额 \n (元)`" align="center" min-width="100">
           <template slot-scope="scope">
             <div class="mask-td">
               <el-tag type="success" size="medium">{{ scope.row.taxIncludedAmount || '0.00' }}</el-tag>
@@ -148,7 +148,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="province" :label="`单位净重 \n (kg/㎡)`" align="center" width="100">
+        <el-table-column prop="province" :label="`单位净重 \n (kg/㎡)`" align="center" min-width="100">
           <template slot-scope="scope">
             <div class="mask-td">
               <el-tag type="warning" size="medium">{{ scope.row.netWeight || '0.00' }}</el-tag>
@@ -156,7 +156,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="province" label="品牌" align="center" width="150">
+        <el-table-column prop="province" label="品牌" align="center" min-width="150">
           <template slot-scope="scope">
             <div class="mask-td">
               <div :class="{'mask-red': scope.row.rules.brand}" />
@@ -165,7 +165,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="province" label="供应商" align="center" width="150">
+        <el-table-column prop="province" label="供应商" align="center" min-width="150">
           <template slot-scope="scope">
             <div class="mask-td">
               <div :class="{'mask-red': scope.row.rules.supplierId}" />
@@ -181,7 +181,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="province" label="炉批号" align="center">
+        <el-table-column prop="province" label="炉批号" align="center" min-width="170">
           <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" :content="`${scope.row.furnaceLotNumber || '暂未填写'}`" placement="top">
               <div class="mask-td">
@@ -192,7 +192,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="操作" align="center" width="65">
+        <el-table-column label="操作" align="center" min-width="65">
           <template slot-scope="scope">
             <div class="mask-td" style="justify-content:left">
               <el-button size="small" class="el-icon-delete" type="danger" @click="deleteRow(scope.$index)" />
@@ -462,7 +462,7 @@ export default {
       const number = item.number || 0
       const name = getCascaderNameByIds(this.mateOption, item.materialClassIds, 'id', 'childrenList')
       if (length && width && thickness && number) {
-        item.weight = Number((calcWeightByMateName(length, width, thickness, number, name) / 1000).toFixed(2))
+        item.weight = Number((calcWeightByMateName(length, width, thickness, number, name) / 1000).toFixed(5))
         item.netWeight = (item.weight * 1000 / number / length / width).toFixed(2)
         item.rules.weight = false
       } else {

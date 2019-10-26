@@ -30,6 +30,7 @@
             :disabled="!checkHasProject"
             :show-all-levels="false"
             filterable
+            clearable
             style="width:250px"
             @change="projectChange"
           />
@@ -81,6 +82,7 @@
         style="width: 100%"
       >
         <el-table-column type="index" label="序号" align="center" width="100" />
+        <el-table-column prop="projectName" label="项目名称" align="center" />
         <el-table-column prop="formType" label="物料类型" align="center">
           <template slot-scope="scope">
             <span>{{ materialBaseNum[scope.row.formType] ? materialBaseNum[scope.row.formType].name : '' }}</span>
@@ -176,6 +178,7 @@ export default {
         projectId: undefined,
         formType: undefined,
         status: undefined,
+        month: undefined,
         page: 1,
         size: 10
       }
@@ -198,6 +201,9 @@ export default {
     },
     getList: function() {
       this.listLoading = true
+      if (this.listQuery.projectId === undefined && this.checkHasProject) {
+        this.listQuery.projectId = 0
+      }
       fetchList(this.listQuery).then(({ data, code, message }) => {
         if (code === 200) {
           this.listData = []
@@ -257,13 +263,13 @@ export default {
       this.handleFilter()
     },
     inboundTypeChange: function(check) {
-      if (check) {
-        if (!this.listQuery.projectId && this.projectCascadeList[0] && this.projectCascadeList[0].children[0] && this.projectCascadeList[0].children[0].id) {
-          this.currentProjectId.push(this.projectCascadeList[0].id)
-          this.currentProjectId.push(this.projectCascadeList[0].children[0].id)
-          this.listQuery.projectId = this.currentProjectId[1]
-        }
-      } else {
+      if (!check) {
+      //   if (!this.listQuery.projectId && this.projectCascadeList[0] && this.projectCascadeList[0].children[0] && this.projectCascadeList[0].children[0].id) {
+      //     this.currentProjectId.push(this.projectCascadeList[0].id)
+      //     this.currentProjectId.push(this.projectCascadeList[0].children[0].id)
+      //     this.listQuery.projectId = this.currentProjectId[1]
+      //   }
+      // } else {
         this.currentProjectId = []
         this.listQuery.projectId = undefined
       }

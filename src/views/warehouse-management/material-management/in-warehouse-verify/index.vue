@@ -30,13 +30,18 @@
             :disabled="!checkHasProject"
             :show-all-levels="false"
             filterable
+            clearable
             style="width:250px"
             @change="projectChange"
           />
         </div>
       </div>
       <!-- 右侧box -->
-      <div class="filter-right-box" />
+      <div class="filter-right-box">
+        <div class="filter-item">
+          <el-button type="primary" size="medium" icon="el-icon-view" @click="topDrawerVisible = true">查看所有项目入库总额</el-button>
+        </div>
+      </div>
     </div>
     <div class="filter-container">
       <!-- 左侧box -->
@@ -77,6 +82,7 @@
         style="width: 100%"
       >
         <el-table-column type="index" label="序号" align="center" width="100" />
+        <el-table-column prop="projectName" label="项目名称" align="center" />
         <el-table-column prop="formType" label="物料类型" align="center">
           <template slot-scope="scope">
             <span>{{ materialBaseNum[scope.row.formType] ? materialBaseNum[scope.row.formType].name : '' }}</span>
@@ -121,6 +127,15 @@
       <StripSteel v-if="currentInbound.formType === MATERIAL_BASE_TYPE.stripSteel.index" :detail-id="currentInbound.id" :is-verify="true" @closeEvent="detailVisible = false" @refreshEvent="refreshInfo" />
       <Enclosure v-if="currentInbound.formType === MATERIAL_BASE_TYPE.enclosure.index" :detail-id="currentInbound.id" :is-verify="true" @closeEvent="detailVisible = false" @refreshEvent="refreshInfo" />
     </el-dialog>
+
+    <el-drawer
+      title="项目入库汇总"
+      :visible.sync="topDrawerVisible"
+      direction="rtl"
+      size="50%"
+    >
+      <InboundSummary :visible="topDrawerVisible" />
+    </el-drawer>
   </div>
 </template>
 
@@ -132,19 +147,21 @@ import Steel from '@/views/component/inbound/steel'
 import StripSteel from '@/views/component/inbound/stripSteel'
 import Enclosure from '@/views/component/inbound/enclosure'
 import { changeProjectToCascadeByYear } from '@/utils/other'
+import InboundSummary from '@/views/component/inbound/inboundSummary'
 import { MATERIAL_BASE_TYPE, MATERIAL_BASE_NUM, INBOUND_VERIFY_STATUS } from '@/utils/conventionalContent'
 import { fetchProjectGroupByYear } from '@/api/project'
 import { fetchList } from '@/api/warehouse'
 import { exportInboundExcelByOrderId } from '@/api/exportFiles'
 export default {
   name: 'WareInWarehouseVerify',
-  components: { GeneralMat, SteelPlate, Steel, StripSteel, Enclosure },
+  components: { GeneralMat, SteelPlate, Steel, StripSteel, Enclosure, InboundSummary },
   data() {
     return {
       MATERIAL_BASE_TYPE,
       materialBaseNum: MATERIAL_BASE_NUM,
       inboundVerifyStatus: INBOUND_VERIFY_STATUS,
       exportLoad: [],
+      topDrawerVisible: false,
       checkHasProject: false,
       detailVisible: false,
       currentInbound: {},
@@ -160,6 +177,7 @@ export default {
         projectId: undefined,
         formType: undefined,
         status: undefined,
+        month: undefined,
         page: 1,
         size: 10
       }
@@ -182,6 +200,9 @@ export default {
     },
     getList: function() {
       this.listLoading = true
+      if (this.listQuery.projectId === undefined && this.checkHasProject) {
+        this.listQuery.projectId = 0
+      }
       fetchList(this.listQuery).then(({ data, code, message }) => {
         if (code === 200) {
           this.listData = []
@@ -241,13 +262,14 @@ export default {
       this.handleFilter()
     },
     inboundTypeChange: function(check) {
-      if (check) {
-        if (!this.listQuery.projectId && this.projectCascadeList[0] && this.projectCascadeList[0].children[0] && this.projectCascadeList[0].children[0].id) {
-          this.currentProjectId.push(this.projectCascadeList[0].id)
-          this.currentProjectId.push(this.projectCascadeList[0].children[0].id)
-          this.listQuery.projectId = this.currentProjectId[1]
-        }
-      } else {
+      if (!check) {
+        // if (!this.listQuery.projectId && this.projectCascadeList[0] && this.projectCascadeList[0].children[0] && this.projectCascadeList[0].children[0].id) {
+        //   this.currentProjectId.push(this.projectCascadeList[0].id)
+        //   this.currentProjectId.push(this.projectCascadeList[0].children[0].id)
+        //   this.listQuery.projectId = this.currentProjectId[1]
+        // }
+        // this.listQuery.projectId = 0
+      // } else {
         this.currentProjectId = []
         this.listQuery.projectId = undefined
       }

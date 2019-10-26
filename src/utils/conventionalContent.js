@@ -47,7 +47,7 @@ const MATERIAL_RETURN_INDEX_STATUS = {
 }
 
 const MATERIAL_BASE_TYPE = {
-  steelPlate: { index: 0, name: '钢板', value: 'steelPlate', icon: 'steel-plate', unit: 'kg' },
+  steelPlate: { index: 0, name: '钢板', value: 'steelPlate', icon: 'steel-plate', unit: '张' },
   steel: { index: 1, name: '型钢', value: 'steel', icon: 'steel', unit: 'kg' },
   stripSteel: { index: 2, name: '彩卷/带钢', value: 'stripSteel', icon: 'strip-steel', unit: 'kg' },
   enclosure: { index: 3, name: '成品围护', value: 'enclosure', icon: 'enclosure', unit: 'm' },
@@ -55,7 +55,7 @@ const MATERIAL_BASE_TYPE = {
 }
 
 const MATERIAL_BASE_NUM = {
-  0: { index: 0, name: '钢板', value: 'steelPlate', icon: 'steel-plate', unit: 'kg' },
+  0: { index: 0, name: '钢板', value: 'steelPlate', icon: 'steel-plate', unit: '张' },
   1: { index: 1, name: '型钢', value: 'steel', icon: 'steel', unit: 'kg' },
   2: { index: 2, name: '彩卷/带钢', value: 'stripSteel', icon: 'strip-steel', unit: 'kg' },
   3: { index: 3, name: '成品围护', value: 'enclosure', icon: 'enclosure', unit: 'm' },

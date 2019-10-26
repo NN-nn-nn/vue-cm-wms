@@ -55,10 +55,10 @@
     </div>
     <!-- 其他模块（例如弹窗等） -->
     <el-drawer
-      title="出库单"
+      title="出库记录"
       :visible.sync="drawerVisible"
       direction="rtl"
-      size="60%"
+      size="70%"
     >
       <div slot="title" class="dialog-title">
         <span v-if="listQuery.type == dateType.year" style="font-weight:bold;margin-right:10px;">出库日期：{{ currentTime | parseTime('{y}-{m}') }}</span>
@@ -178,12 +178,13 @@ export default {
     handleMonthData(data) {
       const _dateByDay = []
       const maxDay = Number(moment(this.listQuery.yearAndMonthDate).endOf('month').format('DD'))
+      const _month = Number(moment(this.listQuery.yearAndMonthDate).endOf('month').format('MM'))
       for (let i = 1; i <= maxDay; i++) {
         let temp = i
         if (i < 10) {
           temp = `0${i}`
         }
-        _dateByDay.push({ date: `${i}号`, price: 0, dateTime: moment(`${this.listQuery.yearAndMonthDate}-${temp}`).valueOf() })
+        _dateByDay.push({ date: `${_month}月${i}日`, price: 0, dateTime: moment(`${this.listQuery.yearAndMonthDate}-${temp}`).valueOf() })
       }
       data.forEach(v => {
         const day = moment(v.statisticalDate).date()

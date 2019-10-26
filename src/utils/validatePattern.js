@@ -41,6 +41,11 @@ const validatorCN = {
   message: '请输入中文'
 }
 
+const validatorCNENNUM = {
+  pattern: /^[\u4E00-\u9FA5A-Za-z0-9]+$/,
+  message: '请输入中文、英文或数字'
+}
+
 const validatorBankCard = /^([1-9]{1})(\d{14}|\d{15}|\d{17}|\d{18})$/
 
 // 域名验证
@@ -52,4 +57,4 @@ const validatorDomain2 = /\/$/
 // 银行卡账户
 const validatorBankAcount = /^([1-9]{1})(\d{14}|\d{18})$/
 
-export { validatorCN, validatorEmail, validatorPhone, validatorTel, validatorPwd, validatorPositiveInt, validatorNatural, validatorOneToHundred, validatorIDCard, validatorMoreHundred, validatorEn, validatorBankCard, validatorDomain, validatorDomain2, validatorBankAcount }
+export { validatorCNENNUM, validatorCN, validatorEmail, validatorPhone, validatorTel, validatorPwd, validatorPositiveInt, validatorNatural, validatorOneToHundred, validatorIDCard, validatorMoreHundred, validatorEn, validatorBankCard, validatorDomain, validatorDomain2, validatorBankAcount }

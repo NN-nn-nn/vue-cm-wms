@@ -394,7 +394,7 @@ export function setInfoOfTree(pendingArr, childFieldName, needChangeField, infoF
     }
     if (currentIndex < pollingLimit && !!pendingArr) {
       pendingArr.forEach(c => {
-        setInfoOfTree(c[childFieldName], childFieldName, needChangeField, infoField, pollingLimit, ++currentIndex)
+        setInfoOfTree(c[childFieldName], childFieldName, needChangeField, infoField, pollingLimit, currentIndex + 1)
       })
     }
   }

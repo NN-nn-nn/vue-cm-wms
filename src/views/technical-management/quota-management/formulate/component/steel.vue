@@ -56,10 +56,10 @@
             </template>
           </el-table-column>
         </el-table-column>
-        <el-table-column label="重量(T)" width="160" align="center">
+        <el-table-column label="重量(t)" width="160" align="center">
           <template slot-scope="scope">
             <div class="mask-td">
-              <el-tag v-if="!scope.row.isHistory">{{ scope.row.weight | toFixed(3) }}</el-tag>
+              <el-tag v-if="!scope.row.isHistory">{{ scope.row.weight | toFixed(5) }}</el-tag>
               <el-input v-else v-model="scope.row.weight" placeholder @change="scope.row.rules.weight = false" />
             </div>
           </template>
@@ -177,7 +177,7 @@
             <el-table-column property="length" label="定尺长度(m)" width="130" align="center" />
           </el-table-column>
           <el-table-column property="number" label="数量" align="center" />
-          <el-table-column property="weight" :label="`总重 \n(kg)`" align="center" />
+          <el-table-column property="weight" :label="`总重 \n(t)`" align="center" />
         </el-table>
         <div class="page-nation">
           <el-pagination

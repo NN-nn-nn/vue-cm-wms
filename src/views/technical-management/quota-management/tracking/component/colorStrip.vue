@@ -54,22 +54,22 @@
             <el-tag>{{ scope.row.color }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column :label="`定额总重 \n(kg)`" width="150" align="center">
+        <el-table-column :label="`定额总重 \n(t)`" width="150" align="center">
           <template slot-scope="scope">
             <el-tag>{{ scope.row.quotaWeight | toFixed(3) }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column :label="`实际采购 \n(kg)`" width="150" align="center">
+        <el-table-column :label="`实际采购 \n(t)`" width="150" align="center">
           <template slot-scope="scope">
             <el-tag>{{ scope.row.actualStorageWeight | toFixed(2) }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column :label="`实际使用 \n(kg)`" width="150" align="center">
+        <el-table-column :label="`实际使用 \n(t)`" width="150" align="center">
           <template slot-scope="scope">
             <el-tag>{{ scope.row.actualUseWeight | toFixed(2) }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column :label="`差值 \n(kg)`" align="center">
+        <el-table-column :label="`差值 \n(t)`" align="center">
           <template slot-scope="scope">
             <span :class="scope.row.difference<0?'red': 'green'">{{ scope.row.difference }}</span>
           </template>

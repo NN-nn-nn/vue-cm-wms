@@ -35,31 +35,31 @@
     <!-- 主要内容容器 -->
     <div class="content-container">
       <el-table v-loading="tableLoading" :data="listDetail.detailList" max-height="600" style="width: 100%" border stripe>
-        <el-table-column label="序号" align="center" type="index" width="80" />
-        <el-table-column prop="materialCode" align="center" label="编号" width="120">
+        <el-table-column label="序号" align="center" type="index" min-width="80" />
+        <el-table-column prop="materialCode" align="center" label="编号" min-width="120">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.materialCode" size="medium">{{ scope.row.materialCode }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="物料类别" align="center">
-          <el-table-column prop="typeName" label="名称" align="center" width="120" />
-          <el-table-column prop="className" label="种类" align="center" width="120" />
-          <el-table-column prop="detailName" label="材质" align="center" width="120" />
-          <el-table-column prop="unit" label="单位" align="center" width="90" />
+          <el-table-column prop="typeName" label="名称" align="center" min-width="120" />
+          <el-table-column prop="className" label="种类" align="center" min-width="120" />
+          <el-table-column prop="detailName" label="材质" align="center" min-width="120" />
+          <el-table-column prop="unit" label="单位" align="center" min-width="90" />
         </el-table-column>
-        <el-table-column prop="number" label="数量" align="center" width="110" />
-        <el-table-column prop="purchasePrice" :label="`采购单价(元)`" align="center" width="90">
+        <el-table-column prop="number" label="数量" align="center" min-width="110" />
+        <el-table-column prop="purchasePrice" :label="`采购单价(元)`" align="center" min-width="90">
           <template slot-scope="scope">
             <span>{{ scope.row.purchasePrice | toFixed(2) }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="taxIncludedAmount" :label="`总价(元)`" align="center" width="100">
+        <el-table-column prop="taxIncludedAmount" :label="`总价(元)`" align="center" min-width="100">
           <template slot-scope="scope">
             <el-tag type="success" size="medium">{{ scope.row.taxIncludedAmount | toFixed(2) }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="brand" label="品牌" align="center" width="200" />
-        <el-table-column prop="supplierName" label="供应商" align="center" />
+        <el-table-column prop="brand" label="品牌" align="center" min-width="160" />
+        <el-table-column prop="supplierName" label="供应商" align="center" min-width="160" />
       </el-table>
     </div>
     <div class="footer-toolbar">

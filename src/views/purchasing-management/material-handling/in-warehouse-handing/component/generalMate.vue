@@ -60,15 +60,15 @@
     <!-- 主要内容容器 -->
     <div class="content-container">
       <el-table :data="tableData" max-height="600" style="width: 100%" border stripe>
-        <el-table-column label="序号" align="center" type="index" width="80" />
-        <el-table-column prop="province" align="center" label="编号" width="120">
+        <el-table-column label="序号" align="center" type="index" min-width="80" />
+        <el-table-column prop="province" align="center" label="编号" min-width="100">
           <template slot-scope="scope">
             <div class="mask-td">
               <el-tag v-if="scope.row.materialCode" size="medium">{{ scope.row.materialCode }}</el-tag>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="物料类别 | 名称/种类/材质" align="center" width="300">
+        <el-table-column label="物料类别 | 名称/种类/材质" align="center" min-width="300">
           <template slot-scope="scope">
             <div class="mask-td">
               <div :class="{'mask-red': scope.row.rules.detailId}" />
@@ -85,7 +85,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="province" label="颜色" align="center" width="110">
+        <el-table-column prop="province" label="颜色" align="center" min-width="110">
           <template slot-scope="scope">
             <div class="mask-td">
               <div :class="{'mask-red': scope.row.rules.color}" />
@@ -94,7 +94,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="province" label="数量" align="center" width="170">
+        <el-table-column prop="province" label="数量" align="center" min-width="150">
           <template slot-scope="scope">
             <div class="mask-td">
               <div :class="{'mask-red': scope.row.rules.number}" />
@@ -103,7 +103,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="province" label="采购单价(元)" align="center" width="190">
+        <el-table-column prop="province" label="采购单价(元)" align="center" min-width="160">
           <template slot-scope="scope">
             <div class="mask-td">
               <div :class="{'mask-red': scope.row.rules.purchasePrice}" />
@@ -112,7 +112,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="province" label="含税总额(元)" align="center" width="130">
+        <el-table-column prop="province" label="含税总额(元)" align="center" min-width="130">
           <template slot-scope="scope">
             <div class="mask-td">
               <el-tag type="success" size="medium">{{ (scope.row.purchasePrice || 0) * (scope.row.number || 0) | toFixed(2) }}</el-tag>
@@ -120,7 +120,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="province" label="品牌" align="center" width="200">
+        <el-table-column prop="province" label="品牌" align="center" min-width="200">
           <template slot-scope="scope">
             <div class="mask-td">
               <div :class="{'mask-red': scope.row.rules.brand}" />
@@ -129,7 +129,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="province" label="供应商" align="center" width="200">
+        <el-table-column prop="province" label="供应商" align="center" min-width="200">
           <template slot-scope="scope">
             <div class="mask-td">
               <div :class="{'mask-red': scope.row.rules.supplierId}" />
@@ -141,6 +141,14 @@
                   :value="item.id"
                 />
               </el-select>
+            </div>
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="province" label="备注" align="center" width="200">
+          <template slot-scope="scope">
+            <div class="mask-td">
+              <el-input v-model="scope.row.tip" size="small" placeholder="备注" />
             </div>
           </template>
         </el-table-column>

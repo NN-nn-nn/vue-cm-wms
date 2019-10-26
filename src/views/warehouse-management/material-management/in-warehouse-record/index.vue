@@ -175,6 +175,7 @@ export default {
         projectId: undefined,
         formType: undefined,
         status: undefined,
+        month: undefined,
         page: 1,
         size: 10
       }

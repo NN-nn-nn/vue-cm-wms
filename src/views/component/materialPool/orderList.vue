@@ -23,8 +23,13 @@
             <span>{{ `${scope.row.typeName} - ${scope.row.className} - ${scope.row.detailName}` }}</span>
           </template>
         </el-table-column>
+        <el-table-column label="规格" align="center" min-width="125">
+          <template slot-scope="scope">
+            <el-tag v-if="scope.row.newSpecification" type="info" size="medium">{{ scope.row.newSpecification }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column prop="unit" label="单位" align="center" width="80" />
-        <el-table-column prop="weight" label="重量" align="center" width="80" />
+        <el-table-column prop="weight" label="重量(kg)" align="center" width="80" />
         <el-table-column prop="number" label="出库数量" align="center" width="80">
           <template slot-scope="scope">
             <template v-if="scope.row.edit">
@@ -108,6 +113,18 @@ export default {
             this.tableData = data.map(v => {
               this.$set(v, 'edit', false)
               v.originalNum = v.number
+              if (+v.formType === this.materialBaseType.material.index) {
+                v.newSpecification = v.specification
+              }
+              if (+v.formType === this.materialBaseType.steelPlate.index || +v.formType === this.materialBaseType.stripSteel.index) {
+                v.newSpecification = `${v.length} * ${v.width} * ${v.thickness}`
+              }
+              if (+v.formType === this.materialBaseType.steel.index) {
+                v.newSpecification = `${v.specification} * ${v.length}`
+              }
+              if (+v.formType === this.materialBaseType.enclosure.index) {
+                v.newSpecification = `${v.specification} * ${v.length} * ${v.thickness}`
+              }
               return v
             })
           }

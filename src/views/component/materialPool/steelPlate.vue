@@ -12,47 +12,52 @@
     <!-- 主要内容容器 -->
     <div class="content-container" style="margin-bottom:80px">
       <el-table ref="poolTable" v-loading="tableLoading" :data="tableData" style="width: 100%" border stripe @select-all="selectAllChange" @selection-change="handleSelectionChange">
-        <el-table-column align="center" type="selection" width="55" :selectable="(row,index) =>{return !materialMoveMode || moveType != materialMoveType.partyA || row.storageListType == materialInboundType.partyA}" @select="selectChange" />
-        <el-table-column label="序号" align="center" type="index" width="80" />
-        <el-table-column prop="materialCode" align="center" label="编号" width="100">
+        <el-table-column align="center" type="selection" min-width="55" :selectable="(row,index) =>{return !materialMoveMode || moveType != materialMoveType.partyA || row.storageListType == materialInboundType.partyA}" @select="selectChange" />
+        <el-table-column label="序号" align="center" type="index" min-width="80">
+          <template slot-scope="scope">
+            <div v-if="scope.row.storageListType == materialInboundType.partyA" class="party-tip">甲供</div>
+            <span>{{ scope.$index + 1 }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="materialCode" align="center" label="编号" min-width="100">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.materialCode" size="medium">{{ scope.row.materialCode }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="物料类别" align="center">
-          <el-table-column prop="typeName" label="名称" align="center" width="90" />
-          <el-table-column prop="className" label="种类" align="center" width="90" />
-          <el-table-column prop="detailName" label="材质" align="center" width="90" />
+          <el-table-column prop="typeName" label="名称" align="center" min-width="90" />
+          <el-table-column prop="className" label="种类" align="center" min-width="90" />
+          <el-table-column prop="detailName" label="材质" align="center" min-width="90" />
         </el-table-column>
         <el-table-column label="规格" align="center">
-          <el-table-column prop="length" label="长(m)" align="center" width="70">
+          <el-table-column prop="length" label="长(m)" align="center" min-width="70">
             <template slot-scope="scope">
               <span>{{ scope.row.length | toFixed(2) }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="width" label="宽(m)" align="center" width="70">
+          <el-table-column prop="width" label="宽(m)" align="center" min-width="70">
             <template slot-scope="scope">
               <span>{{ scope.row.width | toFixed(2) }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="thickness" label="厚(mm)" align="center" width="70">
+          <el-table-column prop="thickness" label="厚(mm)" align="center" min-width="70">
             <template slot-scope="scope">
               <span>{{ scope.row.thickness | toFixed(2) }}</span>
             </template>
           </el-table-column>
         </el-table-column>
-        <el-table-column prop="theoryThickness" :label="`理论 \n 厚度 \n (mm)`" align="center" width="70">
+        <el-table-column prop="theoryThickness" :label="`理论 \n 厚度 \n (mm)`" align="center" min-width="70">
           <template slot-scope="scope">
             <span>{{ scope.row.theoryThickness }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="number" :label="`数量 \n (张)`" align="center" width="70" />
-        <el-table-column prop="weight" :label="`总重 \n (t)`" align="center" width="80">
+        <el-table-column prop="number" :label="`数量 \n (张)`" align="center" min-width="70" />
+        <el-table-column prop="weight" :label="`总重 \n (t)`" align="center" min-width="100">
           <template slot-scope="scope">
-            <span>{{ scope.row.weight | toFixed(3) }}</span>
+            <span>{{ scope.row.weight | toFixed(5) }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="purchasePrice" :label="`采购单价 \n (t/元)`" align="center" width="110">
+        <el-table-column prop="purchasePrice" :label="`采购单价 \n (t/元)`" align="center" min-width="110">
           <template slot-scope="scope">
             <div class="mask-td number-input">
               <div :class="{'mask-red': scope.row.priceError}" />
@@ -61,16 +66,16 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="brand" label="品牌" align="center" width="140" />
-        <el-table-column prop="furnaceLotNumber" label="炉批号" align="center" min-width="210" />
-        <el-table-column v-if="materialMoveMode" prop="purchasePrice" :label="`含税总额 \n (元)`" align="center" width="90">
+        <el-table-column prop="brand" label="品牌" align="center" min-width="140" />
+        <el-table-column prop="furnaceLotNumber" label="炉批号" align="center" min-width="170" />
+        <el-table-column v-if="materialMoveMode" prop="purchasePrice" :label="`含税总额 \n (元)`" align="center" min-width="90">
           <template slot-scope="scope">
             <el-tag type="success" size="medium">{{ (scope.row.weight || 0 ) * (scope.row.purchasePrice || 0) | toFixed(2) }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column v-if="!materialMoveMode" label="操作" align="center" min-width="200">
           <template slot-scope="scope">
-            <el-tooltip class="item" effect="dark" :content="`入库单号：${scope.row.storageListNo || '无'}`" placement="top" :disabled="poolType == materialPoolType.remainder || !scope.row.storageListNo">
+            <el-tooltip class="item" effect="dark" :content="`入库单号：${scope.row.storageListNo || '无'}`" placement="left" :disabled="poolType == materialPoolType.remainder || !scope.row.storageListNo">
               <el-button type="primary" size="small" @click="handlingOut(scope.row)">办理出库</el-button>
             </el-tooltip>
             <el-button type="success" size="small" @click="printLabel(scope.row)">打印标签</el-button>
@@ -257,13 +262,13 @@ export default {
   },
   mounted() {
     this.getList()
-    this.getProjectYearCascade()
+    // this.getProjectYearCascade()
   },
   methods: {
     handlingOut: function(item) {
       this.handingOutVisible = true
       this.currentMaterial = item
-      this.selectDefaultProject()
+      // this.selectDefaultProject()
     },
     async materialMove() {
       if (!(this.multipleSelection && this.multipleSelection.length)) {
@@ -341,10 +346,14 @@ export default {
         page: this.listQuery.page,
         size: this.listQuery.size
       }
+      if (this.listQuery.projectId === -1) {
+        this.tableData = []
+        return
+      }
       this.tableLoading = true
-      this.tableData = []
       fetchMaterialPool(this.listQuery).then(({ data, code, message }) => {
         if (code === 200) {
+          this.tableData = []
           if (data && data.data) {
             this.tableData = data.data.map(v => {
               // v.isProvideMate = Number(v.storageListType) === this.materialInboundType.partyA && !v.purchasePrice
@@ -604,9 +613,27 @@ export default {
 }
 .material-pool-component .el-table--medium td {
   padding: 0;
+  overflow: hidden!important;
+
 }
 .material-pool-component .number-input .el-input-number.is-controls-right .el-input__inner {
   padding-left: 0;
   padding-right: 25px;
+}
+.material-pool-component .party-tip {
+    background: #e64242;
+    transform:  rotate(-45deg);
+    color: white;
+    font-weight: 100;
+    position: absolute;
+    top: 5px;
+    left: -20px;
+    right: 0;
+    width: 70px;
+    height: 20px;
+    font-size: 11px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 </style>

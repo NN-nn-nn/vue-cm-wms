@@ -5,22 +5,22 @@
     <div class="filter-container">
       <!-- 左侧box -->
       <div class="filter-left-box">
-        <div class="filter-item">
+        <!-- <div class="filter-item">
           <el-radio-group v-model="listQuery.materialPoolType" size="medium" @change="getList">
             <el-radio-button :label="materialPoolType.entire">整料库存</el-radio-button>
             <el-radio-button :label="materialPoolType.remainder" :disabled="currentClassId[0] == materialBaseType.material.index">余料库存</el-radio-button>
           </el-radio-group>
-        </div>
+        </div> -->
         <div class="filter-item">
           <el-radio-group v-model="checkHasProject" size="medium" @change="inboundTypeChange">
-            <el-radio-button :label="false" :disabled="materialMoveMode && (listQuery.moveType != materialMoveType.scrap)">常规入库</el-radio-button>
-            <el-radio-button :label="true">项目入库</el-radio-button>
+            <el-radio-button :label="false" :disabled="materialMoveMode && (listQuery.moveType != materialMoveType.scrap)">常规出库</el-radio-button>
+            <el-radio-button :label="true">项目出库</el-radio-button>
           </el-radio-group>
         </div>
         <div class="filter-item">
           <el-cascader
             v-model="currentProjectId"
-            placeholder="试试搜索：项目名称"
+            placeholder="请选择项目"
             :options="projectCascadeList"
             :props="{ value: 'id', label: 'name', children: 'children', expandTrigger: 'hover' }"
             :disabled="!checkHasProject"
@@ -49,6 +49,17 @@
         </div>
         <div v-show="!materialMoveMode" class="filter-item">
           <el-button type="success" size="medium" icon="el-icon-printer" @click="batchPrintLabel">标签打印</el-button>
+        </div>
+      </div>
+    </div>
+    <div class="filter-container">
+      <!-- 左侧box -->
+      <div class="filter-left-box">
+        <div class="filter-item">
+          <el-radio-group v-model="listQuery.materialPoolType" size="medium" @change="getList">
+            <el-radio-button :label="materialPoolType.entire">整料库存</el-radio-button>
+            <el-radio-button :label="materialPoolType.remainder" :disabled="currentClassId[0] == materialBaseType.material.index">余料库存</el-radio-button>
+          </el-radio-group>
         </div>
       </div>
     </div>
@@ -283,14 +294,15 @@ export default {
     },
     inboundTypeChange: function(check) {
       if (check) {
-        if (!this.listQuery.projectId && this.projectCascadeList[0] && this.projectCascadeList[0].children[0] && this.projectCascadeList[0].children[0].id) {
-          this.currentProjectId.push(this.projectCascadeList[0].id)
-          this.currentProjectId.push(this.projectCascadeList[0].children[0].id)
-          this.listQuery.projectId = this.currentProjectId[1]
-          if (!this.materialMoveMode) {
-            this.listQuery.moveType = this.materialMoveType.common
-          }
+        // if (!this.listQuery.projectId && this.projectCascadeList[0] && this.projectCascadeList[0].children[0] && this.projectCascadeList[0].children[0].id) {
+        //   this.currentProjectId.push(this.projectCascadeList[0].id)
+        //   this.currentProjectId.push(this.projectCascadeList[0].children[0].id)
+        //   this.listQuery.projectId = this.currentProjectId[1]
+        this.listQuery.projectId = -1
+        if (!this.materialMoveMode) {
+          this.listQuery.moveType = this.materialMoveType.common
         }
+        // }
       } else {
         this.currentProjectId = []
         this.listQuery.projectId = undefined

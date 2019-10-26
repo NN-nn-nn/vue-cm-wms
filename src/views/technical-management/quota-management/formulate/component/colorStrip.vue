@@ -76,9 +76,9 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="总重(kg)" width="140" align="center">
+        <el-table-column label="总重(t)" width="140" align="center">
           <template slot-scope="scope">
-            <el-tag v-if="!scope.row.isHistory">{{ scope.row.weight | toFixed(3) }}</el-tag>
+            <el-tag v-if="!scope.row.isHistory">{{ scope.row.weight | toFixed(5) }}</el-tag>
             <el-tag
               v-else
             >{{ scope.row.weight?scope.row.weight:0 }}</el-tag>

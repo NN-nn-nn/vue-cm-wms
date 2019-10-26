@@ -14,6 +14,11 @@
         <el-table-column prop="detailName" label="材质" align="center" width="90" />
         <el-table-column prop="unit" label="单位" align="center" width="90" />
       </el-table-column>
+      <el-table-column label="规格" align="center" min-width="125">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.newSpecification" type="info" size="medium">{{ scope.row.newSpecification }}</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column prop="number" :label="`数量 \n (张)`" align="center" width="70" />
       <el-table-column prop="purchasePrice" :label="`单价 \n (t/元)`" align="center" width="110">
         <template slot-scope="scope">
@@ -40,6 +45,7 @@
 
 <script>
 import moment from 'moment'
+import { MATERIAL_BASE_TYPE } from '@/utils/conventionalContent'
 import { fetchOutboundRecordDetailByNormal, fetchOutboundRecordDetailByProject } from '@/api/warehouse'
 
 export default {
@@ -68,6 +74,7 @@ export default {
   },
   data() {
     return {
+      materialBaseType: MATERIAL_BASE_TYPE,
       listDateType: {
         month: 1,
         year: 2
@@ -124,7 +131,22 @@ export default {
         if (code === 200) {
           this.tableData = []
           if (data && data.data && data.data.length) {
-            this.tableData = data.data
+            this.tableData = data.data.map(v => {
+              console.log(v)
+              if (+v.formType === this.materialBaseType.material.index) {
+                v.newSpecification = v.specification
+              }
+              if (+v.formType === this.materialBaseType.steelPlate.index || +v.formType === this.materialBaseType.stripSteel.index) {
+                v.newSpecification = `${v.length} * ${v.width} * ${v.thickness}`
+              }
+              if (+v.formType === this.materialBaseType.steel.index) {
+                v.newSpecification = `${v.specification} * ${v.length}`
+              }
+              if (+v.formType === this.materialBaseType.enclosure.index) {
+                v.newSpecification = `${v.specification} * ${v.length} * ${v.thickness}`
+              }
+              return v
+            })
           }
           this.total = data.totalCount
         } else {
@@ -133,6 +155,7 @@ export default {
         this.tableLoading = false
       }).catch(e => {
         this.tableLoading = false
+        console.log(e)
         this.$message({ message: '获取详情失败', type: 'error' })
       })
     },
@@ -149,7 +172,21 @@ export default {
         if (code === 200) {
           this.tableData = []
           if (data && data.data && data.data.length) {
-            this.tableData = data.data
+            this.tableData = data.data.map(v => {
+              if (+v.formType === this.materialBaseType.material.index) {
+                v.newSpecification = v.specification
+              }
+              if (+v.formType === this.materialBaseType.steelPlate.index || +v.formType === this.materialBaseType.stripSteel.index) {
+                v.newSpecification = `${v.length} * ${v.width} * ${v.thickness}`
+              }
+              if (+v.formType === this.materialBaseType.steel.index) {
+                v.newSpecification = `${v.specification} * ${v.length}`
+              }
+              if (+v.formType === this.materialBaseType.enclosure.index) {
+                v.newSpecification = `${v.specification} * ${v.length} * ${v.thickness}`
+              }
+              return v
+            })
           }
           this.total = data.totalCount
         } else {

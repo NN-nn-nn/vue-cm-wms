@@ -35,63 +35,63 @@
     <!-- 主要内容容器 -->
     <div class="content-container">
       <el-table v-loading="tableLoading" :data="listDetail.detailList" max-height="600" style="width: 100%" border stripe @selection-change="handleSelectionChange">
-        <el-table-column align="center" type="selection" width="55" :selectable="(row,index) =>{return row.checkAble}" />
-        <el-table-column label="序号" align="center" type="index" width="80" />
-        <el-table-column prop="materialCode" align="center" label="编号" width="120">
+        <el-table-column align="center" type="selection" min-width="55" :selectable="(row,index) =>{return row.checkAble}" />
+        <el-table-column label="序号" align="center" type="index" min-width="80" />
+        <el-table-column prop="materialCode" align="center" label="编号" min-width="120">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.materialCode" size="medium">{{ scope.row.materialCode }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="className" label="状态" align="center" width="100">
+        <el-table-column prop="className" label="状态" align="center" min-width="100">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.returnStatus == 0" :type="materialReturnIndexStatus[scope.row.status].tip" size="medium">{{ materialReturnIndexStatus[scope.row.status].name }}</el-tag>
             <el-tag v-else type="warning" size="medium">正在办理</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="物料类别" align="center">
-          <el-table-column prop="typeName" label="名称" align="center" width="90" />
-          <el-table-column prop="className" label="种类" align="center" width="90" />
-          <el-table-column prop="detailName" label="材质" align="center" width="90" />
+          <el-table-column prop="typeName" label="名称" align="center" min-width="90" />
+          <el-table-column prop="className" label="种类" align="center" min-width="90" />
+          <el-table-column prop="detailName" label="材质" align="center" min-width="90" />
         </el-table-column>
-        <el-table-column prop="color" label="颜色" align="center" width="110" />
+        <el-table-column prop="color" label="颜色" align="center" min-width="110" />
         <el-table-column label="规格" align="center">
-          <el-table-column prop="length" label="长(m)" align="center" width="100">
+          <el-table-column prop="length" label="长(m)" align="center" min-width="100">
             <template slot-scope="scope">
               <span>{{ scope.row.length | toFixed(2) }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="width" label="宽(m)" align="center" width="70">
+          <el-table-column prop="width" label="宽(m)" align="center" min-width="70">
             <template slot-scope="scope">
-              <span>{{ scope.row.width | toFixed(2) }}</span>
+              <span>{{ scope.row.width | toFixed(3) }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="thickness" label="厚(mm)" align="center" width="80">
+          <el-table-column prop="thickness" label="厚(mm)" align="center" min-width="80">
             <template slot-scope="scope">
               <span>{{ scope.row.thickness | toFixed(3) }}</span>
             </template>
           </el-table-column>
         </el-table-column>
-        <el-table-column prop="weight" :label="`总重 \n (t)`" align="center" width="80">
+        <el-table-column prop="weight" :label="`总重 \n (t)`" align="center" min-width="100">
           <template slot-scope="scope">
-            <span>{{ scope.row.weight | toFixed(3) }}</span>
+            <span>{{ scope.row.weight | toFixed(5) }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="purchasePrice" :label="`采购单价 \n (t/元)`" align="center" width="90">
+        <el-table-column prop="purchasePrice" :label="`采购单价 \n (t/元)`" align="center" min-width="90">
           <template slot-scope="scope">
             <span>{{ scope.row.purchasePrice | toFixed(2) }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="taxIncludedAmount" :label="`含税总额 \n (元)`" align="center" width="100">
+        <el-table-column prop="taxIncludedAmount" :label="`含税总额 \n (元)`" align="center" min-width="100">
           <template slot-scope="scope">
             <el-tag type="success" size="medium">{{ scope.row.taxIncludedAmount | toFixed(2) }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="unitAmount" :label="`单位净重 \n (kg/m)`" align="center" width="100">
+        <el-table-column prop="unitAmount" :label="`单位净重 \n (kg/m)`" align="center" min-width="100">
           <template slot-scope="scope">
             <el-tag type="success" size="medium">{{ scope.row.unitNetWeight | toFixed(2) }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="brand" label="品牌" align="center" width="140" />
+        <el-table-column prop="brand" label="品牌" align="center" min-width="140" />
         <el-table-column prop="supplierName" label="供应商" align="center" min-width="140" />
       </el-table>
     </div>

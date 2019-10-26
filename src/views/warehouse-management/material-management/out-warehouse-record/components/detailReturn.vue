@@ -2,25 +2,25 @@
   <!-- 主要内容容器 -->
   <div class="content-container">
     <el-table ref="poolTable" v-loading="tableLoading" :data="tableData" style="width: 100%" border stripe>
-      <el-table-column label="序号" align="center" type="index" width="80" />
-      <el-table-column prop="materialCode" align="center" label="编号" width="100">
+      <el-table-column label="序号" align="center" type="index" min-width="80" />
+      <el-table-column prop="materialCode" align="center" label="编号" min-width="100">
         <template slot-scope="scope">
           <el-tag size="medium">{{ scope.row.materialCode }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="物料类别" align="center">
-        <el-table-column prop="typeName" label="名称" align="center" width="90" />
-        <el-table-column prop="className" label="种类" align="center" width="90" />
-        <el-table-column prop="detailName" label="材质" align="center" width="90" />
-        <el-table-column prop="unit" label="单位" align="center" width="90" />
+        <el-table-column prop="typeName" label="名称" align="center" min-width="90" />
+        <el-table-column prop="className" label="种类" align="center" min-width="90" />
+        <el-table-column prop="detailName" label="材质" align="center" min-width="90" />
+        <el-table-column prop="unit" label="单位" align="center" min-width="90" />
       </el-table-column>
-      <el-table-column label="规格" align="center">
+      <el-table-column label="规格" align="center" min-width="125">
         <template slot-scope="scope">
           <el-tag v-if="scope.row.newSpecification" type="success" size="medium">{{ scope.row.newSpecification }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="number" :label="`数量 \n (张)`" align="center" />
-      <el-table-column prop="number" :label="`重量 \n (kg)`" align="center">
+      <el-table-column prop="number" :label="`数量 \n (张)`" align="center" min-width="90" />
+      <el-table-column prop="number" :label="`重量 \n (kg)`" align="center" min-width="120">
         <template slot-scope="scope">
           <el-tag type="warning" size="medium">{{ scope.row.weight }}</el-tag>
         </template>
