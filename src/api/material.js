@@ -156,3 +156,12 @@ export function updateScrap(data) {
     data
   })
 }
+
+// 获取库存预警列表
+export function fetchInventoryWarningList(query) {
+  return request({
+    url: '/material-detail/inventory/reminder/list',
+    method: 'get',
+    params: query
+  })
+}
