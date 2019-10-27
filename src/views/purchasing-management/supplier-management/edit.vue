@@ -262,8 +262,14 @@ export default {
         detail({ id: this.id }).then(res => {
           if (res.data && res.code === 200) {
             this.ruleForm = res.data
-            const areaArr = [this.ruleForm.stateId, this.ruleForm.cityId, this.ruleForm.regionId]
-            this.ruleForm.area = [...areaArr]
+            if (Number(this.ruleForm.regionId) === 0) {
+              const areaArr = [this.ruleForm.stateId, this.ruleForm.cityId]
+              this.ruleForm.area = [...areaArr]
+            } else {
+              const areaArr = [this.ruleForm.stateId, this.ruleForm.cityId, this.ruleForm.regionId]
+              this.ruleForm.area = [...areaArr]
+            }
+
             const arr = []
             this.ruleForm.state = this.ruleForm.stateId
             this.ruleForm.city = this.ruleForm.cityId

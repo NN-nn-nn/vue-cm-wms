@@ -288,9 +288,9 @@ export default {
       })
     },
     selArea(val) {
-      this.ruleForm.state = val[0]
-      this.ruleForm.city = val[1]
-      this.ruleForm.region = val[2]
+      this.ruleForm.state = val[0] || ''
+      this.ruleForm.city = val[1] || ''
+      this.ruleForm.region = val[2] || ''
       this.options.forEach((v, index) => {
         if (v.id === val[0]) {
           this.ruleForm.stateName = v.name
