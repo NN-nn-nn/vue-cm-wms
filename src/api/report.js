@@ -7,3 +7,12 @@ export function fetchList(query) {
     params: query
   })
 }
+
+//  生产成本分析
+export function productCost(data) {
+  return request({
+    url: '/report-form/find/production-cost-analysis',
+    method: 'post',
+    data
+  })
+}
