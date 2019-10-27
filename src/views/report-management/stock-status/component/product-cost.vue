@@ -1,6 +1,6 @@
 <template>
   <!-- 页面主容器 -->
-  <div class="page-container myEcharts">
+  <div class="myEcharts">
     <!-- 查询容器 -->
     <div class="filter-container">
       <!-- 左侧box -->
@@ -44,19 +44,25 @@
         <el-table-column prop="month" label="月份" width="120" align="center" />
         <el-table-column prop="output" :label="`产量 \n (t)`" width="150" align="center" />
         <el-table-column :label="`消耗明细(不含主材和油漆) \n 单位：元`" align="center">
-          <el-table-column prop="utility" label="水电费" align="center" />
-          <template slot-scope>
+          <template>
+            <!--
+              :prop="item.details.totalMoney"
+              -->
             <el-table-column
               v-for="(item, index) in dataHead"
               :key="index"
-              :prop="item.details.totalMoney"
               :label="item.typeName"
               align="center"
-            />
+              min-width="100"
+            >
+              <template slot-scope="scope">
+                <span>{{ item.newDetails[scope.row.value - 1].totalMoney }}</span>
+              </template>
+            </el-table-column>
           </template>
 
           <el-table-column prop="sumMoney" label="总额" align="center" />
-          <el-table-column prop="date" label="平均成本" align="center" />
+          <el-table-column prop="average" label="平均成本" align="center" />
         </el-table-column>
       </el-table>
     </div>
@@ -69,6 +75,20 @@ import moment from 'moment'
 import { productCost } from '@/api/report'
 import { fetchTypeList } from '@/api/material'
 import { dataMonth } from '@/utils/product-cost'
+const monthData = [
+  { month: 1, totalMoney: 0 },
+  { month: 2, totalMoney: 0 },
+  { month: 3, totalMoney: 0 },
+  { month: 4, totalMoney: 0 },
+  { month: 5, totalMoney: 0 },
+  { month: 6, totalMoney: 0 },
+  { month: 7, totalMoney: 0 },
+  { month: 8, totalMoney: 0 },
+  { month: 9, totalMoney: 0 },
+  { month: 10, totalMoney: 0 },
+  { month: 11, totalMoney: 0 },
+  { month: 12, totalMoney: 0 }
+]
 export default {
   name: 'ReportManagementProduct',
   data() {
@@ -86,6 +106,7 @@ export default {
   },
   mounted() {
     this.getList()
+    this.data = JSON.parse(JSON.stringify(dataMonth))
   },
   methods: {
     getList() {
@@ -93,45 +114,35 @@ export default {
       this.dataHead = []
       productCost(this.queryParams).then(({ data, code, message }) => {
         if (code === 200) {
-          this.loading = false
-          data.forEach((v, index) => {
-            let headerObj = {}
-            if (v.typeName !== '水电费' && v.typeName !== '产量(t)' && v.details.length) {
-              headerObj = Object.assign({}, v)
-              this.dataHead.push(headerObj)
-            }
-            console.log(this.dataHead)
-
-            this.data.map(da => {
-              v.details.forEach((item, index) => {
-                if (Number(v.typeId) === 0) {
-                  if (v.typeName === '水电费' && item.month === da.value) {
-                    da.utility = item.totalMoney
-                  }
-                  if (v.typeName === '产量(t)' && item.month === da.value) {
-                    da.output = item.totalMoney
-                  }
-                } else {
-                  const arr = []
-                  if (item.month === da.value) {
-                    arr.push(item)
-                    da.details = arr
-                  }
-                  console.log(arr)
-                  da.details = arr
-                }
-
-                return da
-              })
+          if (data && data.length) {
+            data.forEach(v => {
+              if (v && v.details) {
+                const _tempData = JSON.parse(JSON.stringify(monthData))
+                v.details.forEach(child => {
+                  const _index = Number(child.month) - 1
+                  _tempData[_index].totalMoney = Number((child.totalMoney).toFixed(0)) || 0
+                  // 计算总额
+                  this.data[_index].sumMoney += _tempData[_index].totalMoney
+                })
+                v.newDetails = _tempData
+              }
+              if (v && v.typeName === '产量(t)') {
+                v.newDetails.forEach(c => {
+                  this.data[c.month - 1]['output'] = c.totalMoney
+                })
+              }
             })
-          })
-          this.data = JSON.parse(JSON.stringify(this.data))
-          // console.log(JSON.parse(JSON.stringify(this.data)))
+            this.dataHead = data.filter(v => v.typeName !== '产量(t)')
+            this.data.forEach(v => {
+              v.average = v.sumMoney && v.output ? ((v.sumMoney || 0) / (v.output || 0)).toFixed(0) : '0'
+            })
+          }
         } else {
-          this.loading = false
           this.$message.error(message)
         }
+        this.loading = false
       }).catch(e => {
+        this.loading = false
         this.$message.error(e)
       })
       fetchTypeList(this.formType).then(({ data, code, message }) => {
@@ -147,33 +158,43 @@ export default {
     getSummaries(param) {
       const { columns, data } = param
       const sums = []
+      // index 下标
       columns.forEach((column, index) => {
         if (index === 0) {
           sums[index] = '合计'
           return
         }
-
-        const values = data.map(item => Number(item[column.property]))
-        if (!values.every(value => isNaN(value))) {
-          sums[index] = values.reduce((prev, curr) => {
-            const value = Number(curr)
-            if (!isNaN(value)) {
-              return prev + curr
+        if (index === 1 || index === columns.length - 1 || index === columns.length - 2) {
+          const values = data.map(item => Number(item[column.property]))
+          if (!values.every(value => isNaN(value))) {
+            sums[index] = values.reduce((prev, curr) => {
+              const value = Number(curr)
+              if (!isNaN(value)) {
+                return prev + curr
+              } else {
+                return prev
+              }
+            }, 0)
+            if (index === 1) {
+              sums[index] += ' t'
             } else {
-              return prev
+              sums[index] += ' 元'
             }
-          }, 0)
-
-          if (index === 1) {
-            sums[index] += ' '
           } else {
-            sums[index] += ' 元'
+            sums[index] = '0 元'
           }
-        } else {
-          sums[index] = '0'
+          return
         }
+        sums[index] = this.dataHead[index - 2].newDetails.reduce((prev, curr) => {
+          const value = Number(curr.totalMoney)
+          if (!isNaN(value)) {
+            return prev + curr.totalMoney
+          } else {
+            return prev
+          }
+        }, 0)
+        sums[index] += ' 元'
       })
-
       return sums
     },
     queryHandle() {

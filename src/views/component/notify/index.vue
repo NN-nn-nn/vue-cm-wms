@@ -42,7 +42,7 @@ export default {
     }
   },
   mounted() {
-    // this.polling()
+    this.polling()
   },
   methods: {
     changeVisible() {
@@ -74,13 +74,14 @@ export default {
       })
     },
     polling() {
+      // 30秒
       setInterval(() => {
         fetchInventoryWarningList({ page: 1, size: 1 }).then(({ data, code, message }) => {
           if (code === 200) {
             this.total = data.totalCount
           }
         })
-      }, 10000)
+      }, 30000)
     }
   }
 }

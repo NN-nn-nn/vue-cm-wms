@@ -1,74 +1,86 @@
 const dataMonth = [{
   month: '1月',
-  value: '01',
+  value: 1,
   label: '',
   output: 0,
+  sumMoney: 0,
   utility: 0
 }, {
   month: '2月',
-  value: '02',
+  value: 2,
   label: '',
   output: 0,
+  sumMoney: 0,
   utility: 0
 }, {
   month: '3月',
-  value: '03',
+  value: 3,
   label: '',
   output: 0,
+  sumMoney: 0,
   utility: 0
 }, {
   month: '4月',
-  value: '04',
+  value: 4,
   label: '',
   output: 0,
+  sumMoney: 0,
   utility: 0
 }, {
   month: '5月',
-  value: '05',
+  value: 5,
   label: '',
   output: 0,
+  sumMoney: 0,
   utility: 0
 }, {
   month: '6月',
-  value: '06',
+  value: 6,
   label: '',
   output: 0,
+  sumMoney: 0,
   utility: 0
 }, {
   month: '7月',
-  value: '07',
+  value: 7,
   label: '',
   output: 0,
+  sumMoney: 0,
   utility: 0
 }, {
   month: '8月',
-  value: '08',
+  value: 8,
   label: '',
   output: 0,
+  sumMoney: 0,
   utility: 0
 }, {
   month: '9月',
-  value: '09',
+  value: 9,
   label: '',
   output: 0,
+  sumMoney: 0,
   utility: 0
 }, {
   month: '10月',
-  value: '10',
+  value: 10,
   label: '',
   output: 0,
+  sumMoney: 0,
   utility: 0
 }, {
   month: '11月',
-  value: '11',
+  value: 12,
   label: '',
   output: 0,
+  sumMoney: 0,
   utility: 0
 }, {
   month: '12月',
-  value: '12',
+  value: 12,
   label: '',
   output: 0,
+  sumMoney: 0,
   utility: 0
 }]
 
