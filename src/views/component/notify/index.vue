@@ -64,8 +64,8 @@ export default {
           if (data && data.data && data.data.length) {
             this.listData = this.listData.concat(data.data)
           }
-          this.total = data.totalCount
-          this.hasNextPage = data.hasNextPage
+          this.total = data ? data.totalCount : 0
+          this.hasNextPage = data ? data.hasNextPage : true
         } else {
           this.$message({ message: message, type: 'error' })
         }
@@ -78,7 +78,7 @@ export default {
       setInterval(() => {
         fetchInventoryWarningList({ page: 1, size: 1 }).then(({ data, code, message }) => {
           if (code === 200) {
-            this.total = data.totalCount
+            this.total = data ? data.totalCount : 0
           }
         })
       }, 30000)
