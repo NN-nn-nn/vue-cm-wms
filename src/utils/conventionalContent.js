@@ -68,6 +68,36 @@ const MATERIAL_DENSITY = {
   STAINLESS_STEEL: 7.93
 }
 
+const REPORT_ICON = {
+  0: 'steel-plate',
+  1: 'steel',
+  2: 'strip-steel',
+  3: 'enclosure',
+  4: 'material',
+  100: 'inventory',
+  101: 'monthPurchase',
+  102: 'yearPurchase',
+  103: 'out'
+}
+
+const REPORT_ICON_BY_TEXT = [
+  { name: '钢板', icon: 'steel-plate' },
+  { name: '型钢', icon: 'steel' },
+  { name: '彩卷', icon: 'strip-steel' },
+  { name: '带钢', icon: 'strip-steel' },
+  { name: '围护', icon: 'enclosure' },
+  { name: '劳保', icon: 'labor-protection' },
+  { name: '焊接', icon: 'welding' },
+  { name: '紧固件', icon: 'fastener' },
+  { name: '工机具', icon: 'tool' },
+  { name: '工具', icon: 'tool' },
+  { name: '配件', icon: 'accessories' },
+  { name: '电气', icon: 'electric' },
+  { name: '气体', icon: 'gas' },
+  { name: '油漆', icon: 'paint' }
+
+]
+
 // 入库状态验证
 const INBOUND_VERIFY_STATUS = {
   0: '未审核',
@@ -139,4 +169,4 @@ const MONTH_PICKER_OPTION = {
   }]
 }
 
-export { apiResultCode, dictionaryType, RETURN_VERIFY, MATERIAL_RETURN_STATUS, MATERIAL_RETURN_INDEX_STATUS, MATERIAL_BASE_TYPE, MATERIAL_BASE_NUM, MATERIAL_DENSITY, INBOUND_VERIFY_STATUS, INBOUND_VERIFY, DATE_PICKER_OPTION, MONTH_PICKER_OPTION, MATERIAL_POOL_TYPE, MATERIAL_MOVE_TYPE, MATERIAL_MOVE_INDEX_TYPE, MATERIAL_INBOUND_TYPE }
+export { apiResultCode, dictionaryType, REPORT_ICON_BY_TEXT, REPORT_ICON, RETURN_VERIFY, MATERIAL_RETURN_STATUS, MATERIAL_RETURN_INDEX_STATUS, MATERIAL_BASE_TYPE, MATERIAL_BASE_NUM, MATERIAL_DENSITY, INBOUND_VERIFY_STATUS, INBOUND_VERIFY, DATE_PICKER_OPTION, MONTH_PICKER_OPTION, MATERIAL_POOL_TYPE, MATERIAL_MOVE_TYPE, MATERIAL_MOVE_INDEX_TYPE, MATERIAL_INBOUND_TYPE }

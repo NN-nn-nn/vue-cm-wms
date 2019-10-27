@@ -108,7 +108,7 @@ export default {
       saveLoadingBtn: false,
       currentType: undefined,
       typeList: [],
-      action: 'https://jsonplaceholder.typicode.com/posts/'
+      action: process.env.VUE_APP_BASE_API + '/material-detail/actions/import'
     }
   },
   created() {

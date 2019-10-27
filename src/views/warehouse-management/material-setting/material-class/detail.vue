@@ -296,7 +296,7 @@ export default {
             } else {
               this.$message({
                 message: message,
-                type: 'success'
+                type: 'error'
               })
             }
             this.submitMaterialBtn = false
@@ -410,7 +410,7 @@ export default {
             } else {
               this.$message({
                 message: message,
-                type: 'success'
+                type: 'error'
               })
             }
             this.submitClassLoadBtn = false

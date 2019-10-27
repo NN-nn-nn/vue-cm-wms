@@ -1,20 +1,18 @@
 <template>
   <!-- 页面主容器 -->
-  <div class="page-container myEcharts">
+  <div class="myEcharts">
     <!-- 查询容器 -->
     <div class="filter-container">
       <!-- 左侧box -->
       <div class="filter-left-box">
         <div class="filter-item">
-          <div class="filter-left-box">
-            <div class="filter-item">
-              <el-date-picker
-                v-model="year"
-                type="year"
-                placeholder="选择年份筛选"
-              />
-            </div>
-          </div>
+          <el-date-picker
+            v-model="year"
+            type="year"
+            value-format="yyyy"
+            placeholder="选择年份筛选"
+            @change="getPurchaseSumByYear"
+          />
         </div>
       </div>
       <!-- 右侧box -->
@@ -24,7 +22,7 @@
     <div class="content-container">
       <div class="purchase-top">
         <div class="title-flex">
-          <div>物料使用分析</div>
+          <div>物料分析使用</div>
           <div class="unit">单位: 万元</div>
         </div>
         <div id="columnarEchart" />
@@ -32,27 +30,29 @@
       <div class="purchase-bottom">
         <el-date-picker
           v-model="month"
+          value-format="yyyy-MM"
           type="month"
           placeholder="选择月份筛选"
+          @change="getPurchaseSumDetail"
         />
         <div class="purchase-bottom-flex">
-          <div id="pieEcharts" />
           <el-table
-            :header-cell-style="headerBg"
+            v-loading="tableLoading"
             class="purchase-table"
-            :data="data"
-            max-height="310"
+            :header-cell-style="headerBg"
+            :data="pieData"
+            max-height="397"
             stripe
             border
             style="width: 200px"
           >
-            <el-table-column prop="date" label="物料名称" width="180" align="center" />
-            <el-table-column prop="name" label="金额(元)" width="180" align="center" />
-            <el-table-column prop="address" label="占比(%)" align="center" />
+            <el-table-column prop="name" label="物料名称" align="center" />
+            <el-table-column prop="value" label="金额(元)" align="center" />
+            <el-table-column prop="proportion" label="占比(%)" align="center" />
           </el-table>
+          <div id="pieEcharts" />
         </div>
       </div>
-
     </div>
     <!-- 其他模块（例如弹窗等） -->
   </div>
@@ -60,6 +60,9 @@
 
 <script>
 import moment from 'moment'
+import { fetchOutboundSumByYear, fetchMonthOutboundDetail } from '@/api/report'
+const yData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+const xData = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
 export default {
   name: 'ReportManagementPurchase',
   data() {
@@ -67,41 +70,116 @@ export default {
       headerBg: { 'background': '#F5F7FA' },
       year: moment(new Date()).format('YYYY'),
       month: moment(new Date()).format('YYYY-MM'),
-      data: [{
-        date: '钢板',
-        name: '34000',
-        address: '30%'
-      }, {
-        date: '型钢',
-        name: '34000',
-        address: '30%'
-      }, {
-        date: '彩卷带钢',
-        name: '34000',
-        address: '30%'
-      }, {
-        date: '劳保用品',
-        name: '34000',
-        address: '30%'
-      }, {
-        date: '焊接材料',
-        name: '34000',
-        address: '30%'
-      }, {
-        date: '工具机',
-        name: '34000',
-        address: '30%'
-      }]
+      pieData: [],
+      tableLoading: false
     }
   },
   mounted() {
-    this.getCharts()
+    this.getCharts(yData, xData)
+    this.getPieChart()
+    this.getPurchaseSumByYear()
+    this.getPurchaseSumDetail()
   },
   methods: {
-    getCharts() {
-      const columnarEchart = this.$echarts.init(document.getElementById('columnarEchart'))
+    getPurchaseSumByYear() {
+      const loading = this.$loading({
+        target: '.myEcharts',
+        lock: true,
+        text: '正在加载',
+        background: 'rgba(255, 255, 255, 0.75)'
+      })
+      fetchOutboundSumByYear({ year: this.year }).then(({ data, code, message }) => {
+        if (code === 200) {
+          const _data = this.handleYearData(data)
+          this.getCharts(_data.x, _data.y)
+        } else {
+          this.$message({ message: message, type: 'error' })
+        }
+        loading.close()
+      }).catch(e => {
+        loading.close()
+        console.log(e)
+        this.$message({ message: '获取采购数据失败', type: 'error' })
+      })
+    },
+    getPurchaseSumDetail() {
+      this.tableLoading = true
+      fetchMonthOutboundDetail({ yearAndMonth: this.month }).then(({ data, code, message }) => {
+        if (code === 200) {
+          if (data) {
+            const _data = this.handleDetailData(data)
+            this.pieData = _data
+            this.getPieChart()
+          }
+        } else {
+          this.$message({ message: message, type: 'error' })
+        }
+        this.tableLoading = false
+      }).catch(e => {
+        this.tableLoading = false
+        console.log(e)
+        this.$message({ message: '获取采购数据失败', type: 'error' })
+      })
+    },
+    handleDetailData(data) {
+      const _data = []
+      let _totalCount = 0
+      data.forEach(v => {
+        _data.push({ name: v.typeName, value: v.totalInventoryAmount })
+        _totalCount += v.totalInventoryAmount
+      })
+      _data.map(v => {
+        v.proportion = (v.value / _totalCount).toFixed(2)
+        return v
+      })
+      return _data
+    },
+    handleYearData(data) {
+      const _yData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+      const _xData = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+      data && data.length && data.forEach(v => {
+        const month = moment(v.statisticalDate).month()
+        _yData[month] = v.totalInventoryAmount ? v.totalInventoryAmount / 10000 : 0
+      })
+      return { y: _yData, x: _xData }
+    },
+    getPieChart() {
       const pieEcharts = this.$echarts.init(document.getElementById('pieEcharts'))
-
+      pieEcharts.setOption({ // 饼图
+        title: {
+          text: '', // 主标题
+          subtext: '', // 副标题
+          x: 'center'
+        },
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} <br/>{b} : {c} ({d}%)'
+        },
+        legend: {
+          orient: 'horizontal',
+          left: 'left',
+          top: '5%'
+        },
+        series: [
+          {
+            name: '详细数据',
+            type: 'pie',
+            radius: '55%',
+            center: ['40%', '50%'],
+            data: this.pieData,
+            itemStyle: {
+              emphasis: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)'
+              }
+            }
+          }
+        ]
+      })
+    },
+    getCharts(xData, yData) {
+      const columnarEchart = this.$echarts.init(document.getElementById('columnarEchart'))
       columnarEchart.setOption({ // 柱状图
         title: { text: '' },
         color: '#4472C4',
@@ -120,7 +198,7 @@ export default {
         xAxis: [
           {
             type: 'category',
-            data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+            data: xData,
             axisTick: {
               alignWithLabel: true
             }
@@ -133,59 +211,10 @@ export default {
         ],
         series: [
           {
-            name: '直接访问',
+            name: '采购额',
             type: 'bar',
             barWidth: '60%',
-            data: [30, 100, 200, 334, 390, 330, 220, 112, 34, 56, 33, 178]
-          }
-        ]
-      })
-
-      pieEcharts.setOption({ // 饼图
-        title: {
-          text: '', // 主标题
-          subtext: '', // 副标题
-          x: 'center'
-        },
-        tooltip: {
-          trigger: 'item',
-          formatter: '{a} <br/>{b} : {c} ({d}%)'
-        },
-        legend: {
-          orient: 'horizontal',
-          left: 'left',
-          top: '5%',
-          data: ['钢板', '型钢', '彩卷带钢', '劳保用品', '焊接材料', '工具机']
-        },
-        series: [
-          {
-            name: '详细数据',
-            type: 'pie',
-            radius: '75%',
-            center: ['48%', '60%'],
-            data: [
-              { value: 335, name: '钢板' },
-              { value: 310, name: '型钢' },
-              { value: 234, name: '彩卷' },
-              { value: 135, name: '劳保用品' },
-              { value: 120, name: '焊接材料' },
-              { value: 253, name: '工具机' }
-            ],
-            itemStyle: {
-              emphasis: {
-                shadowBlur: 10,
-                shadowOffsetX: 0,
-                shadowColor: 'rgba(0, 0, 0, 0.5)'
-              },
-              normal: {
-                color: function(params) {
-                  var colorList = [
-                    '#ED7D31', '#4472C4', '#FFC000', '#FE8463', '#A5A5A5', '#FEEC73'
-                  ]
-                  return colorList[params.dataIndex]
-                }
-              }
-            }
+            data: yData
           }
         ]
       })
@@ -195,7 +224,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 #columnarEchart {
   height: 500px;
 }
@@ -210,6 +239,6 @@ export default {
   display: flex;
 }
 .purchase-table {
-  margin: 120px 80px 0 0;
+  margin: 30px 80px 0 0;
 }
 </style>

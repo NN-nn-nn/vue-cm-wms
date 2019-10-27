@@ -1,19 +1,21 @@
 <template>
   <!-- 页面主容器 -->
-  <div class="page-container myEcharts">
+  <div class="myEcharts">
     <!-- 查询容器 -->
     <div class="filter-container">
       <!-- 左侧box -->
       <div class="filter-left-box">
         <div class="filter-item">
-          <el-select v-model="project" placeholder="请选择项目">
-            <el-option
-              v-for="item in projectList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
+          <el-cascader
+            v-model="currentProjectId"
+            placeholder="试试搜索：项目名称"
+            :options="projectCascadeList"
+            :props="{ value: 'id', label: 'name', children: 'children', expandTrigger: 'hover' }"
+            :show-all-levels="false"
+            filterable
+            style="width:250px"
+            @change="projectChange"
+          />
         </div>
       </div>
       <!-- 右侧box -->
@@ -26,7 +28,7 @@
         <div class="chart-right">
           <div v-for="item in projectWeight" :key="item.id" class="project-weight">
             <div class="top">
-              <span class="weight">{{ item.weight }}</span>
+              <span class="weight">{{ item.value }}</span>
               <span>{{ item.unit }}</span>
             </div>
             <div class="bottom">{{ item.status }}</div>
@@ -36,15 +38,11 @@
       <div class="project-bottom">
         <el-table
           :header-cell-style="headerBg"
-          :data="data"
+          :data="listData"
           stripe
           border
         >
-          <el-table-column prop="steelPlate" label="钢板" align="center" />
-          <el-table-column prop="steel" label="型材" align="center" />
-          <el-table-column prop="color" label="彩卷" align="center" />
-          <el-table-column prop="paint" label="油漆涂料" align="center" />
-          <el-table-column prop="other" label="其他摊销" align="center" />
+          <el-table-column v-for="(item) in materialBaseType" :key="item.index" :prop="item.value" :label="item.name" align="center" />
         </el-table>
       </div>
     </div>
@@ -53,44 +51,140 @@
 </template>
 
 <script>
+import { changeProjectToCascadeByYear } from '@/utils/other'
+import { MATERIAL_BASE_TYPE, MATERIAL_BASE_NUM } from '@/utils/conventionalContent'
+import { fetchProjectGroupByYear } from '@/api/project'
+import { fetchProjectAnalysis } from '@/api/report'
 export default {
   name: 'ReportManagementProject',
   data() {
     return {
+      materialBaseType: MATERIAL_BASE_TYPE, // 物料基础类型
+      materialBaseNum: MATERIAL_BASE_NUM,
+      currentProjectId: [], // 需要入库的项目
+      projectCascadeList: [], // 项目级联列表
+      listQuery: {
+        projectId: undefined
+      },
       headerBg: { 'background': '#F5F7FA' },
       project: '',
       projectList: [],
       projectWeight: [{
-        weight: 1000,
+        value: 0,
         unit: '吨',
         status: '已生产量',
         id: 1
       }, {
-        weight: 1000,
-        unit: '吨',
+        value: 0,
+        unit: '万元',
         status: '累计成本',
         id: 2
       }],
-      data: [{
-        steelPlate: 23,
-        steel: 12,
-        color: 12,
-        paint: 98,
-        other: 34
-      }, {
-        steelPlate: '23%',
-        steel: '12%',
-        color: '12%',
-        paint: '98%',
-        other: '34%'
-      }]
+      listData: []
     }
   },
   mounted() {
-    this.getCharts()
+    this.getProjectYearCascade()
+    this.getCharts([])
   },
   methods: {
-    getCharts() {
+    getProjectAnalysis: function() {
+      const loading = this.$loading({
+        target: '.myEcharts',
+        lock: true,
+        text: '正在加载',
+        background: 'rgba(255, 255, 255, 0.75)'
+      })
+      fetchProjectAnalysis(this.listQuery).then(({ data, code, message }) => {
+        if (code === 200) {
+          if (data && data.details) {
+            const _data = this.getPieChartData(data.details)
+            this.getCharts(_data)
+            this.setListData(data.details)
+          }
+          this.projectWeight[0].value = data.totalWeight ? (data.totalWeight).toFixed(2) : '0.00'
+          this.projectWeight[1].value = data.totalMoney ? (data.totalMoney / 10000).toFixed(2) : '0.00'
+        } else {
+          this.$message({ message: message, type: 'error' })
+        }
+        loading.close()
+      }).catch(e => {
+        loading.close()
+        console.log(e)
+        this.$message({ message: '获取项目报表失败', type: 'error' })
+      })
+    },
+    setListData: function(data) {
+      const _data1 = {}
+      const _data2 = {}
+      this.listData = []
+      let amount = 0
+      for (const v in this.materialBaseType) {
+        let value = 0
+        for (let i = 0; i < data.length; i++) {
+          if (+data[i].formType === this.materialBaseType[v].index) {
+            value = data[i].money
+            break
+          }
+        }
+        _data1[v] = value
+        amount += value
+      }
+      for (const v in this.materialBaseType) {
+        _data2[v] = _data1[v] && amount ? (_data1[v] * 100 / amount).toFixed(2) + '%' : '0.00%'
+        _data1[v] = `${_data1[v]}元`
+      }
+      this.listData.push(_data1)
+      this.listData.push(_data2)
+    },
+    getPieChartData: function(data) {
+      const _data = []
+      for (const v in this.materialBaseType) {
+        let value = 0
+        for (let i = 0; i < data.length; i++) {
+          if (+data[i].formType === this.materialBaseType[v].index) {
+            value = data[i].money
+            break
+          }
+        }
+        const item = {
+          name: this.materialBaseType[v].name,
+          value: value
+        }
+        _data.push(item)
+      }
+      return _data
+    },
+    /**
+     * 获取项目年份级联列表
+     */
+    getProjectYearCascade: function() {
+      fetchProjectGroupByYear().then(({ data, code, message }) => {
+        if (code === 200) {
+          this.projectCascadeList = changeProjectToCascadeByYear(data)
+          this.selectDefaultProject()
+          this.getProjectAnalysis()
+        } else {
+          this.$message({ message: message, type: 'error' })
+        }
+      }).catch(e => {
+        this.$message({ message: '获取项目级联列表失败', type: 'error' })
+      })
+    },
+    projectChange: function() {
+      this.listQuery.projectId = this.currentProjectId[1]
+      this.getProjectAnalysis()
+    },
+    selectDefaultProject: function() {
+      if (this.projectCascadeList[0] && this.projectCascadeList[0].children[0] && this.projectCascadeList[0].children[0].id) {
+        this.currentProjectId = [this.projectCascadeList[0].id, this.projectCascadeList[0].children[0].id]
+        this.listQuery.projectId = this.currentProjectId[1]
+      } else {
+        this.currentProjectId = []
+        this.listQuery.projectId = undefined
+      }
+    },
+    getCharts: function(data) {
       const pieEcharts = this.$echarts.init(document.getElementById('pieEcharts'))
       pieEcharts.setOption({ // 饼图
         title: {
@@ -105,8 +199,7 @@ export default {
         legend: {
           orient: 'vertical',
           left: 'left',
-          top: '40%',
-          data: ['钢板', '型钢', '彩卷带钢', '其他摊销']
+          top: '40%'
         },
         grid: {
 
@@ -119,12 +212,7 @@ export default {
             type: 'pie',
             radius: '75%',
             center: ['50%', '60%'],
-            data: [
-              { value: 335, name: '钢板' },
-              { value: 310, name: '型钢' },
-              { value: 234, name: '彩卷带钢' },
-              { value: 135, name: '其他摊销' }
-            ],
+            data: data,
             itemStyle: {
               emphasis: {
                 shadowBlur: 10,

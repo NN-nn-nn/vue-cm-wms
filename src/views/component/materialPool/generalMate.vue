@@ -219,7 +219,7 @@ export default {
   },
   mounted() {
     this.getList()
-    // this.getProjectYearCascade()
+    this.getProjectYearCascade()
   },
   methods: {
     handlingOut: function(item) {

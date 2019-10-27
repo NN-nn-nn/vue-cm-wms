@@ -38,13 +38,20 @@ export default {
     handleExceed(files, fileList) {
       this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`)
     },
-    uploadSuccess() {
+    uploadSuccess(response) {
+      if (response && response.code === 200) {
+        this.$refs.upload.clearFiles()
+        this.$message({
+          message: '上传成功',
+          type: 'success'
+        })
+      } else {
+        this.$message({
+          message: response && response.message ? response.message : '上传失败',
+          type: 'error'
+        })
+      }
       this.uploadLoading = false
-      this.$refs.upload.clearFiles()
-      this.$message({
-        message: '上传成功',
-        type: 'success'
-      })
     },
     uploadError() {
       this.uploadLoading = false

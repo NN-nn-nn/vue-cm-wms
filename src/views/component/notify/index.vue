@@ -42,7 +42,7 @@ export default {
     }
   },
   mounted() {
-    this.polling()
+    // this.polling()
   },
   methods: {
     changeVisible() {

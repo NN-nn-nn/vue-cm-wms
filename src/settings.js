@@ -17,7 +17,7 @@ module.exports = {
    * @type {boolean} true | false
    * @description 是否固定标题
    */
-  fixedHeader: false,
+  fixedHeader: true,
 
   /**
    * @type {boolean} true | false

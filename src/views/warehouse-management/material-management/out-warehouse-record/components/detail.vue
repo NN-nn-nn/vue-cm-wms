@@ -3,24 +3,24 @@
   <div class="content-container">
     <el-table v-loading="tableLoading" :data="tableData" style="width: 100%" border stripe>
       <el-table-column label="序号" align="center" type="index" width="80" />
-      <el-table-column prop="materialCode" align="center" label="编号" width="100">
+      <el-table-column prop="materialCode" align="center" label="编号" min-width="100">
         <template slot-scope="scope">
           <el-tag v-if="scope.row.materialCode" size="medium">{{ scope.row.materialCode }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="物料类别" align="center">
-        <el-table-column prop="typeName" label="名称" align="center" width="90" />
-        <el-table-column prop="className" label="种类" align="center" width="90" />
-        <el-table-column prop="detailName" label="材质" align="center" width="90" />
-        <el-table-column prop="unit" label="单位" align="center" width="90" />
+        <el-table-column prop="typeName" label="名称" align="center" min-width="90" />
+        <el-table-column prop="className" label="种类" align="center" min-width="90" />
+        <el-table-column prop="detailName" label="材质" align="center" min-width="90" />
+        <el-table-column prop="unit" label="单位" align="center" min-width="90" />
       </el-table-column>
       <el-table-column label="规格" align="center" min-width="125">
         <template slot-scope="scope">
           <el-tag v-if="scope.row.newSpecification" type="info" size="medium">{{ scope.row.newSpecification }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="number" :label="`数量 \n (张)`" align="center" width="70" />
-      <el-table-column prop="purchasePrice" :label="`单价 \n (t/元)`" align="center" width="110">
+      <el-table-column prop="number" :label="`数量 \n (张)`" align="center" min-width="70" />
+      <el-table-column prop="purchasePrice" :label="`单价 \n (t/元)`" align="center" min-width="110">
         <template slot-scope="scope">
           <span>{{ scope.row.purchasePrice | toFixed(2) }}</span>
         </template>

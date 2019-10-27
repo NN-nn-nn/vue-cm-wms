@@ -1,89 +1,213 @@
 <template>
-  <!-- 页面主容器 -->
-  <div class="page-container inventory-icon myEcharts">
-    <!-- 查询容器 -->
-    <div class="filter-container">
-      <!-- 左侧box -->
-      <div class="filter-left-box">
-        <div class="filter-item" />
-      </div>
-      <!-- 右侧box -->
-      <div class="filter-right-box" />
-    </div>
-    <!-- 主要内容容器 -->
-    <div class="content-container">
-      <el-row :gutter="12">
-        <el-col v-for="(item, index) in cardList" :key="index" :offset="index > 0 ? 2 : 0" :span="6" style="margin: 0 0px 20px 0">
-          <el-card shadow="hover" :body-style="{ padding: '0px'}">
-            <div class="inventory-top">
-              <svg-icon :icon-class="item.icon" />{{ item.name }}
+  <div id="content">
+    <el-row :gutter="40" class="panel-group">
+      <el-col v-for="(item, index) in listData" :key="index" :xs="12" :sm="12" :lg="6" class="card-panel-col">
+        <div class="card-panel">
+          <div class="card-panel-icon-wrapper" :class="item.class">
+            <svg-icon :icon-class="item.icon" class-name="card-panel-icon" />
+          </div>
+          <div class="card-panel-description">
+            <div class="card-panel-text">
+              {{ item.name }}(万元)
             </div>
-            <div class="inventory-bottom">
-              <span class="amount">{{ item.amount }}</span>
-              <span class="unit">{{ item.unit }}</span>
-            </div>
-          </el-card>
-        </el-col>
-      </el-row>
-    </div>
-    <!-- 其他模块（例如弹窗等） -->
+            <count-to :start-val="0" :end-val="item.value" :decimals="2" :duration="2600" class="card-panel-num" />
+          </div>
+        </div>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
+import CountTo from 'vue-count-to'
+import { REPORT_ICON, REPORT_ICON_BY_TEXT } from '@/utils/conventionalContent'
+import { fetchInventorySum } from '@/api/report'
 export default {
   name: 'ReportManagementInventory',
+  components: {
+    CountTo
+  },
   data() {
     return {
-      cardList: [
-        { name: '库存总额', icon: 'inventory', amount: 100, unit: '万元' },
-        { name: '当月采购总额', icon: 'monthPurchase', amount: 100, unit: '万元' },
-        { name: '年度采购总额', icon: 'yearPurchase', amount: 100, unit: '万元' },
-        { name: '月出库总额', icon: 'out', amount: 100, unit: '万元' },
-        { name: '钢板实时库存', icon: 'steelPlates', amount: 100, unit: '万元' },
-        { name: '型钢实时库存', icon: 'steels', amount: 100, unit: '万元' },
-        { name: '彩卷/带钢实时库存', icon: 'stripSteel', amount: 100, unit: '万元' },
-        { name: '成品围护实时库存', icon: 'finishProduct', amount: 100, unit: '万元' },
-        { name: '劳保用品实时库存', icon: 'labor', amount: 100, unit: '万元' },
-        { name: '焊接材料实时库存', icon: 'welding', amount: 100, unit: '万元' },
-        { name: '紧固件实时库存', icon: 'fastener', amount: 100, unit: '万元' },
-        { name: '工机具实时库存', icon: 'machineTool', amount: 100, unit: '万元' },
-        { name: '设备配件实时库存', icon: 'device', amount: 100, unit: '万元' },
-        { name: '生产耗材实时库存', icon: 'produce', amount: 100, unit: '万元' },
-        { name: '电气线缆实时库存', icon: 'electric', amount: 100, unit: '万元' },
-        { name: '油漆涂料实时库存', icon: 'paint', amount: 100, unit: '万元' },
-        { name: '成品配套库存', icon: 'package', amount: 100, unit: '万元' }
-
-      ]
+      reportIcon: REPORT_ICON,
+      reportIconByText: REPORT_ICON_BY_TEXT,
+      listData: [],
+      itemClass: [
+        { 'icon-red': true },
+        { 'icon-blueGreen': true },
+        { 'icon-blue': true },
+        { 'icon-green': true }
+      ],
+      defaultClass: { 'icon-green': true }
+    }
+  },
+  mounted() {
+    this.getInventorySum()
+  },
+  methods: {
+    getInventorySum: function() {
+      const loading = this.$loading({
+        target: '#content',
+        lock: true,
+        text: '正在加载',
+        background: 'rgba(255, 255, 255, 0.75)'
+      })
+      fetchInventorySum().then(({ data, code, message }) => {
+        if (code === 200) {
+          this.listData = data.map((v, index) => {
+            let icon
+            const iconArr = this.reportIconByText.filter(r => {
+              // console.log(r.name)
+              return v.name.indexOf(r.name) > -1
+            })
+            if (iconArr && iconArr.length) {
+              icon = iconArr[0].icon
+            }
+            return {
+              name: v.name,
+              value: Number((v.amount / 10000).toFixed(2)),
+              type: v.type,
+              icon: icon || this.reportIcon[v.type],
+              class: this.itemClass[this.calcType(index)]
+            }
+          })
+        } else {
+          this.$message({ message: message, type: 'error' })
+        }
+        loading.close()
+      }).catch(e => {
+        loading.close()
+        console.log(e)
+        this.$message({ message: '获取库存数据失败', type: 'error' })
+      })
+    },
+    calcType(num) {
+      num = Math.floor(num / 4)
+      if (num < 4) {
+        return num
+      } else {
+        // num -= 4
+        return this.calcType(num)
+      }
     }
   }
 }
 </script>
 
-<style>
-.inventory-top {
-    color: #ffffff;
-    background: rgb(85, 86, 87);
-    text-align: center;
-    line-height: 45px;
-    font-size: 18px;
+<style lang="scss" scoped>
+.panel-group {
+  margin-top: 18px;
+
+  .card-panel-col {
+    margin-bottom: 32px;
+  }
+
+  .card-panel {
+    height: 108px;
+    cursor: pointer;
+    font-size: 12px;
+    position: relative;
+    overflow: hidden;
+    color: #666;
+    background: #fff;
+    box-shadow: 4px 4px 40px rgba(0, 0, 0, .05);
+    border-color: rgba(0, 0, 0, .05);
+
+    // &:hover {
+    //   .card-panel-icon-wrapper {
+    //     color: #fff;
+    //   }
+
+    //   .icon-people {
+    //     background: #40c9c6;
+    //   }
+
+    //   .icon-message {
+    //     background: #36a3f7;
+    //   }
+
+    //   .icon-money {
+    //     background: #f4516c;
+    //   }
+
+    //   .icon-shopping {
+    //     background: #34bfa3
+    //   }
+    // }
+    .card-panel-icon-wrapper {
+        color: #fff;
+      }
+
+    .icon-blueGreen {
+      // color: #40c9c6;
+      background: #40c9c6;
+    }
+
+    .icon-blue {
+      background: #36a3f7;
+    }
+
+    .icon-red {
+      background: #f4516c;
+    }
+
+    .icon-green {
+      background: #34bfa3
+    }
+
+    .card-panel-icon-wrapper {
+      float: left;
+      margin: 14px 0 0 14px;
+      padding: 16px;
+      transition: all 0.38s ease-out;
+      border-radius: 6px;
+    }
+
+    .card-panel-icon {
+      float: left;
+      font-size: 48px;
+    }
+
+    .card-panel-description {
+      float: right;
+      font-weight: bold;
+      margin: 26px;
+      margin-left: 0px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-end;
+
+      .card-panel-text {
+        line-height: 18px;
+        color: rgba(0, 0, 0, 0.45);
+        font-size: 16px;
+        margin-bottom: 12px;
+      }
+
+      .card-panel-num {
+        font-size: 20px;
+      }
+    }
+  }
 }
-.inventory-bottom {
-    line-height: 90px;
-    text-align: center;
-    border-top: none;
-}
-.inventory-bottom .amount {
-    font-size: 50px;
-    color: rgb(52, 180, 109);
-    display: inline-block;
-    margin-right: 10px;
-}
-.inventory-bottom .unit {
-    color: rgb(67, 142, 204);
-}
-.inventory-top .svg-icon{
-  font-size: 24px;
-  margin-right: 5px;
+
+@media (max-width:550px) {
+  .card-panel-description {
+    display: none;
+  }
+
+  .card-panel-icon-wrapper {
+    float: none !important;
+    width: 100%;
+    height: 100%;
+    margin: 0 !important;
+
+    .svg-icon {
+      display: block;
+      margin: 14px auto !important;
+      float: none !important;
+    }
+  }
 }
 </style>
