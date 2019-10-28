@@ -67,7 +67,7 @@
             <span>{{ scope.row.totalLength | toFixed(2) }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="purchasePrice" :label="`采购单价 \n (t/元)`" align="center" min-width="90">
+        <el-table-column prop="purchasePrice" :label="`采购单价 \n (m/元)`" align="center" min-width="90">
           <template slot-scope="scope">
             <span>{{ scope.row.purchasePrice | toFixed(2) }}</span>
           </template>

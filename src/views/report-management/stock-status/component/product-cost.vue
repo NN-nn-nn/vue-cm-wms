@@ -112,6 +112,7 @@ export default {
     getList() {
       this.loading = true
       this.dataHead = []
+      this.data = JSON.parse(JSON.stringify(dataMonth))
       productCost(this.queryParams).then(({ data, code, message }) => {
         if (code === 200) {
           if (data && data.length) {

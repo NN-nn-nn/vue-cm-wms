@@ -49,7 +49,7 @@
             <span>{{ scope.row.totalLength | toFixed(2) }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="purchasePrice" :label="`采购单价 \n (t/元)`" align="center" min-width="110">
+        <el-table-column prop="purchasePrice" :label="`采购单价 \n (m/元)`" align="center" min-width="110">
           <template slot-scope="scope">
             <div class="mask-td number-input">
               <div :class="{'mask-red': scope.row.priceError}" />

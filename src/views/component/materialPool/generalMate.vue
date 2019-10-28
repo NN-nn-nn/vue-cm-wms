@@ -32,7 +32,7 @@
         </el-table-column>
         <el-table-column prop="color" label="颜色" align="center" min-width="100" />
         <el-table-column prop="number" :label="`数量 \n (张)`" align="center" min-width="70" />
-        <el-table-column prop="purchasePrice" :label="`采购单价 \n (t/元)`" align="center" min-width="110">
+        <el-table-column prop="purchasePrice" :label="`采购单价 \n (元)`" align="center" min-width="110">
           <template slot-scope="scope">
             <div class="mask-td number-input">
               <div :class="{'mask-red': scope.row.priceError}" />

@@ -139,7 +139,7 @@ export default {
       const _xData = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
       data && data.length && data.forEach(v => {
         const month = moment(v.statisticalDate).month()
-        _yData[month] = v.totalInventoryAmount ? v.totalInventoryAmount / 10000 : 0
+        _yData[month] = v.totalInventoryAmount ? (v.totalInventoryAmount / 10000).toFixed(2) : 0
       })
       return { y: _yData, x: _xData }
     },

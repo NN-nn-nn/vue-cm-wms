@@ -102,7 +102,7 @@ export default {
             this.getCharts(_data)
             this.setListData(data.details)
           }
-          this.projectWeight[0].value = data.totalWeight ? (data.totalWeight).toFixed(2) : '0.00'
+          this.projectWeight[0].value = data.totalWeight ? (data.totalWeight / 1000).toFixed(2) : '0.00'
           this.projectWeight[1].value = data.totalMoney ? (data.totalMoney / 10000).toFixed(2) : '0.00'
         } else {
           this.$message({ message: message, type: 'error' })

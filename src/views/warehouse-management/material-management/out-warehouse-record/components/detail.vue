@@ -20,7 +20,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="number" :label="`数量 \n (张)`" align="center" min-width="70" />
-      <el-table-column prop="purchasePrice" :label="`单价 \n (t/元)`" align="center" min-width="110">
+      <el-table-column prop="purchasePrice" :label="`单价 \n (元)`" align="center" min-width="110">
         <template slot-scope="scope">
           <span>{{ scope.row.purchasePrice | toFixed(2) }}</span>
         </template>
