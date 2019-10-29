@@ -325,6 +325,7 @@ export default {
           if (data && data.length) {
             this.data = data
             this.data = this.data.map(v => {
+              this.$set(v, 'isHistory', 0)
               v.rules = { ...this.rules }
               v.materialName = (v.typeName && v.className && v.detailName) ? `${v.typeName + ' / ' + v.className + ' / ' + v.detailName}` : ''
               return v
@@ -442,12 +443,11 @@ export default {
     },
     editHandle(index, item) {
       item.isHistory = 1
-      this.data[index].materialClassIds = [
+      item.materialClassIds = [
         item.typeId,
         item.classId,
         item.detailId
       ]
-      this.$set(this.data, index, Object.assign({}, this.data[index]))
     },
     editConfirm(index, item) {
       item.remark = this.data[index].remark
