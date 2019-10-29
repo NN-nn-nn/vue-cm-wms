@@ -129,7 +129,7 @@ export default {
         _totalCount += v.totalInventoryAmount
       })
       _data.map(v => {
-        v.proportion = (v.value / _totalCount).toFixed(2)
+        v.proportion = (v.value * 100 / _totalCount).toFixed(2)
         return v
       })
       return _data
