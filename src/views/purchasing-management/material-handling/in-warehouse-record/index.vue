@@ -231,7 +231,7 @@ export default {
     },
     // 搜索界面
     handleFilter() {
-      this.listQuery.pageNumber = 1
+      this.listQuery.page = 1
       this.getList()
     },
     // page组件相关
@@ -240,7 +240,7 @@ export default {
       this.getList()
     },
     handleCurrentChange(val) {
-      this.listQuery.number = val
+      this.listQuery.page = val
       this.getList()
     },
     /**
