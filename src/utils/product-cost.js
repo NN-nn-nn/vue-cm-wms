@@ -84,4 +84,19 @@ const dataMonth = [{
   utility: 0
 }]
 
-export { dataMonth }
+const monthData = [
+  { month: 1, totalMoney: 0 },
+  { month: 2, totalMoney: 0 },
+  { month: 3, totalMoney: 0 },
+  { month: 4, totalMoney: 0 },
+  { month: 5, totalMoney: 0 },
+  { month: 6, totalMoney: 0 },
+  { month: 7, totalMoney: 0 },
+  { month: 8, totalMoney: 0 },
+  { month: 9, totalMoney: 0 },
+  { month: 10, totalMoney: 0 },
+  { month: 11, totalMoney: 0 },
+  { month: 12, totalMoney: 0 }
+]
+
+export { dataMonth, monthData }

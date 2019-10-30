@@ -74,21 +74,7 @@
 import moment from 'moment'
 import { productCost } from '@/api/report'
 import { fetchTypeList } from '@/api/material'
-import { dataMonth } from '@/utils/product-cost'
-const monthData = [
-  { month: 1, totalMoney: 0 },
-  { month: 2, totalMoney: 0 },
-  { month: 3, totalMoney: 0 },
-  { month: 4, totalMoney: 0 },
-  { month: 5, totalMoney: 0 },
-  { month: 6, totalMoney: 0 },
-  { month: 7, totalMoney: 0 },
-  { month: 8, totalMoney: 0 },
-  { month: 9, totalMoney: 0 },
-  { month: 10, totalMoney: 0 },
-  { month: 11, totalMoney: 0 },
-  { month: 12, totalMoney: 0 }
-]
+import { dataMonth, monthData } from '@/utils/product-cost'
 export default {
   name: 'ReportManagementProduct',
   data() {
@@ -120,6 +106,7 @@ export default {
               if (v && v.details) {
                 const _tempData = JSON.parse(JSON.stringify(monthData))
                 v.details.forEach(child => {
+                  console.log(child.month, 'child----')
                   const _index = Number(child.month) - 1
                   _tempData[_index].totalMoney = Number((child.totalMoney).toFixed(0)) || 0
                   // 计算总额
@@ -133,6 +120,7 @@ export default {
                 })
               }
             })
+            console.log(this.data, 'this.data----')
             this.dataHead = data.filter(v => v.typeName !== '产量(t)')
             this.data.forEach(v => {
               v.average = v.sumMoney && v.output ? ((v.sumMoney || 0) / (v.output || 0)).toFixed(0) : '0'

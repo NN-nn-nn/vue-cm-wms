@@ -396,9 +396,10 @@ export default {
           this.invenTotal = data.totalCount
         } else {
           this.invenLoading = false
-          this.$message.error('获取失败')
+          this.$message.error(message)
         }
       }).catch(e => {
+        this.$message.error('库存获取失败' + e)
         this.invenLoading = false
       })
     },
@@ -451,15 +452,17 @@ export default {
         remark: item.remark
       }
       updateQuto(params)
-        .then(res => {
-          if (res.code === 200) {
+        .then(({ code, message }) => {
+          if (code === 200) {
             this.$message.success('更新成功！')
             this.getList()
           } else {
-            this.$message.error('更新失败！')
+            this.$message.error(message)
           }
         })
-        .catch(e => {})
+        .catch(e => {
+          this.$message.error('更新失败!')
+        })
     },
     cancelHandle(index, item) {
       item.isHistory = 0
@@ -472,7 +475,6 @@ export default {
       paramsArr = this.data.filter(v => {
         return v.isHistory
       })
-      console.log(paramsArr, 'ddd')
       if (paramsArr.length) {
         let errorFlag = false
         this.data.forEach(v => {
@@ -495,17 +497,18 @@ export default {
             v.detailId = v.materialClassIds[2]
             v.projectId = this.projectId
           })
-          saveQuto(paramsArr).then(res => {
-            if (res.code === 200) {
+          saveQuto(paramsArr).then(({ code, message }) => {
+            if (code === 200) {
               this.submitLoading = false
               this.$message.success('添加成功!')
               this.getList()
             } else {
               this.submitLoading = false
-              this.$message.error('添加失败!')
+              this.$message.error(message)
             }
           }).catch(e => {
             this.submitLoading = false
+            this.$message.error('添加失败!')
           })
         }
       } else {
@@ -513,14 +516,14 @@ export default {
       }
     },
     delHandle(id) {
-      delQuto({ id: id }).then(({ code }) => {
+      delQuto({ id: id }).then(({ code, message }) => {
         if (code) {
           this.$message.success('删除成功!')
           this.getList()
         } else {
-          this.$message.error('删除失败!')
+          this.$message.error(message)
         }
-      })
+      }).catch(e => { this.$message.error('删除失败!') })
     },
     notifyFun: function({ message, type, title }) {
       setTimeout(() => {

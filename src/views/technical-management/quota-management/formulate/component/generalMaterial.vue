@@ -389,10 +389,11 @@ export default {
           this.invenTotal = data.totalCount
         } else {
           this.invenLoading = false
-          this.$message.error('获取失败')
+          this.$message.error(message)
         }
       }).catch(e => {
         this.invenLoading = false
+        this.$message.error('库存查询失败!')
       })
     },
     invenPageChange(val) {
@@ -441,15 +442,15 @@ export default {
         remark: item.remark
       }
       updateQuto(params)
-        .then(res => {
-          if (res.code === 200) {
+        .then(({ code, message }) => {
+          if (code === 200) {
             this.$message.success('更新成功！')
             this.getList()
           } else {
-            this.$message.error('更新失败！')
+            this.$message.error(message)
           }
         })
-        .catch(e => {})
+        .catch(e => { this.$message.error('更新失败!') })
     },
     cancelHandle(index, item) {
       item.isHistory = 0
@@ -486,14 +487,14 @@ export default {
             v.projectId = this.projectId
           })
 
-          saveQuto(paramsArr).then(res => {
-            if (res.code === 200) {
+          saveQuto(paramsArr).then(({ code, message }) => {
+            if (code === 200) {
               this.submitLoading = false
               this.$message.success('添加成功!')
               this.getList()
             } else {
               this.submitLoading = false
-              this.$message.error('添加失败!')
+              this.$message.error(message)
             }
           }).catch(e => {
             this.submitLoading = false
@@ -504,14 +505,14 @@ export default {
       }
     },
     delHandle(id) {
-      delQuto({ id: id }).then(({ code }) => {
+      delQuto({ id: id }).then(({ code, message }) => {
         if (code) {
           this.$message.success('删除成功!')
           this.getList()
         } else {
-          this.$message.error('删除失败!')
+          this.$message.error(message)
         }
-      })
+      }).catch(e => { this.$message.error('删除失败!') })
     },
     notifyFun: function({ message, type, title }) {
       setTimeout(() => {
