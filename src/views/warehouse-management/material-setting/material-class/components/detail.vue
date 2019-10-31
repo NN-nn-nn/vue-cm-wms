@@ -248,12 +248,19 @@ export default {
       })
     },
     deleteMaterial: function(id) {
-      delMaterial(id).then(res => {
-        this.getMaterialList()
-        this.$message({
-          message: '删除成功',
-          type: 'success'
-        })
+      delMaterial(id).then(({ data, code, message }) => {
+        if (code === 200) {
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          })
+          this.getMaterialList()
+        } else {
+          this.$message({
+            message: message,
+            type: 'error'
+          })
+        }
       }).catch(e => {
         this.$message({
           message: '删除失败',

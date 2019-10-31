@@ -140,7 +140,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="province" :label="`含税总额 \n (元)`" align="center" min-width="100">
+        <el-table-column prop="province" :label="`总额 \n (元)`" align="center" min-width="100">
           <template slot-scope="scope">
             <div class="mask-td">
               <el-tag type="success" size="medium">{{ scope.row.taxIncludedAmount || '0.00' }}</el-tag>

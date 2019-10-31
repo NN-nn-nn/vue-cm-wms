@@ -520,8 +520,15 @@ export function downloadFiles(res) {
   const downloadElement = document.createElement('a')
   const href = window.URL.createObjectURL(blob) // 创建下载的链接
   downloadElement.href = href
+  console.log('header', decodeURI(res.headers['content-disposition']))
   // 获取文件名
-  const fileName = res.headers && res.headers['content-disposition'] ? `${decodeURI(res.headers['content-disposition'].split('=')[1])}` : `${new Date().getTime()}.xlsx`// 处理文件名乱码问题
+  let _name = res.headers && res.headers['content-disposition'] ? `${decodeURI(res.headers['content-disposition'].split('=')[1].split('.')[0])}` : ``// 处理文件名乱码问题
+  const _suffix = res.headers && res.headers['content-disposition'] ? `${decodeURI(res.headers['content-disposition'].split('=')[1].split('.')[1])}` : ``// 处理文件名乱码问题
+  if (!_suffix) {
+    return
+  }
+  _name = `${_name}_`
+  const fileName = `${_name}${parseTime(new Date(), '{y}{m}{d}{h}{i}{s}')}.${_suffix}`// 处理文件名乱码问题
   downloadElement.download = fileName // 下载后文件名
   document.body.appendChild(downloadElement)
   downloadElement.click() // 点击下载

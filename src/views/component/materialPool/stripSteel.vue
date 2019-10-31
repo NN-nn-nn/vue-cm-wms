@@ -62,7 +62,7 @@
           </template>
         </el-table-column>
         <el-table-column prop="brand" label="品牌" align="center" min-width="140" />
-        <el-table-column v-if="materialMoveMode" prop="purchasePrice" :label="`含税总额 \n (元)`" align="center" min-width="90">
+        <el-table-column v-if="materialMoveMode" prop="purchasePrice" :label="`总额 \n (元)`" align="center" min-width="90">
           <template slot-scope="scope">
             <el-tag type="success" size="medium">{{ (scope.row.weight || 0 ) * (scope.row.purchasePrice || 0) | toFixed(2) }}</el-tag>
           </template>

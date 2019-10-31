@@ -74,7 +74,7 @@
             <span>{{ scope.row.purchasePrice | toFixed(2) }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="taxIncludedAmount" :label="`含税总额 \n (元)`" align="center" min-width="100">
+        <el-table-column prop="taxIncludedAmount" :label="`总额 \n (元)`" align="center" min-width="100">
           <template slot-scope="scope">
             <el-tag type="success" size="medium">{{ scope.row.taxIncludedAmount | toFixed(2) }}</el-tag>
           </template>

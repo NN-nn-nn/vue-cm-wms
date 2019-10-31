@@ -68,6 +68,7 @@
 <script>
 import { updateOutboundOrderItem, deleteOrderItem, fetchOutboundOrder, createOutboundOrder } from '@/api/warehouse'
 import { parseTime } from '@/utils'
+import { setMaterialSpecification } from '@/utils/other'
 import { printOutboundOrder } from '@/utils/print'
 import { MATERIAL_BASE_TYPE } from '@/utils/conventionalContent'
 export default {
@@ -113,18 +114,7 @@ export default {
             this.tableData = data.map(v => {
               this.$set(v, 'edit', false)
               v.originalNum = v.number
-              if (+v.formType === this.materialBaseType.material.index) {
-                v.newSpecification = v.specification
-              }
-              if (+v.formType === this.materialBaseType.steelPlate.index || +v.formType === this.materialBaseType.stripSteel.index) {
-                v.newSpecification = `${v.length} * ${v.width} * ${v.thickness}`
-              }
-              if (+v.formType === this.materialBaseType.steel.index) {
-                v.newSpecification = `${v.specification} * ${v.length}`
-              }
-              if (+v.formType === this.materialBaseType.enclosure.index) {
-                v.newSpecification = `${v.specification} * ${v.length} * ${v.thickness}`
-              }
+              v.newSpecification = setMaterialSpecification(v.formType, v)
               return v
             })
           }
@@ -163,25 +153,14 @@ export default {
       })
     },
     printOrder: function(number = 2) {
-      const list = this.tableData.map(v => {
-        if (+v.formType === this.materialBaseType.material.index) {
-          v.newSpecification = v.specification
-        }
-        if (+v.formType === this.materialBaseType.steelPlate.index || +v.formType === this.materialBaseType.stripSteel.index) {
-          v.newSpecification = `${v.length} * ${v.width} * ${v.thickness}`
-        }
-        if (+v.formType === this.materialBaseType.steel.index) {
-          v.newSpecification = `${v.specification} * ${v.length}`
-        }
-        if (+v.formType === this.materialBaseType.enclosure.index) {
-          v.newSpecification = `${v.specification} * ${v.length} * ${v.thickness}`
-        }
-        return v
-      })
+      // const list = this.tableData.map(v => {
+      //   v.newSpecification = setMaterialSpecification(v.formType, v)
+      //   return v
+      // })
       const printData = {
         date: this.currentPrintDate,
         orderNo: this.currentPrintOrderNo,
-        list: list,
+        list: this.tableData,
         number: number
       }
       printOutboundOrder(printData)

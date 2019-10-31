@@ -99,7 +99,7 @@ export function delMaterial(id) {
   return request({
     url: '/material-detail/delete',
     method: 'delete',
-    data: { id }
+    params: { id }
   })
 }
 

@@ -162,7 +162,8 @@ export default {
         formType: undefined,
         status: 1,
         page: 1,
-        size: 10
+        size: 10,
+        month: undefined
       }
     }
   },

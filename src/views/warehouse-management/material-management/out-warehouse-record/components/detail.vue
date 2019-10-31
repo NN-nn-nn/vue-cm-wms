@@ -51,6 +51,7 @@
 <script>
 import moment from 'moment'
 import { MATERIAL_BASE_TYPE, OUTBOUND_MODE } from '@/utils/conventionalContent'
+import { setMaterialSpecification } from '@/utils/other'
 import { fetchOutboundRecordDetailByNormal, fetchOutboundRecordDetailByProject } from '@/api/warehouse'
 
 export default {
@@ -139,18 +140,7 @@ export default {
           if (data && data.data && data.data.length) {
             this.tableData = data.data.map(v => {
               v.outboundMode = this.outboundMode[v.outboundType] ? (this.outboundMode[v.outboundType].name || '') : ''
-              if (+v.formType === this.materialBaseType.material.index) {
-                v.newSpecification = v.specification
-              }
-              if (+v.formType === this.materialBaseType.steelPlate.index || +v.formType === this.materialBaseType.stripSteel.index) {
-                v.newSpecification = `${v.length} * ${v.width} * ${v.thickness}`
-              }
-              if (+v.formType === this.materialBaseType.steel.index) {
-                v.newSpecification = `${v.specification} * ${v.length}`
-              }
-              if (+v.formType === this.materialBaseType.enclosure.index) {
-                v.newSpecification = `${v.specification} * ${v.length} * ${v.thickness}`
-              }
+              v.newSpecification = setMaterialSpecification(v.formType, v)
               return v
             })
           }
@@ -179,18 +169,7 @@ export default {
           this.tableData = []
           if (data && data.data && data.data.length) {
             this.tableData = data.data.map(v => {
-              if (+v.formType === this.materialBaseType.material.index) {
-                v.newSpecification = v.specification
-              }
-              if (+v.formType === this.materialBaseType.steelPlate.index || +v.formType === this.materialBaseType.stripSteel.index) {
-                v.newSpecification = `${v.length} * ${v.width} * ${v.thickness}`
-              }
-              if (+v.formType === this.materialBaseType.steel.index) {
-                v.newSpecification = `${v.specification} * ${v.length}`
-              }
-              if (+v.formType === this.materialBaseType.enclosure.index) {
-                v.newSpecification = `${v.specification} * ${v.length} * ${v.thickness}`
-              }
+              v.newSpecification = setMaterialSpecification(v.formType, v)
               return v
             })
           }

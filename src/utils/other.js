@@ -1,10 +1,11 @@
-import { MATERIAL_DENSITY } from '@/utils/conventionalContent'
+import { MATERIAL_DENSITY, MATERIAL_BASE_TYPE } from '@/utils/conventionalContent'
 
 /**
  * 将年份分组的项目转化为级联(树)
  * @param {Array} arr 数组
  * @param {string} tip 提示
  * @param {string} tipField 提示携带字段
+ * @author dhh
  */
 export function changeProjectToCascadeByYear(arr, tip = '', tipField) {
   const newArr = []
@@ -39,6 +40,7 @@ export function changeProjectToCascadeByYear(arr, tip = '', tipField) {
  * @param {number} number 数量
  * @param {string} name 物料名称
  * @returns 重量（kg）
+ * @author duhh
  */
 export function calcWeightByMateName(length, width, thick, number = 1, name) {
   if (!length && !width && !thick) {
@@ -57,6 +59,7 @@ export function calcWeightByMateName(length, width, thick, number = 1, name) {
  * 拼接权限组
  * @param {*} permissionGroup 权限组
  * @returns {array} permission 权限
+ * @author duhh
  */
 export function splicingPermissionGroup(permissionGroup) {
   if (!permissionGroup) {
@@ -71,6 +74,30 @@ export function splicingPermissionGroup(permissionGroup) {
   if (permission.indexOf('50_205_2') === -1) {
     permission = []
   }
-  console.log('permission', permission)
   return permission
+}
+
+/**
+ * 设置物料规格
+ * @param {number/string} baseType 基础类型
+ * @param {object} material 物料
+ * @returns {string} specification 规格
+ * @author duhh
+ */
+export function setMaterialSpecification(baseType, material) {
+  const materialBaseType = MATERIAL_BASE_TYPE
+  let specification = ''
+  if (+baseType === materialBaseType.material.index) {
+    specification = material.specification
+  }
+  if (+baseType === materialBaseType.steelPlate.index || +baseType === materialBaseType.stripSteel.index) {
+    specification = `${material.length} * ${material.width} * ${material.thickness}`
+  }
+  if (+baseType === materialBaseType.steel.index) {
+    specification = `${material.specification} * ${material.length}`
+  }
+  if (+baseType === materialBaseType.enclosure.index) {
+    specification = `${material.specification} * ${material.length} * ${material.thickness}`
+  }
+  return specification || ''
 }

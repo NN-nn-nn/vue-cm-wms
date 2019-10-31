@@ -112,7 +112,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="province" label="含税总额(元)" align="center" min-width="130">
+        <el-table-column prop="province" label="总额(元)" align="center" min-width="130">
           <template slot-scope="scope">
             <div class="mask-td">
               <el-tag type="success" size="medium">{{ (scope.row.purchasePrice || 0) * (scope.row.number || 0) | toFixed(2) }}</el-tag>

@@ -36,6 +36,7 @@
 <script>
 import { fetchReturnOrScrapMateDetail } from '@/api/warehouse'
 import { MATERIAL_BASE_TYPE } from '@/utils/conventionalContent'
+import { setMaterialSpecification } from '@/utils/other'
 
 export default {
   name: 'WareOutboundReturnDetailComponent',
@@ -90,18 +91,7 @@ export default {
           this.tableData = []
           if (data && data.data && data.data.length) {
             this.tableData = data.data.map(v => {
-              if (+v.formType === this.materialBaseType.material.index) {
-                v.newSpecification = v.specification
-              }
-              if (+v.formType === this.materialBaseType.steelPlate.index || +v.formType === this.materialBaseType.stripSteel.index) {
-                v.newSpecification = `${v.length} * ${v.width} * ${v.thickness}`
-              }
-              if (+v.formType === this.materialBaseType.steel.index) {
-                v.newSpecification = `${v.specification} * ${v.length}`
-              }
-              if (+v.formType === this.materialBaseType.enclosure.index) {
-                v.newSpecification = `${v.specification} * ${v.length} * ${v.thickness}`
-              }
+              v.newSpecification = setMaterialSpecification(v.formType, v)
               return v
             })
           }

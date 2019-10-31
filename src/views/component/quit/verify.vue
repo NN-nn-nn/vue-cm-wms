@@ -36,16 +36,21 @@
     <div class="content-container">
       <el-table v-loading="tableLoading" :data="listDetail.detailList" max-height="600" style="width: 100%" border stripe>
         <el-table-column label="序号" align="center" type="index" min-width="80" />
-        <el-table-column prop="materialCode" align="center" label="编号" min-width="120">
+        <el-table-column prop="materialCode" align="center" label="编号" min-width="100">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.materialCode" size="medium">{{ scope.row.materialCode }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="物料类别" align="center">
-          <el-table-column prop="typeName" label="名称" align="center" min-width="120" />
-          <el-table-column prop="className" label="种类" align="center" min-width="120" />
-          <el-table-column prop="detailName" label="材质" align="center" min-width="120" />
+          <el-table-column prop="typeName" label="名称" align="center" min-width="100" />
+          <el-table-column prop="className" label="种类" align="center" min-width="100" />
+          <el-table-column prop="detailName" label="材质" align="center" min-width="100" />
           <el-table-column prop="unit" label="单位" align="center" min-width="90" />
+        </el-table-column>
+        <el-table-column label="规格" align="center" min-width="125">
+          <template slot-scope="scope">
+            <el-tag v-if="scope.row.newSpecification" type="info" size="medium">{{ scope.row.newSpecification }}</el-tag>
+          </template>
         </el-table-column>
         <el-table-column prop="number" label="数量" align="center" min-width="110" />
         <el-table-column prop="purchasePrice" :label="`采购单价(元)`" align="center" min-width="90">
@@ -106,6 +111,7 @@
 
 <script>
 import { MATERIAL_BASE_TYPE, RETURN_VERIFY } from '@/utils/conventionalContent'
+import { setMaterialSpecification } from '@/utils/other'
 import { fetchReturnDetailList, verifyReturnList } from '@/api/warehouse'
 export default {
   name: 'InboundGeneralMateComponent',
@@ -150,7 +156,10 @@ export default {
         if (code === 200) {
           if (data) {
             this.listDetail = data
-            this.listDetail.detailList = this.listDetail.detailList || []
+            this.listDetail.detailList = this.listDetail.detailList.map(v => {
+              v.newSpecification = setMaterialSpecification(v.formType, v)
+              return v
+            }) || []
             this.listDetail.provideMateCheck = this.listDetail.type === 1
           }
         } else {
