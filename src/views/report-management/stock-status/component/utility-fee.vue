@@ -214,6 +214,7 @@ export default {
               return prev
             }
           }, 0)
+          if (index === 6) sums[index] = sums[index].toFixed(2)
         } else {
           sums[index] = 0
         }
@@ -236,7 +237,6 @@ export default {
           sums[index] = ''
         }
       })
-
       return sums
     }
   }
