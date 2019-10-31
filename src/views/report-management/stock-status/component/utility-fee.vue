@@ -33,13 +33,13 @@
         <el-table-column prop="monthValue" label="月份" align="center" min-width="80" />
         <el-table-column prop="base" label="底数(kwh)" align="center" min-width="160">
           <template slot-scope="scope">
-            <span v-if="scope.row.isOld">{{ scope.row.base }}</span>
+            <span v-if="scope.row.isOld && !scope.row.edit">{{ scope.row.base }}</span>
             <el-input-number v-else v-model="scope.row.base" size="small" :step="50" :min="0" :max="scope.row.meterReadings" @change="changeData(scope.row)" />
           </template>
         </el-table-column>
         <el-table-column prop="meterReadings" label="抄表数(kwh)" align="center" min-width="160">
           <template slot-scope="scope">
-            <span v-if="scope.row.isOld">{{ scope.row.meterReadings }}</span>
+            <span v-if="scope.row.isOld && !scope.row.edit">{{ scope.row.meterReadings }}</span>
             <el-input-number v-else v-model="scope.row.meterReadings" size="small" :step="50" :min="scope.row.base" @change="changeData(scope.row)" />
           </template>
         </el-table-column>
@@ -50,7 +50,7 @@
         </el-table-column>
         <el-table-column prop="totalMoney" label="电费总额(元)" align="center" min-width="200">
           <template slot-scope="scope">
-            <span v-if="scope.row.isOld">{{ scope.row.totalMoney }}</span>
+            <span v-if="scope.row.isOld && !scope.row.edit">{{ scope.row.totalMoney }}</span>
             <el-input-number v-else v-model="scope.row.totalMoney" size="small" :step="50" :min="0" :precision="2" style="width:180px" @change="changeData(scope.row)" />
           </template>
         </el-table-column>
@@ -59,7 +59,7 @@
             <el-tag type="success"> {{ scope.row.average }}  </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center">
+        <el-table-column label="操作" align="center" width="200">
           <template slot-scope="scope">
             <div v-permission="['50_207_1']">
               <template v-if="scope.row.isOld">
