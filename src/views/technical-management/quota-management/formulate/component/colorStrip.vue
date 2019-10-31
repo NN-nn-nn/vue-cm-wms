@@ -127,13 +127,13 @@
                 icon="el-icon-edit"
                 @click="editHandle(scope.$index, scope.row)"
               >修改</el-button>
-              <!-- <el-button
+              <el-button
                 v-if="!scope.row.isHistory"
                 size="mini"
                 type="primary"
                 icon="el-icon-edit"
                 @click="delHandle(scope.row.id)"
-              >删除</el-button> -->
+              >删除</el-button>
               <el-button
                 v-if="scope.row.isHistory == 1"
                 size="mini"
@@ -334,7 +334,7 @@ export default {
       const number = item.number || 1
       const name = getCascaderNameByIds(this.mateOption, item.materialClassIds, 'id', 'childrenList')
       if (length && width && thickness) {
-        item.weight = Number((calcWeightByMateName(length, width, thickness, number, name) / 1000).toFixed(3))
+        item.weight = (calcWeightByMateName(length, width, thickness, number, name) / 1000).toFixed(5)
         this.$set(this.data, index, Object.assign({}, this.data[index]))
       } else {
         item.weight = undefined

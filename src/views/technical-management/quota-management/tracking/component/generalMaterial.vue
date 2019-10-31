@@ -95,11 +95,11 @@ export default {
   watch: {
     projectId(newVal, oldVal) {
       this.field.projectId = newVal
-      this.getList()
+      if (this.field.projectId) this.getList()
     }
   },
   mounted() {
-    this.getList()
+    if (this.field.projectId) this.getList()
   },
   methods: {
     getList() {
@@ -116,6 +116,7 @@ export default {
           this.totalCount = data.totalCount
         } else {
           this.loading = false
+          this.$message.error(message)
         }
       }).catch(e => {
         this.loading = false

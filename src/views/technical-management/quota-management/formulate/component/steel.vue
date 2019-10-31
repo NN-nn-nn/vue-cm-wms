@@ -397,10 +397,7 @@ export default {
         item.classId,
         item.detailId
       ]
-      // this.data[index] = Object.assign({}, this.data[index])
       this.$set(this.data, index, Object.assign({}, this.data[index]))
-      // console.log(data, '5555')
-      // this.data = JSON.parse(JSON.stringify(this.data))
     },
     editConfirm(index, item) {
       item.remark = this.data[index].remark

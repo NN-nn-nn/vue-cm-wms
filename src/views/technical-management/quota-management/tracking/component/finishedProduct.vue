@@ -138,6 +138,7 @@ export default {
           this.totalCount = data.totalCount
         } else {
           this.loading = false
+          this.$message.error(message)
         }
       }).catch(e => {
         this.loading = false

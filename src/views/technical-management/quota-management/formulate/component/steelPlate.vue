@@ -88,7 +88,7 @@
         </el-table-column>
         <el-table-column label="总重(t)" width="130" align="center">
           <template slot-scope="scope">
-            <el-tag v-if="!scope.row.isHistory">{{ scope.row.weight | toFixed(5) }}</el-tag>
+            <el-tag v-if="!scope.row.isHistory">{{ scope.row.weight | toFixed((5)) }}</el-tag>
             <el-tag
               v-else
             >{{ scope.row.weight?scope.row.weight: 0 }}</el-tag>
@@ -137,13 +137,13 @@
                 icon="el-icon-edit"
                 @click="editHandle(scope.$index, scope.row)"
               >修改</el-button>
-              <!-- <el-button
+              <el-button
                 v-if="!scope.row.isHistory"
                 size="mini"
                 type="primary"
                 icon="el-icon-edit"
                 @click="delHandle(scope.row.id)"
-              >删除</el-button> -->
+              >删除</el-button>
               <el-button
                 v-if="scope.row.isHistory == 1"
                 size="mini"
@@ -389,7 +389,7 @@ export default {
       const number = item.number || 0
       const name = getCascaderNameByIds(this.mateOption, item.materialClassIds, 'id', 'childrenList')
       if (length && width && thickness && number) {
-        item.weight = Number((calcWeightByMateName(length, width, thickness, number, name) / 1000).toFixed(2))
+        item.weight = (calcWeightByMateName(length, width, thickness, number, name) / 1000).toFixed(5)
         this.$set(this.data, index, Object.assign({}, this.data[index]))
       } else {
         item.weight = undefined
