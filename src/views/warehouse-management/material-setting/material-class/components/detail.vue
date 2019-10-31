@@ -5,7 +5,7 @@
     <div class="filter-container">
       <!-- 左侧box -->
       <div class="filter-left-box">
-        <div class="filter-item">
+        <div v-permission="['50_201_1']" class="filter-item">
           <el-button type="primary" size="medium" icon="el-icon-circle-plus-outline" @click="openClassDlg('create')">添加种类</el-button>
         </div>
       </div>
@@ -19,13 +19,15 @@
           <div class="filter-container">
             <!-- 左侧box -->
             <div class="filter-left-box">
-              <div class="filter-item">
+              <div v-permission="['50_201_1']" class="filter-item">
                 <el-button type="primary" size="medium" icon="el-icon-edit" @click="openClassDlg('update', item)">修改种类信息</el-button>
-                <el-button type="danger" :loading="delLoadBtn" size="small" icon="el-icon-delete" @click="deleteTip('class', item)">删除当前种类</el-button>
+              </div>
+              <div v-permission="['50_201_1']" class="filter-item">
+                <el-button type="danger" :loading="delLoadBtn" size="medium" icon="el-icon-delete" @click="deleteTip('class', item)">删除当前种类</el-button>
               </div>
             </div>
             <!-- 右侧box -->
-            <div class="filter-right-box">
+            <div v-permission="['50_201_1']" class="filter-right-box">
               <el-button type="primary" size="medium" icon="el-icon-circle-plus-outline" @click="materialDlgVisible = true">添加材质</el-button>
             </div>
           </div>
@@ -60,9 +62,11 @@
                 </el-table-column>
                 <el-table-column label="操作">
                   <template slot-scope="scope">
-                    <el-button v-if="scope.row.edit" type="success" size="small" icon="el-icon-circle-plus-outline" @click="confirmEdit(scope.row)">保存</el-button>
-                    <el-button v-else type="primary" size="small" icon="el-icon-edit" @click="scope.row.edit=!scope.row.edit">编辑</el-button>
-                    <el-button type="danger" size="small" @click="deleteTip('material', scope.row)">删除</el-button>
+                    <div v-permission="['50_201_1']">
+                      <el-button v-if="scope.row.edit" type="success" size="small" icon="el-icon-circle-plus-outline" @click="confirmEdit(scope.row)">保存</el-button>
+                      <el-button v-else type="primary" size="small" icon="el-icon-edit" @click="scope.row.edit=!scope.row.edit">编辑</el-button>
+                      <el-button type="danger" size="small" @click="deleteTip('material', scope.row)">删除</el-button>
+                    </div>
                   </template>
                 </el-table-column>
               </el-table>

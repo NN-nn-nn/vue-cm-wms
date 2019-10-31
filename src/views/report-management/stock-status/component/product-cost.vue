@@ -10,6 +10,8 @@
             v-model="queryParams.year"
             type="year"
             placeholder="选择年份筛选"
+            value-format="yyyy"
+            @change="queryHandle"
           />
         </div>
         <div class="filter-item">

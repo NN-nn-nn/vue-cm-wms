@@ -19,6 +19,7 @@ import './utils/error-log' // 错误日志
 
 import * as filters from './filters' // 全局过滤器
 import { parseTime, digitUppercase } from './utils'
+import permission from '@/directive/permission/index.js' // 权限判断指令
 
 import echarts from 'echarts'
 Vue.prototype.$echarts = echarts
@@ -34,6 +35,8 @@ import { mockXHR } from '../mock'
 if (process.env.NODE_ENV === 'production') {
   mockXHR()
 }
+
+Vue.use(permission)
 
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium' // 设置element-ui默认大小

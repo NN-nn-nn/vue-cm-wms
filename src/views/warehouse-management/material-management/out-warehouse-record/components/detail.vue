@@ -14,6 +14,11 @@
         <el-table-column prop="detailName" label="材质" align="center" min-width="90" />
         <el-table-column prop="unit" label="单位" align="center" min-width="90" />
       </el-table-column>
+      <el-table-column v-if="queryType" prop="outboundMode" :label="`出库方式`" align="center" min-width="70">
+        <template slot-scope="scope">
+          <el-tag :type="outboundMode[scope.row.outboundType] ? outboundMode[scope.row.outboundType].type : 'danger'" size="medium">{{ scope.row.outboundMode }}</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="规格" align="center" min-width="125">
         <template slot-scope="scope">
           <el-tag v-if="scope.row.newSpecification" type="info" size="medium">{{ scope.row.newSpecification }}</el-tag>
@@ -45,7 +50,7 @@
 
 <script>
 import moment from 'moment'
-import { MATERIAL_BASE_TYPE } from '@/utils/conventionalContent'
+import { MATERIAL_BASE_TYPE, OUTBOUND_MODE } from '@/utils/conventionalContent'
 import { fetchOutboundRecordDetailByNormal, fetchOutboundRecordDetailByProject } from '@/api/warehouse'
 
 export default {
@@ -75,6 +80,7 @@ export default {
   data() {
     return {
       materialBaseType: MATERIAL_BASE_TYPE,
+      outboundMode: OUTBOUND_MODE,
       listDateType: {
         month: 1,
         year: 2
@@ -132,7 +138,7 @@ export default {
           this.tableData = []
           if (data && data.data && data.data.length) {
             this.tableData = data.data.map(v => {
-              console.log(v)
+              v.outboundMode = this.outboundMode[v.outboundType] ? (this.outboundMode[v.outboundType].name || '') : ''
               if (+v.formType === this.materialBaseType.material.index) {
                 v.newSpecification = v.specification
               }

@@ -82,7 +82,7 @@
             <span>{{ materialBaseNum[scope.row.formType] ? materialBaseNum[scope.row.formType].name : '' }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="storageTime" label="退库日期" align="center">
+        <el-table-column prop="storageTime" label="退库申请日期" align="center">
           <template slot-scope="scope">
             <span>{{ scope.row.outWarehouseTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
           </template>
@@ -222,7 +222,7 @@ export default {
           // this.projectCascadeList = changeProjectToCascadeByYear(data, '入库总额(万元)', 'totalPrice')
           this.projectCascadeList = changeProjectToCascadeByYear(data)
         } else {
-          this.$message.err(message)
+          this.$message.error(message)
         }
       }).catch(e => {
         this.$message.error('获取项目级联列表失败')

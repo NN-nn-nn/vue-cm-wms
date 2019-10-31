@@ -10,7 +10,7 @@ const warehouseManagementRouter = {
   meta: {
     title: '仓库管理',
     icon: 'warehouse',
-    roles: ['admin']
+    roles: ['50_201_2', '50_203_2']
   },
   children: [
     {
@@ -18,19 +18,19 @@ const warehouseManagementRouter = {
       component: () => import('@/views/warehouse-management/material-management'),
       redirect: '/warehouse-management/material-management/material-warehouse',
       name: 'MaterialManagement',
-      meta: { title: '物料管理', roles: ['admin'] },
+      meta: { title: '物料管理', roles: ['50_203_2'] },
       children: [
         {
           path: '/warehouse-management/material-management/material-warehouse',
           component: () => import('@/views/warehouse-management/material-management/material-warehouse'),
           name: 'WareMaterialWarehouse',
-          meta: { title: '物料仓', roles: ['admin'] }
+          meta: { title: '物料仓', roles: ['50_203_2'] }
         },
         {
           path: '/warehouse-management/material-management/in-warehouse-verify',
           component: () => import('@/views/warehouse-management/material-management/in-warehouse-verify'),
           name: 'WareInWarehouseVerify',
-          meta: { title: '入库审核', roles: ['admin'] }
+          meta: { title: '入库审核', roles: ['50_203_2'] }
         },
         // {
         //   path: '/warehouse-management/material-management/in-warehouse-record',
@@ -42,13 +42,13 @@ const warehouseManagementRouter = {
           path: '/warehouse-management/material-management/out-warehouse-record',
           component: () => import('@/views/warehouse-management/material-management/out-warehouse-record'),
           name: 'WareOutWarehouseRecord',
-          meta: { title: '出库记录', roles: ['admin'] }
+          meta: { title: '出库记录', roles: ['50_203_2'] }
         },
         {
           path: '/warehouse-management/material-management/quit-warehouse-verify',
           component: () => import('@/views/warehouse-management/material-management/quit-warehouse-verify'),
           name: 'WareQuitWarehouseVerify',
-          meta: { title: '退库审核', roles: ['admin'] }
+          meta: { title: '退库审核', roles: ['50_203_2'] }
         }
       ]
     },
@@ -57,20 +57,20 @@ const warehouseManagementRouter = {
       component: () => import('@/views/warehouse-management/material-setting'),
       redirect: '/warehouse-management/material-setting/material-class',
       name: 'MaterialSetting',
-      meta: { title: '物料设置', roles: ['admin'] },
+      meta: { title: '物料设置', roles: ['50_201_2'] },
       children: [
         {
           path: '/warehouse-management/material-setting/material-class',
           component: () => import('@/views/warehouse-management/material-setting/material-class'),
           redirect: '/warehouse-management/material-setting/material-class/list',
           name: 'WareMaterialClass',
-          meta: { title: '物料分类', roles: ['admin'] },
+          meta: { title: '物料分类', roles: ['50_201_2'] },
           children: [
             {
               path: '/warehouse-management/material-setting/material-class/list',
               component: () => import('@/views/warehouse-management/material-setting/material-class/list'),
               name: 'WareMaterialClassList',
-              meta: { title: '分类详情', roles: ['admin'] },
+              meta: { title: '分类详情', roles: ['50_201_2'] },
               hidden: true
             }
             // {
@@ -86,7 +86,7 @@ const warehouseManagementRouter = {
           path: '/warehouse-management/material-setting/inventory-warning',
           component: () => import('@/views/warehouse-management/material-setting/inventory-warning'),
           name: 'WareInventoryWarning',
-          meta: { title: '库存预警', roles: ['admin'] }
+          meta: { title: '库存预警', roles: ['50_201_2'] }
         }
       ]
     }

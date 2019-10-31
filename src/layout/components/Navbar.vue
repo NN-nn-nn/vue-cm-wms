@@ -9,7 +9,7 @@
         <!-- <search id="header-search" class="right-menu-item" /> -->
 
         <!-- <error-log class="errLog-container right-menu-item hover-effect" /> -->
-        <notify class="right-menu-item hover-effect" />
+        <notify v-permission="['50_205_2']" class="right-menu-item hover-effect" />
         <screenfull id="screenfull" class="right-menu-item hover-effect" />
 
         <el-tooltip content="字体大小" effect="dark" placement="bottom">
@@ -20,7 +20,7 @@
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
-          <img src="@/assets/images/avatar.jpg" class="user-avatar">
+          <img src="@/assets/images/avatar.gif" class="user-avatar">
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">

@@ -132,7 +132,7 @@ export default {
           this.loading = false
           this.data = data.data
           this.data = this.data.map(v => {
-            v.difference = (Number(v.quotaNumber) - Number(v.actualUseNumber)) < 0 ? '+' + Number(v.quotaNumber) - Number(v.actualUseNumber) : Number(v.quotaNumber) - Number(v.actualUseNumber)
+            v.difference = (Number(v.quotaNumber) - Number(v.actualUseNumber)) < 0 ? Number(v.quotaNumber) - Number(v.actualUseNumber) : '+' + Number(v.quotaNumber) - Number(v.actualUseNumber)
             return v
           })
           this.totalCount = data.totalCount

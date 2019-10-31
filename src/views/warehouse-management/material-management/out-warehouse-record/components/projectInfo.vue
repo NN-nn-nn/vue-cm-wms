@@ -32,13 +32,13 @@
     </div>
     <!-- 其他模块（例如弹窗等） -->
     <el-drawer
-      title="项目入库汇总"
+      title="项目出库汇总"
       :visible.sync="drawerVisible"
       direction="rtl"
       size="50%"
     >
       <div slot="title" class="dialog-title">
-        <span style="font-weight:bold;">项目入库汇总</span>
+        <span style="font-weight:bold;">项目出库汇总</span>
       </div>
       <OutboundSummary :visible="drawerVisible" />
     </el-drawer>
@@ -95,7 +95,7 @@ export default {
           this.projectCascadeList = changeProjectToCascadeByYear(data)
           this.selectDefaultProject()
         } else {
-          this.$message.err(message)
+          this.$message.error(message)
         }
       }).catch(e => {
         this.$message.error('获取项目级联列表失败')

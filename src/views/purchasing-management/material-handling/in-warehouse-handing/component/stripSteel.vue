@@ -364,7 +364,7 @@ export default {
           // this.projectCascadeList = changeProjectToCascadeByYear(data, '入库总额(万元)', 'totalPrice')
           this.projectCascadeList = changeProjectToCascadeByYear(data)
         } else {
-          this.$message.err(message)
+          this.$message.error(message)
         }
       }).catch(e => {
         this.$message.error('获取项目级联列表失败')

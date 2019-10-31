@@ -28,7 +28,7 @@
       <el-table v-loading="tableLoading" :data="tableData" max-height="700" style="width: 100%" border stripe>
         <el-table-column label="序号" align="center" type="index" min-width="80" />
         <el-table-column prop="projectName" align="center" label="项目" min-width="100" />
-        <el-table-column prop="price" label="入库总额(万元)" align="center" min-width="100">
+        <el-table-column prop="price" label="出库总额(万元)" align="center" min-width="100">
           <template slot-scope="scope">
             <el-tag type="success" size="medium">{{ scope.row.price }}</el-tag>
           </template>

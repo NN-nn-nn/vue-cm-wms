@@ -18,7 +18,7 @@
             <el-tag v-if="scope.row.materialCode" size="medium">{{ scope.row.materialCode }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="物料类别" align="center" width="260">
+        <el-table-column label="物料类别" align="center" width="320">
           <template slot-scope="scope">
             <div class="mask-td">
               <div :class="{'mask-red': scope.row.rules.detailId}" />
@@ -32,6 +32,7 @@
                 :options="mateOption"
                 :props="props"
                 filterable
+                style="width:300px;"
                 @change="() =>{materialHandle(scope.row);scope.row.rules.detailId = false}"
               />
             </div>
@@ -46,20 +47,6 @@
                 v-else
                 v-model="scope.row.color"
                 @change="scope.row.rules.color = false"
-              />
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="单位" width="130" align="center">
-          <template slot-scope="scope">
-            <div class="mask-td">
-              <div :class="{'mask-red': scope.row.rules.unit}" />
-              <el-tag v-if="!scope.row.isHistory" type="info">{{ scope.row.unit }}</el-tag>
-              <el-input
-                v-else
-                v-model="scope.row.unit"
-                disabled
-                @change="scope.row.rules.unit = false"
               />
             </div>
           </template>
@@ -118,7 +105,7 @@
         </el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <div class="mask-td" style="justify-content:left">
+            <div v-permission="['50_206_1']" class="mask-td" style="justify-content:left">
               <el-button
                 v-if="!scope.row.isHistory"
                 size="mini"

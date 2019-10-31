@@ -98,6 +98,7 @@
           </div>
         </div>
         <div class="submit-item">
+          <el-button type="primary" icon="el-icon-arrow-left" @click="closeDlg">返回</el-button>
           <template v-if="isVerify && listDetail.status === 0">
             <el-popover v-model="retrunVisible" placement="top" width="160" trigger="click">
               <p>确认退回？</p>
@@ -105,7 +106,7 @@
                 <el-button size="mini" type="text" @click="retrunVisible = false">取消</el-button>
                 <el-button type="primary" size="mini" @click="()=> {retrunVisible = false;submitVerifyResult(inboundVerify.return)}">确定</el-button>
               </div>
-              <el-button slot="reference" :loading="submitLoading" type="danger" icon="el-icon-circle-close">退回</el-button>
+              <el-button slot="reference" v-permission="['50_203_1']" :loading="submitLoading" type="danger" icon="el-icon-circle-close">退回</el-button>
             </el-popover>
             <el-popover v-model="successVisible" placement="top" width="160" trigger="click">
               <p>确认通过？</p>
@@ -113,11 +114,8 @@
                 <el-button size="mini" type="text" @click="successVisible = false">取消</el-button>
                 <el-button type="primary" size="mini" @click="()=> {successVisible = false;submitVerifyResult(inboundVerify.success)}">确定</el-button>
               </div>
-              <el-button slot="reference" :loading="submitLoading" type="success" icon="el-icon-circle-check">通过</el-button>
+              <el-button slot="reference" v-permission="['50_203_1']" :loading="submitLoading" type="success" icon="el-icon-circle-check">通过</el-button>
             </el-popover>
-          </template>
-          <template v-else>
-            <el-button type="primary" icon="el-icon-arrow-left" @click="closeDlg">返回</el-button>
           </template>
         </div>
       </div>

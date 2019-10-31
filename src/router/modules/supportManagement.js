@@ -11,7 +11,7 @@ const SupportManagementRouter = {
       path: '/support-management',
       component: () => import('@/views/support-management'),
       name: 'SupportManagement',
-      meta: { title: '售后支持', icon: 'after-sale', roles: ['admin'] }
+      meta: { title: '售后支持', icon: 'after-sale' }
     }
   ]
 }

@@ -62,7 +62,7 @@
         <el-table-column v-if="!materialMoveMode" label="操作" align="center" min-width="200">
           <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" :content="`入库单号：${scope.row.storageListNo || '无'}`" placement="left" :disabled="poolType == materialPoolType.remainder || !scope.row.storageListNo">
-              <el-button type="primary" size="small" @click="handlingOut(scope.row)">办理出库</el-button>
+              <el-button v-permission="['50_203_1']" type="primary" size="small" @click="handlingOut(scope.row)">办理出库</el-button>
             </el-tooltip>
             <el-button type="success" size="small" @click="printLabel(scope.row)">打印标签</el-button>
           </template>
@@ -399,7 +399,7 @@ export default {
         if (code === 200) {
           this.projectCascadeList = changeProjectToCascadeByYear(data)
         } else {
-          this.$message.err(message)
+          this.$message.error(message)
         }
       }).catch(e => {
         this.$message.error('获取项目级联列表失败')

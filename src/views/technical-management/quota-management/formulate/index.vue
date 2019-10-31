@@ -101,7 +101,7 @@ export default {
             this.projectId = this.currentProjectId[1]
           }
         } else {
-          this.$message.err(message)
+          this.$message.error(message)
         }
       }).catch(e => {
         this.$message.error('获取项目级联列表失败')

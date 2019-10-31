@@ -5,6 +5,7 @@ import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import { getToken } from '@/utils/auth' // get token from cookie
 import getPageTitle from '@/utils/get-page-title'
+import { splicingPermissionGroup } from '@/utils/other'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
@@ -34,10 +35,11 @@ router.beforeEach(async(to, from, next) => {
         try {
           // 获取用户信息
           // note: 角色必须是对象数组！ 例如: ['admin'] or ,['developer','editor']
-          const { permissions } = await store.dispatch('user/getInfo')
-          permissions.push('admin')
+          const { rolePermissionGroupLinks } = await store.dispatch('user/getInfo')
+          const roles = splicingPermissionGroup(rolePermissionGroupLinks)
+          // roles.push('admin')
           // 根据角色生成可访问的路线图
-          const accessRoutes = await store.dispatch('permission/generateRoutes', permissions)
+          const accessRoutes = await store.dispatch('permission/generateRoutes', roles)
 
           // 动态添加可访问的路线
           router.addRoutes(accessRoutes)

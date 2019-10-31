@@ -115,7 +115,7 @@ export default {
           this.loading = false
           this.data = data.data
           this.data = this.data.map(v => {
-            v.difference = (Number(v.quotaWeight) - Number(v.actualUseWeight)) < 0 ? '+' + (Number(v.quotaWeight) - Number(v.actualUseWeight)) : (Number(v.quotaWeight) - Number(v.actualUseWeight))
+            v.difference = (Number(v.quotaWeight) - Number(v.actualUseWeight)) < 0 ? (Number(v.quotaWeight) - Number(v.actualUseWeight)) : '+' + (Number(v.quotaWeight) - Number(v.actualUseWeight))
             return v
           })
           this.totalCount = data.totalCount

@@ -52,3 +52,25 @@ export function calcWeightByMateName(length, width, thick, number = 1, name) {
   weight = Number((length * width * thick * density * number).toFixed(5))
   return weight
 }
+
+/**
+ * 拼接权限组
+ * @param {*} permissionGroup 权限组
+ * @returns {array} permission 权限
+ */
+export function splicingPermissionGroup(permissionGroup) {
+  if (!permissionGroup) {
+    return []
+  }
+  // 先获取物料的权限 moduleId: 50, permissionModuleName: "物料管理" 根据moduleId来取
+  let permission = ''
+  permissionGroup = permissionGroup.filter(p => p.moduleId === 50)
+  permission = permissionGroup.map(p => {
+    return `${p.moduleId}_${p.id}_${p.type}`
+  })
+  if (permission.indexOf('50_205_2') === -1) {
+    permission = []
+  }
+  console.log('permission', permission)
+  return permission
+}

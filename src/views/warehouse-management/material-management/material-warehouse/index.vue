@@ -133,7 +133,7 @@
     </div>
 
     <!-- 其他模块（例如弹窗等） -->
-    <div class="footer-toolbar">
+    <div v-permission="['50_203_1']" class="footer-toolbar">
       <div class="footer-toolbar-drawer">
         <el-popover v-model="moveVisible" trigger="click" placement="top" width="150">
           <div style="display:flex;flex-direction:column;justify-content:space-between;align-items:center;height:100px;">
@@ -286,7 +286,7 @@ export default {
         if (code === 200) {
           this.projectCascadeList = changeProjectToCascadeByYear(data)
         } else {
-          this.$message.err(message)
+          this.$message.error(message)
         }
       }).catch(e => {
         this.$message.error('获取项目级联列表失败')

@@ -10,7 +10,7 @@
           </el-input>
         </div>
       </div>
-      <div class="filter-right-box"><el-button class="el-icon-circle-plus-outline" type="primary" @click="goCreate"> 添加供应商</el-button></div>
+      <div class="filter-right-box"><el-button v-permission="['50_200_1']" class="el-icon-circle-plus-outline" type="primary" @click="goCreate"> 添加供应商</el-button></div>
     </div>
     <!-- 主要内容容器 -->
     <div class="content-container">
@@ -85,6 +85,7 @@
               > 详情
               </el-button>
               <el-button
+                v-permission="['50_200_1']"
                 size="mini"
                 class="el-icon-edit-outline"
                 type="warning"
@@ -92,6 +93,7 @@
               > 修改
               </el-button>
               <el-button
+                v-permission="['50_200_1']"
                 size="mini"
                 class="el-icon-delete"
                 type="danger"

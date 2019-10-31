@@ -12,7 +12,7 @@ const reportManagementRouter = {
       component: () => import('@/views/report-management/'),
       //   redirect: '/report-management/residual-material',
       name: 'ReportManagement',
-      meta: { title: '统计报表', icon: 'chart', roles: ['admin'] }
+      meta: { title: '统计报表', icon: 'chart', roles: ['50_207_2'] }
     }
   ]
 }

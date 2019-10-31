@@ -17,7 +17,7 @@
       </div>
       <!-- 右侧box -->
       <div class="filter-right-box">
-        <div class="filter-item">
+        <div v-permission="['50_201_1']" class="filter-item">
           <UploadBtn :action="action" :btn-name="'物料分类导入'" />
         </div>
       </div>
@@ -28,13 +28,13 @@
         <div v-for="(item, i) in typeList" :id="`type${item.id}`" :key="i" class="type-item" @click="openDetail(item)">
           <span v-text="item.typeName" />
           <span v-text="item.typeCode" />
-          <el-tooltip class="item" effect="dark" content="删除" placement="top-start">
+          <el-tooltip v-permission="['50_201_1']" class="item" effect="dark" content="删除" placement="top-start">
             <div id="delItem" class="del-img-item" @click.stop="deleteType(item.id, `type${item.id}`)">
               <img class="del-img" src="@/assets/images/delete.png">
             </div>
           </el-tooltip>
         </div>
-        <el-tooltip class="item" effect="dark" content="添加" placement="right">
+        <el-tooltip v-permission="['50_201_1']" class="item" effect="dark" content="添加" placement="right">
           <div class="type-item" @click="dialogFormVisible = true">
             <div class="add-img-item">
               <img class="add-img" src="@/assets/images/add.png">

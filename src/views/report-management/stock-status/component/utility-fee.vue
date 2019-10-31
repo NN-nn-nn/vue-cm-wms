@@ -61,14 +61,16 @@
         </el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <template v-if="scope.row.isOld">
-              <el-button v-if="!scope.row.edit" type="primary" size="small" icon="el-icon-edit" @click="scope.row.edit=!scope.row.edit">编辑</el-button>
-              <el-button v-if="scope.row.edit" type="success" size="small" icon="el-icon-circle-plus-outline" @click="confirmRow(scope.row)">保存</el-button>
-              <el-button v-if="scope.row.edit" class="cancel-btn" size="small" icon="el-icon-refresh" type="warning" @click="cancelEdit(scope.row)">取消</el-button>
-            </template>
-            <template v-else>
-              <el-button type="success" size="small" icon="el-icon-circle-plus-outline" @click="confirmRow(scope.row)">保存</el-button>
-            </template>
+            <div v-permission="['50_207_1']">
+              <template v-if="scope.row.isOld">
+                <el-button v-if="!scope.row.edit" type="primary" size="small" icon="el-icon-edit" @click="scope.row.edit=!scope.row.edit">编辑</el-button>
+                <el-button v-if="scope.row.edit" type="success" size="small" icon="el-icon-circle-plus-outline" @click="confirmRow(scope.row)">保存</el-button>
+                <el-button v-if="scope.row.edit" class="cancel-btn" size="small" icon="el-icon-refresh" type="warning" @click="cancelEdit(scope.row)">取消</el-button>
+              </template>
+              <template v-else>
+                <el-button type="success" size="small" icon="el-icon-circle-plus-outline" @click="confirmRow(scope.row)">保存</el-button>
+              </template>
+            </div>
           </template>
         </el-table-column>
       </el-table>

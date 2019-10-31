@@ -48,7 +48,7 @@ const MATERIAL_RETURN_INDEX_STATUS = {
 
 const MATERIAL_BASE_TYPE = {
   steelPlate: { index: 0, name: '钢板', value: 'steelPlate', icon: 'steel-plate', unit: '张' },
-  steel: { index: 1, name: '型钢', value: 'steel', icon: 'steel', unit: 'kg' },
+  steel: { index: 1, name: '型钢', value: 'steel', icon: 'steel', unit: '根' },
   stripSteel: { index: 2, name: '彩卷/带钢', value: 'stripSteel', icon: 'strip-steel', unit: 'kg' },
   enclosure: { index: 3, name: '成品围护', value: 'enclosure', icon: 'enclosure', unit: 'm' },
   material: { index: 4, name: '一般物料', value: 'material', icon: 'material' }
@@ -56,7 +56,7 @@ const MATERIAL_BASE_TYPE = {
 
 const MATERIAL_BASE_NUM = {
   0: { index: 0, name: '钢板', value: 'steelPlate', icon: 'steel-plate', unit: '张' },
-  1: { index: 1, name: '型钢', value: 'steel', icon: 'steel', unit: 'kg' },
+  1: { index: 1, name: '型钢', value: 'steel', icon: 'steel', unit: '根' },
   2: { index: 2, name: '彩卷/带钢', value: 'stripSteel', icon: 'strip-steel', unit: 'kg' },
   3: { index: 3, name: '成品围护', value: 'enclosure', icon: 'enclosure', unit: 'm' },
   4: { index: 4, name: '一般物料', value: 'material', icon: 'material' }
@@ -68,6 +68,7 @@ const MATERIAL_DENSITY = {
   STAINLESS_STEEL: 7.93
 }
 
+// 报表icon
 const REPORT_ICON = {
   0: 'steel-plate',
   1: 'steel',
@@ -80,6 +81,7 @@ const REPORT_ICON = {
   103: 'out'
 }
 
+// 报表icon
 const REPORT_ICON_BY_TEXT = [
   { name: '钢板', icon: 'steel-plate' },
   { name: '型钢', icon: 'steel' },
@@ -105,15 +107,23 @@ const INBOUND_VERIFY_STATUS = {
   2: '已退回'
 }
 
+// 入库验证
 const INBOUND_VERIFY = {
   unfinished: 0,
   success: 1,
   return: 2
 }
 
+// 退库验证
 const RETURN_VERIFY = {
   success: true,
   return: false
+}
+
+// 出库方式
+const OUTBOUND_MODE = {
+  0: { name: '整料整出', type: 'primary' },
+  1: { name: '整料半出', type: 'warning' }
 }
 
 // 日期选择配置
@@ -169,4 +179,4 @@ const MONTH_PICKER_OPTION = {
   }]
 }
 
-export { apiResultCode, dictionaryType, REPORT_ICON_BY_TEXT, REPORT_ICON, RETURN_VERIFY, MATERIAL_RETURN_STATUS, MATERIAL_RETURN_INDEX_STATUS, MATERIAL_BASE_TYPE, MATERIAL_BASE_NUM, MATERIAL_DENSITY, INBOUND_VERIFY_STATUS, INBOUND_VERIFY, DATE_PICKER_OPTION, MONTH_PICKER_OPTION, MATERIAL_POOL_TYPE, MATERIAL_MOVE_TYPE, MATERIAL_MOVE_INDEX_TYPE, MATERIAL_INBOUND_TYPE }
+export { apiResultCode, dictionaryType, OUTBOUND_MODE, REPORT_ICON_BY_TEXT, REPORT_ICON, RETURN_VERIFY, MATERIAL_RETURN_STATUS, MATERIAL_RETURN_INDEX_STATUS, MATERIAL_BASE_TYPE, MATERIAL_BASE_NUM, MATERIAL_DENSITY, INBOUND_VERIFY_STATUS, INBOUND_VERIFY, DATE_PICKER_OPTION, MONTH_PICKER_OPTION, MATERIAL_POOL_TYPE, MATERIAL_MOVE_TYPE, MATERIAL_MOVE_INDEX_TYPE, MATERIAL_INBOUND_TYPE }

@@ -1,5 +1,6 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
+import { splicingPermissionGroup } from '@/utils/other'
 import router, { resetRouter } from '@/router'
 
 const state = {
@@ -58,14 +59,14 @@ const actions = {
           reject('验证失败，请重新登录.')
         }
 
-        const { permissions, name, avatar, phone } = data
-
+        const { rolePermissionGroupLinks, name, avatar, phone } = data
+        const roles = splicingPermissionGroup(rolePermissionGroupLinks)
         // roles must be a non-empty array
-        if (!permissions || permissions.length <= 0) {
-          reject('没有权限!')
+        if (!roles || roles.length <= 0) {
+          reject('没有权限或没有通用权限!')
         }
 
-        commit('SET_ROLES', permissions)
+        commit('SET_ROLES', roles)
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar || 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif')
         commit('SET_INTRODUCTION', phone)

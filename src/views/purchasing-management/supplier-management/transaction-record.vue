@@ -122,10 +122,11 @@ export default {
           })
         } else {
           this.loading = false
-          this.$message.error('数据获取失败！')
+          this.$message.error(message)
         }
       }).catch(e => {
         this.loading = false
+        this.$message.error('获取交易记录数据')
       })
     },
     handleSizeChange(val) {

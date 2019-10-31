@@ -10,7 +10,7 @@ const configManagementRouter = {
   meta: {
     title: '配置管理',
     icon: 'config',
-    roles: ['admin']
+    roles: ['50_204_2']
   },
   children: [
     {
@@ -18,7 +18,7 @@ const configManagementRouter = {
       component: () => import('@/views/config-management/residual-material'),
       //   redirect: '/config-management/residual-material',
       name: 'ConfigResidualMaterial',
-      meta: { title: '废料定义', roles: ['admin'] },
+      meta: { title: '废料定义', roles: ['50_204_2'] },
       children: []
     }
   ]

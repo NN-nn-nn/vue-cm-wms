@@ -119,7 +119,7 @@
         </el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
-            <div class="mask-td" style="justify-content:left">
+            <div v-permission="['50_206_1']" class="mask-td" style="justify-content:left">
               <el-button
                 v-if="!scope.row.isHistory"
                 size="mini"
@@ -170,7 +170,7 @@
           @current-change="pageChange"
         />
       </div>
-      <div class="formulate-btn">
+      <div v-permission="['50_206_1']" class="formulate-btn">
         <el-button type="warning" icon="el-icon-circle-plus-outline" @click="addDefaultHandle">继续添加</el-button>
         <el-button type="primary" :loading="submitLoading" icon="el-icon-success" @click="confirmHandle">确定添加</el-button>
       </div>
