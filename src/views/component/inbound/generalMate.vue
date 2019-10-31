@@ -56,12 +56,18 @@
         </el-table-column>
         <el-table-column prop="taxIncludedAmount" :label="`总额(元)`" align="center" min-width="100">
           <template slot-scope="scope">
-            <el-tag type="success" size="medium">{{ scope.row.taxIncludedAmount | toFixed(2) }}</el-tag>
+            <el-tag v-if="scope.row.taxIncludedAmount !== null" type="success" size="medium">{{ scope.row.taxIncludedAmount | toFixed(2) }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="brand" label="品牌" align="center" min-width="160" />
         <el-table-column prop="supplierName" label="供应商" align="center" min-width="160" />
         <el-table-column prop="tip" label="备注" align="center" min-width="160" />
+        <el-table-column prop="warehouse" label="仓库位置" align="center" min-width="140">
+          <template slot-scope="scope">
+            <el-input v-if="isVerify && listDetail.status === inboundVerify.unfinished" v-model="scope.row.warehouse" size="small" placeholder="仓库位置" />
+            <span v-else>{{ scope.row.warehouse }}</span>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
     <div class="footer-toolbar">
@@ -82,7 +88,7 @@
         </div>
         <div class="submit-item">
           <el-button type="primary" icon="el-icon-arrow-left" @click="closeDlg">返回</el-button>
-          <template v-if="isVerify && listDetail.status === 0">
+          <template v-if="isVerify && listDetail.status === inboundVerify.unfinished">
             <el-popover v-model="retrunVisible" placement="top" width="160" trigger="click">
               <p>确认退回？</p>
               <div style="text-align: right; margin: 0">
@@ -170,6 +176,9 @@ export default {
         id: this.detailId,
         status: status
       }
+      if (this.inboundVerify.success === status) {
+        submitData.details = this.getPosition()
+      }
       this.submitLoading = true
       verifyInboundList(submitData).then(({ data, code, message }) => {
         if (code === 200) {
@@ -192,6 +201,18 @@ export default {
     },
     closeDlg() {
       this.$emit('closeEvent')
+    },
+    getPosition() {
+      if (!this.listDetail.detailList) {
+        return []
+      }
+      const arr = this.listDetail.detailList.map(v => {
+        return {
+          id: v.id,
+          warehouse: v.warehouse
+        }
+      })
+      return arr || []
     }
   }
 }

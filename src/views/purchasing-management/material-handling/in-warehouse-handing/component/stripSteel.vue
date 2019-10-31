@@ -152,7 +152,7 @@
         <el-table-column prop="taxIncludedAmount" :label="`总额 \n (元)`" align="center" min-width="100">
           <template slot-scope="scope">
             <div class="mask-td">
-              <el-tag type="success" size="medium">{{ scope.row.taxIncludedAmount || '0.00' }}</el-tag>
+              <el-tag v-if="scope.row.taxIncludedAmount !== null && scope.row.taxIncludedAmount !== undefined && scope.row.taxIncludedAmount !== ''" type="success" size="medium">{{ scope.row.taxIncludedAmount }}</el-tag>
             </div>
           </template>
         </el-table-column>
@@ -434,7 +434,11 @@ export default {
     calcTotal: function() {
       let totalAmount = 0
       this.tableData.forEach(v => {
-        v.taxIncludedAmount = ((v.purchasePrice || 0) * (v.weight || 0)).toFixed(2)
+        if (v.purchasePrice === undefined || v.weight === undefined) {
+          v.taxIncludedAmount = undefined
+        } else {
+          v.taxIncludedAmount = ((v.purchasePrice || 0) * (v.weight || 0)).toFixed(2)
+        }
         totalAmount += Number(v.taxIncludedAmount)
       })
       this.totalAmount = totalAmount

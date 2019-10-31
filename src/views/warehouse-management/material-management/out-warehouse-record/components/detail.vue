@@ -25,6 +25,11 @@
         </template>
       </el-table-column>
       <el-table-column prop="number" :label="`数量 \n (张)`" align="center" min-width="70" />
+      <el-table-column v-if="queryType" prop="weight" :label="`重量 \n (kg)`" align="center" min-width="120">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.weight != null || scope.row.weight != undefined " type="info" size="medium">{{ scope.row.weight }}</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column prop="purchasePrice" :label="`单价 \n (元)`" align="center" min-width="110">
         <template slot-scope="scope">
           <span>{{ scope.row.purchasePrice | toFixed(2) }}</span>
@@ -32,12 +37,12 @@
       </el-table-column>
       <el-table-column prop="purchasePrice" :label="`总价 \n (元)`" align="center" min-width="100">
         <template slot-scope="scope">
-          <el-tag type="success" size="medium">{{ scope.row.taxIncludedAmount | toFixed(2) }}</el-tag>
+          <el-tag v-if="scope.row.taxIncludedAmount !== null" type="success" size="medium">{{ scope.row.taxIncludedAmount | toFixed(2) }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column prop="purchasePrice" :label="`出库凭证`" align="center" min-width="120">
         <template slot-scope="scope">
-          <el-tag type="info" size="medium">{{ scope.row.outboundNo }}</el-tag>
+          <el-tag type="danger" size="medium">{{ scope.row.outboundNo }}</el-tag>
         </template>
       </el-table-column>
     </el-table>

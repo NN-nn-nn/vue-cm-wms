@@ -47,7 +47,7 @@ Vue.filter('parseTime', parseTime)
 Vue.filter('digitUppercase', digitUppercase)
 
 Vue.filter('toFixed', (value, precision) => {
-  if (isNaN(value)) return ''
+  if (value === undefined || value === null || isNaN(value)) return ''
   return value.toFixed(precision)
 })
 

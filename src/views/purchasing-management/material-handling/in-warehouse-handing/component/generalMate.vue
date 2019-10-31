@@ -115,7 +115,7 @@
         <el-table-column prop="province" label="总额(元)" align="center" min-width="130">
           <template slot-scope="scope">
             <div class="mask-td">
-              <el-tag type="success" size="medium">{{ (scope.row.purchasePrice || 0) * (scope.row.number || 0) | toFixed(2) }}</el-tag>
+              <el-tag v-if="scope.row.taxIncludedAmount !== null && scope.row.taxIncludedAmount !== undefined && scope.row.taxIncludedAmount !== ''" type="success" size="medium">{{ scope.row.taxIncludedAmount }}</el-tag>
             </div>
           </template>
         </el-table-column>
@@ -389,8 +389,12 @@ export default {
     calcTotal: function() {
       let totalAmount = 0
       this.tableData.forEach(v => {
-        v.taxIncludedAmount = Number(((v.purchasePrice || 0) * (v.number || 0)).toFixed(2))
-        totalAmount += v.taxIncludedAmount
+        if (v.purchasePrice === undefined || v.number === undefined) {
+          v.taxIncludedAmount = undefined
+        } else {
+          v.taxIncludedAmount = ((v.purchasePrice || 0) * (v.number || 0)).toFixed(2)
+        }
+        totalAmount += Number(v.taxIncludedAmount)
       })
       this.totalAmount = totalAmount
     },

@@ -36,16 +36,14 @@
     <div class="content-container">
       <el-table v-loading="tableLoading" :data="listDetail.detailList" max-height="600" style="width: 100%" border stripe @selection-change="handleSelectionChange">
         <el-table-column align="center" type="selection" width="55" :selectable="(row,index) =>{return row.checkAble}" />
-        <el-table-column label="序号" align="center" type="index" width="80" />
-        <el-table-column prop="materialCode" align="center" label="编号" min-width="120">
+        <el-table-column label="序号" align="center" type="index" width="50" />
+        <el-table-column prop="materialCode" align="center" label="编号" min-width="100">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.materialCode" size="medium">{{ scope.row.materialCode }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="className" label="状态" align="center" min-width="100">
-          <template slot-scope="scope">
-            <el-tag v-if="scope.row.returnStatus == 0" :type="materialReturnIndexStatus[scope.row.status].tip" size="medium">{{ materialReturnIndexStatus[scope.row.status].name }}</el-tag>
-            <el-tag v-else type="warning" size="medium">正在办理</el-tag>
+          <template slot-scope="scope"><el-tag :type="materialReturnIndexStatus[scope.row.currentStatus].tip" size="medium">{{ materialReturnIndexStatus[scope.row.currentStatus].name }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="物料类别" align="center">
@@ -88,7 +86,7 @@
         </el-table-column>
         <el-table-column prop="taxIncludedAmount" :label="`总额 \n (元)`" align="center" min-width="100">
           <template slot-scope="scope">
-            <el-tag type="success" size="medium">{{ scope.row.taxIncludedAmount | toFixed(2) }}</el-tag>
+            <el-tag v-if="scope.row.taxIncludedAmount !== null" type="success" size="medium">{{ scope.row.taxIncludedAmount | toFixed(2) }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="province" :label="`单位净重 \n (kg/㎡)`" align="center" min-width="90">
@@ -98,7 +96,14 @@
         </el-table-column>
         <el-table-column prop="brand" label="品牌" align="center" min-width="140" />
         <el-table-column prop="supplierName" label="供应商" align="center" min-width="140" />
-        <el-table-column prop="furnaceLotNumber" label="炉批号" align="center" min-width="210" />
+        <el-table-column prop="furnaceLotNumber" label="炉批号" align="center" min-width="140" />
+        <el-table-column prop="taxIncludedAmount" label="仓库位置" align="center" min-width="140">
+          <template slot-scope="scope">
+            <el-tooltip class="item" effect="dark" :content="`${scope.row.warehouse || '无'}`" placement="left" :disabled="!scope.row.warehouse">
+              <span>{{ scope.row.warehouse }}</span>
+            </el-tooltip>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
     <div class="footer-toolbar">
@@ -136,7 +141,7 @@
 </template>
 
 <script>
-import { MATERIAL_BASE_TYPE, MATERIAL_RETURN_STATUS, MATERIAL_RETURN_INDEX_STATUS } from '@/utils/conventionalContent'
+import { MATERIAL_BASE_TYPE, MATERIAL_RETURN_STATUS, MATERIAL_RETURN_INDEX_STATUS_2, MATERIAL_RETURN_STATUS_2, INBOUND_VERIFY } from '@/utils/conventionalContent'
 import { fetchDetailList, createReturnList } from '@/api/warehouse'
 export default {
   name: 'InboundSteelPlateComponent',
@@ -153,7 +158,9 @@ export default {
   data() {
     return {
       materialReturnStatus: MATERIAL_RETURN_STATUS,
-      materialReturnIndexStatus: MATERIAL_RETURN_INDEX_STATUS,
+      materialReturnStatus2: MATERIAL_RETURN_STATUS_2,
+      materialReturnIndexStatus: MATERIAL_RETURN_INDEX_STATUS_2,
+      inboundStatus: INBOUND_VERIFY,
       currentBaseType: MATERIAL_BASE_TYPE.steelPlate, // 钢板
       retrunVisible: false,
       successVisible: false,
@@ -185,7 +192,15 @@ export default {
           if (data) {
             this.listDetail = data
             this.listDetail.detailList = data.detailList.map(v => {
-              v.checkAble = v.returnStatus !== 1 || (v.returnStatus === 0 && v.status !== this.materialReturnStatus.success.index)
+              v.checkAble = false
+              if (v.status === this.inboundStatus.quit) {
+                v.currentStatus = this.materialReturnStatus2.return
+              } else if (v.status !== this.inboundStatus.quit && v.returnStatus !== this.materialReturnStatus.verify.index) {
+                v.currentStatus = this.materialReturnStatus2.processing
+              } else {
+                v.currentStatus = this.materialReturnStatus2.normal
+                v.checkAble = true
+              }
               return v
             })
             this.listDetail.provideMateCheck = this.listDetail.type === 1

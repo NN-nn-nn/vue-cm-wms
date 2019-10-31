@@ -46,6 +46,20 @@ const MATERIAL_RETURN_INDEX_STATUS = {
   2: { name: '已退回', tip: 'danger' }
 }
 
+// 退库状态和入库清单状态结合才能知道当前物料状态
+const MATERIAL_RETURN_INDEX_STATUS_2 = {
+  0: { name: '未办理', tip: 'primary' },
+  1: { name: '办理中', tip: 'warning' },
+  2: { name: '已退库', tip: 'danger' }
+}
+
+// 退库验证
+const MATERIAL_RETURN_STATUS_2 = {
+  normal: 0,
+  processing: 1,
+  return: 2
+}
+
 const MATERIAL_BASE_TYPE = {
   steelPlate: { index: 0, name: '钢板', value: 'steelPlate', icon: 'steel-plate', unit: '张' },
   steel: { index: 1, name: '型钢', value: 'steel', icon: 'steel', unit: '根' },
@@ -104,14 +118,16 @@ const REPORT_ICON_BY_TEXT = [
 const INBOUND_VERIFY_STATUS = {
   0: '未审核',
   1: '已通过',
-  2: '已退回'
+  2: '已退回',
+  3: '已退库'
 }
 
 // 入库验证
 const INBOUND_VERIFY = {
   unfinished: 0,
   success: 1,
-  return: 2
+  return: 2,
+  quit: 3
 }
 
 // 退库验证
@@ -179,4 +195,4 @@ const MONTH_PICKER_OPTION = {
   }]
 }
 
-export { apiResultCode, dictionaryType, OUTBOUND_MODE, REPORT_ICON_BY_TEXT, REPORT_ICON, RETURN_VERIFY, MATERIAL_RETURN_STATUS, MATERIAL_RETURN_INDEX_STATUS, MATERIAL_BASE_TYPE, MATERIAL_BASE_NUM, MATERIAL_DENSITY, INBOUND_VERIFY_STATUS, INBOUND_VERIFY, DATE_PICKER_OPTION, MONTH_PICKER_OPTION, MATERIAL_POOL_TYPE, MATERIAL_MOVE_TYPE, MATERIAL_MOVE_INDEX_TYPE, MATERIAL_INBOUND_TYPE }
+export { apiResultCode, dictionaryType, MATERIAL_RETURN_INDEX_STATUS_2, MATERIAL_RETURN_STATUS_2, OUTBOUND_MODE, REPORT_ICON_BY_TEXT, REPORT_ICON, RETURN_VERIFY, MATERIAL_RETURN_STATUS, MATERIAL_RETURN_INDEX_STATUS, MATERIAL_BASE_TYPE, MATERIAL_BASE_NUM, MATERIAL_DENSITY, INBOUND_VERIFY_STATUS, INBOUND_VERIFY, DATE_PICKER_OPTION, MONTH_PICKER_OPTION, MATERIAL_POOL_TYPE, MATERIAL_MOVE_TYPE, MATERIAL_MOVE_INDEX_TYPE, MATERIAL_INBOUND_TYPE }

@@ -86,7 +86,7 @@ export default {
   methods: {
     downloadExcel: function(row) {
       this.exportLoad = true
-      exportOutboundExcelByProject({ projectId: this.projectId }).then(() => {
+      exportOutboundExcelByProject({ projectId: row.projectId }).then(() => {
         this.exportLoad = false
       }).catch(e => {
         this.exportLoad = false

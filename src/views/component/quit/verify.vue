@@ -15,7 +15,7 @@
         <div class="filter-item">
           <div class="list-info-item">
             <span>退库提交时间：</span>
-            <span>{{ listDetail.storageTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+            <span>{{ listDetail.outWarehouseTime | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
           </div>
         </div>
         <div class="filter-item">
@@ -60,11 +60,18 @@
         </el-table-column>
         <el-table-column prop="taxIncludedAmount" :label="`总价(元)`" align="center" min-width="100">
           <template slot-scope="scope">
-            <el-tag type="success" size="medium">{{ scope.row.taxIncludedAmount | toFixed(2) }}</el-tag>
+            <el-tag v-if="scope.row.taxIncludedAmount !== null" type="success" size="medium">{{ scope.row.taxIncludedAmount | toFixed(2) }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="brand" label="品牌" align="center" min-width="160" />
         <el-table-column prop="supplierName" label="供应商" align="center" min-width="160" />
+        <el-table-column prop="taxIncludedAmount" label="仓库位置" align="center" min-width="160">
+          <template slot-scope="scope">
+            <el-tooltip class="item" effect="dark" :content="`${scope.row.warehouse}`" placement="left" :disabled="!scope.row.warehouse">
+              <span>{{ scope.row.warehouse }}</span>
+            </el-tooltip>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
     <div class="footer-toolbar">

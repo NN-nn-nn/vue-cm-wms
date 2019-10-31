@@ -20,7 +20,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="number" :label="`数量 \n (张)`" align="center" min-width="90" />
-      <el-table-column prop="number" :label="`重量 \n (kg)`" align="center" min-width="120">
+      <el-table-column prop="weight" :label="`重量 \n (kg)`" align="center" min-width="120">
         <template slot-scope="scope">
           <el-tag type="warning" size="medium">{{ scope.row.weight }}</el-tag>
         </template>

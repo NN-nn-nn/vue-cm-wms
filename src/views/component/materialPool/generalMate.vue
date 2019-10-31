@@ -43,9 +43,16 @@
         </el-table-column>
         <el-table-column prop="brand" label="品牌" align="center" min-width="140" />
         <el-table-column prop="tip" label="备注" align="center" min-width="140" />
+        <el-table-column prop="taxIncludedAmount" label="仓库位置" align="center" min-width="140">
+          <template slot-scope="scope">
+            <el-tooltip class="item" effect="dark" :content="`${scope.row.warehouse || '无'}`" placement="left" :disabled="!scope.row.warehouse">
+              <span>{{ scope.row.warehouse }}</span>
+            </el-tooltip>
+          </template>
+        </el-table-column>
         <el-table-column v-if="materialMoveMode" prop="purchasePrice" :label="`总额 \n (元)`" align="center" min-width="90">
           <template slot-scope="scope">
-            <el-tag type="success" size="medium">{{ (scope.row.weight || 0 ) * (scope.row.purchasePrice || 0) | toFixed(2) }}</el-tag>
+            <el-tag v-if="scope.row.purchasePrice != undefined" type="success" size="medium">{{ (scope.row.weight || 0 ) * (scope.row.purchasePrice || 0) | toFixed(2) }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column v-if="!materialMoveMode" label="操作" align="center" min-width="200">
