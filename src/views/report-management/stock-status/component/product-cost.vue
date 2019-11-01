@@ -108,19 +108,22 @@ export default {
               if (v && v.details) {
                 const _tempData = JSON.parse(JSON.stringify(monthData))
                 v.details.forEach(child => {
-                  console.log(child.month, 'child----')
                   const _index = Number(child.month) - 1
                   _tempData[_index].totalMoney = Number((child.totalMoney).toFixed(0)) || 0
                   // 计算总额
-                  this.data[_index].sumMoney += _tempData[_index].totalMoney
+                  if (v.typeName !== '产量(t)') {
+                    this.data[_index].sumMoney += _tempData[_index].totalMoney
+                  } else {
+                    this.data[_index]['output'] = _tempData[_index].totalMoney
+                  }
                 })
                 v.newDetails = _tempData
               }
-              if (v && v.typeName === '产量(t)') {
-                v.newDetails.forEach(c => {
-                  this.data[c.month - 1]['output'] = c.totalMoney
-                })
-              }
+              // if (v && v.typeName === '产量(t)') {
+              //   v.newDetails.forEach(c => {
+              //     this.data[c.month - 1]['output'] = c.totalMoney
+              //   })
+              // }
             })
             console.log(this.data, 'this.data----')
             this.dataHead = data.filter(v => v.typeName !== '产量(t)')

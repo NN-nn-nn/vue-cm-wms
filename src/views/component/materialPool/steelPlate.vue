@@ -57,7 +57,7 @@
             <span>{{ scope.row.weight | toFixed(5) }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="purchasePrice" :label="`采购单价 \n (t/元)`" align="center" min-width="110">
+        <el-table-column prop="purchasePrice" :label="`采购单价 \n (t/元)`" align="center" min-width="90">
           <template slot-scope="scope">
             <div class="mask-td number-input">
               <div :class="{'mask-red': scope.row.priceError}" />
@@ -66,7 +66,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="brand" label="品牌" align="center" min-width="140" />
+        <el-table-column prop="brand" label="品牌" align="center" min-width="110" />
         <el-table-column prop="furnaceLotNumber" label="炉批号" align="center" min-width="170" />
         <el-table-column prop="taxIncludedAmount" label="仓库位置" align="center" min-width="140">
           <template slot-scope="scope">

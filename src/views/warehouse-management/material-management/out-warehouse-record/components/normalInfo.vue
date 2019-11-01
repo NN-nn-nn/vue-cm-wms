@@ -48,7 +48,7 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button type="primary" size="small" icon="el-icon-view" @click="openDetail(scope.row)">查看</el-button>
-            <el-button type="success" :loading="exportLoad[scope.$index]" icon="el-icon-download" size="small" @click="downloadExcel(scope.$index)">下载</el-button>
+            <el-button type="success" :loading="exportLoad[scope.$index]" icon="el-icon-download" size="small" @click="downloadExcel(scope.row.dateTime, scope.$index)">下载</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -116,16 +116,15 @@ export default {
     this.getList()
   },
   methods: {
-    downloadExcel: function(index) {
+    downloadExcel: function(time, index) {
       const queryData = {}
       queryData.type = this.listQuery.type
-      queryData.companyId = 1
       if (this.listQuery.type === this.dateType.year) {
-        queryData.startDate = moment(this.dateTime).startOf('month').format('YYYY-MM-DD')
-        queryData.endDate = moment(this.dateTime).endOf('month').format('YYYY-MM-DD')
+        queryData.startDate = moment(time).startOf('month').format('YYYY-MM-DD')
+        queryData.endDate = moment(time).endOf('month').format('YYYY-MM-DD')
       } else {
-        queryData.startDate = moment(this.dateTime).startOf('date').format('YYYY-MM-DD')
-        queryData.endDate = moment(this.dateTime).endOf('date').format('YYYY-MM-DD')
+        queryData.startDate = moment(time).startOf('date').format('YYYY-MM-DD')
+        queryData.endDate = moment(time).endOf('date').format('YYYY-MM-DD')
       }
       this.$set(this.exportLoad, index, true)
       exportOutboundExcelByNormal(queryData).then(() => {

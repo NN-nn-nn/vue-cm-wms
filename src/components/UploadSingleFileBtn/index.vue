@@ -3,6 +3,7 @@
     ref="upload"
     class="upload-demo"
     :action="action"
+    :headers="{Authorization:`cat ${token}`}"
     :on-success="uploadSuccess"
     :on-progress="uploadProgress"
     :on-error="uploadError"
@@ -16,6 +17,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   name: 'UploadSingleFileBtn',
   props: {
@@ -34,13 +36,19 @@ export default {
       fileList: []
     }
   },
+  computed: {
+    ...mapGetters([
+      'token'
+    ])
+  },
   methods: {
     handleExceed(files, fileList) {
       this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`)
     },
     uploadSuccess(response) {
+      this.$refs.upload.clearFiles()
+      this.uploadLoading = false
       if (response && response.code === 200) {
-        this.$refs.upload.clearFiles()
         this.$message({
           message: '上传成功',
           type: 'success'
@@ -51,9 +59,9 @@ export default {
           type: 'error'
         })
       }
-      this.uploadLoading = false
     },
     uploadError() {
+      this.$refs.upload.clearFiles()
       this.uploadLoading = false
       this.$message({
         message: '上传失败',
