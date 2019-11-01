@@ -211,7 +211,7 @@ export default {
         ],
         series: [
           {
-            name: '出库额',
+            name: '采购额',
             type: 'bar',
             barWidth: '60%',
             data: yData
