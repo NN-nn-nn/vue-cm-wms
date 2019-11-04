@@ -1,28 +1,6 @@
 <template>
   <div class="dashboard-editor-container">
     <div class="title">CM-WMS系统欢迎您</div>
-    <!-- <table cellspacing="0" cellpadding="0" width="200" border="1" frame="void"><tbody>
-      <tr>
-        <td style="padding: 0 8pt;box-sizing:border-box;height: 6mm;width: 58mm;font-size: 12pt;" colspan="2;">1111</td>
-        <td style="padding: 0 8pt;box-sizing:border-box;height: 6mm;width: 16mm;" rowspan="2" />
-      </tr>
-      <tr>
-        <td style="box-sizing:border-box;height: 2mm;width: 29mm;">材质：222</td>
-        <td style="box-sizing:border-box;height: 2mm;width: 29mm;">333</td>
-      </tr>
-    </tbody></table> -->
-    <table cellspacing="0" cellpadding="0" border="0" frame="void">
-      <tbody>
-        <tr>
-          <td style="padding: 0 8pt;box-sizing:border-box;height: 6mm;width: 58mm;font-size: 12pt;" colspan="2;">1</td>
-          <td style="padding: 0 8pt;box-sizing:border-box;height: 6mm;width: 16mm;" rowspan="2" />
-        </tr>
-        <tr>
-          <td style="box-sizing:border-box;height: 2mm;width: 29mm;">2</td>
-          <td style="box-sizing:border-box;height: 2mm;width: 29mm;">3</td>
-        </tr>
-      </tbody>
-    </table>
     <!-- <github-corner class="github-corner" />
 
     <panel-group @handleSetLineChartData="handleSetLineChartData" />
@@ -120,21 +98,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-table {
-  border-collapse: collapse;
-  font-family:'微软雅黑';
-  border-collapse:collapse;
-  text-align: center;
-  vertical-align:middle;
-  font-size: 9pt;
-  color: black;
- }
-table td {
-  border: solid 1px #a59e9e;
-}
-// td {border:1px solid black}
-// table {border:0px}
-// tr {border:0px}
 .title {
   font-weight: bold;
   font-size: 40px;

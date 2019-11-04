@@ -318,3 +318,20 @@ aside {
   -webkit-line-clamp: 2;      /*可以显示的行数，超出部分用...表示 */
   -webkit-box-orient: vertical; 
 }
+
+.party-tip {
+  background: #e64242;
+  transform:  rotate(-45deg);
+  color: white;
+  font-weight: 100;
+  position: absolute;
+  top: 5px;
+  left: -20px;
+  right: 0;
+  width: 70px;
+  height: 20px;
+  font-size: 11px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

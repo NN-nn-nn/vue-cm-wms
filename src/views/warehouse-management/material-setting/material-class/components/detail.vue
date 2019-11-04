@@ -40,9 +40,9 @@
                 stripe
                 style="width: 100%"
               >
-                <el-table-column type="index" label="序号" align="center" width="100" />
-                <el-table-column prop="typeName" label="物料名称" align="center" width="180" />
-                <el-table-column prop="className" label="物料种类" align="center" width="180" />
+                <el-table-column type="index" label="序号" align="center" width="50" />
+                <el-table-column prop="typeName" label="物料名称" align="center" min-width="100" />
+                <el-table-column prop="className" label="物料种类" align="center" min-width="100" />
                 <el-table-column prop="detailName" label="材质/型号/品种" align="center" width="220">
                   <template slot-scope="scope">
                     <template v-if="scope.row.edit">
@@ -54,13 +54,13 @@
                     <span v-else>{{ scope.row.detailName }}</span>
                   </template>
                 </el-table-column>
-                <el-table-column prop="materialCode" label="代码" align="center" width="180" />
-                <el-table-column label="时间" align="center" width="180">
+                <el-table-column prop="materialCode" label="代码" align="center" min-width="100" />
+                <el-table-column label="时间" align="center" min-width="120">
                   <template slot-scope="scope">
                     <span>{{ scope.row.createTime | parseTime }}</span>
                   </template>
                 </el-table-column>
-                <el-table-column label="操作">
+                <el-table-column label="操作" min-width="180">
                   <template slot-scope="scope">
                     <div v-permission="['50_201_1']">
                       <el-button v-if="scope.row.edit" type="success" size="small" icon="el-icon-circle-plus-outline" @click="confirmEdit(scope.row)">保存</el-button>
@@ -330,7 +330,7 @@ export default {
             } else {
               this.$message({
                 message: message,
-                type: 'success'
+                type: 'error'
               })
             }
             this.submitMaterialBtn = false

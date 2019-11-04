@@ -1,8 +1,13 @@
 <template>
   <!-- 主要内容容器 -->
-  <div class="content-container">
+  <div class="content-container ware-outbound-detail-component">
     <el-table v-loading="tableLoading" :data="tableData" style="width: 100%" border stripe>
-      <el-table-column label="序号" align="center" type="index" width="80" />
+      <el-table-column label="序号" align="center" type="index" width="50">
+        <template slot-scope="scope">
+          <div v-if="scope.row.storageListType != materialInboundType.partyA" class="party-tip">甲供</div>
+          <span>{{ scope.$index + 1 }}</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="materialCode" align="center" label="编号" min-width="100">
         <template slot-scope="scope">
           <el-tag v-if="scope.row.materialCode" size="medium">{{ scope.row.materialCode }}</el-tag>
@@ -14,7 +19,7 @@
         <el-table-column prop="detailName" label="材质" align="center" min-width="90" />
         <el-table-column prop="unit" label="单位" align="center" min-width="90" />
       </el-table-column>
-      <el-table-column v-if="queryType" prop="outboundMode" :label="`出库方式`" align="center" min-width="70">
+      <el-table-column v-if="queryType" prop="outboundMode" :label="`出库方式`" align="center" min-width="95">
         <template slot-scope="scope">
           <el-tag :type="outboundMode[scope.row.outboundType] ? outboundMode[scope.row.outboundType].type : 'danger'" size="medium">{{ scope.row.outboundMode }}</el-tag>
         </template>
@@ -55,7 +60,7 @@
 
 <script>
 import moment from 'moment'
-import { MATERIAL_BASE_TYPE, OUTBOUND_MODE } from '@/utils/conventionalContent'
+import { MATERIAL_BASE_TYPE, OUTBOUND_MODE, MATERIAL_INBOUND_TYPE } from '@/utils/conventionalContent'
 import { setMaterialSpecification } from '@/utils/other'
 import { fetchOutboundRecordDetailByNormal, fetchOutboundRecordDetailByProject } from '@/api/warehouse'
 
@@ -86,6 +91,7 @@ export default {
   data() {
     return {
       materialBaseType: MATERIAL_BASE_TYPE,
+      materialInboundType: MATERIAL_INBOUND_TYPE,
       outboundMode: OUTBOUND_MODE,
       listDateType: {
         month: 1,
@@ -206,6 +212,8 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style>
+.ware-outbound-detail-component .el-table__body td {
+  overflow: hidden!important;
+}
 </style>
