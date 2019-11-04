@@ -4,7 +4,7 @@
     <el-table v-loading="tableLoading" :data="tableData" style="width: 100%" border stripe>
       <el-table-column label="序号" align="center" type="index" width="50">
         <template slot-scope="scope">
-          <div v-if="scope.row.storageListType != materialInboundType.partyA" class="party-tip">甲供</div>
+          <div v-if="scope.row.storageListType == materialInboundType.partyA" class="party-tip">甲供</div>
           <span>{{ scope.$index + 1 }}</span>
         </template>
       </el-table-column>
