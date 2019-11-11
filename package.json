@@ -8,6 +8,8 @@
     "dev": "vue-cli-service serve",
     "build:prod": "vue-cli-service build",
     "build:stage": "vue-cli-service build --mode staging",
+    "build:zheerjian": "vue-cli-service build --mode zheerjian",
+    "build:mes": "vue-cli-service build --mode mes",
     "preview": "node build/index.js --preview",
     "lint": "eslint --ext .js,.vue src",
     "test:unit": "jest --clearCache && vue-cli-service test:unit",
