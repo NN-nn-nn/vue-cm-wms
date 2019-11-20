@@ -78,7 +78,7 @@
         </el-table-column>
         <el-table-column label="总重(t)" width="140" align="center">
           <template slot-scope="scope">
-            <el-tag v-if="!scope.row.isHistory">{{ scope.row.weight | toFixed(5) }}</el-tag>
+            <el-tag v-if="!scope.row.isHistory">{{ scope.row.weight | toFixed(DECIMAL_NUMBER.ton) }}</el-tag>
             <el-tag
               v-else
             >{{ scope.row.weight?scope.row.weight:0 }}</el-tag>
@@ -334,7 +334,7 @@ export default {
       const number = item.number || 1
       const name = getCascaderNameByIds(this.mateOption, item.materialClassIds, 'id', 'childrenList')
       if (length && width && thickness) {
-        item.weight = (calcWeightByMateName(length, width, thickness, number, name) / 1000).toFixed(5)
+        item.weight = (calcWeightByMateName(length, width, thickness, number, name) / 1000).toFixed(this.DECIMAL_NUMBER.ton)
         this.$set(this.data, index, Object.assign({}, this.data[index]))
       } else {
         item.weight = undefined

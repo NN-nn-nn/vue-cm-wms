@@ -90,7 +90,7 @@
               <el-tooltip class="item" effect="dark" :content="`${scope.row.length || 0}`" placement="top">
                 <div class="mask-td number-input">
                   <div :class="{'mask-red': scope.row.rules.length}" />
-                  <el-input-number v-model="scope.row.length" controls-position="right" :min="0" :precision="2" size="mini" @change="() => {scope.row.rules.length = false;calcMateTotalWeight(scope.row)}" />
+                  <el-input-number v-model="scope.row.length" controls-position="right" :min="0" :precision="3" size="mini" @change="() => {scope.row.rules.length = false;calcMateTotalWeight(scope.row)}" />
                 </div>
               </el-tooltip>
             </template>
@@ -100,7 +100,7 @@
               <el-tooltip class="item" effect="dark" :content="`${scope.row.width || 0}`" placement="top">
                 <div class="mask-td number-input">
                   <div :class="{'mask-red': scope.row.rules.width}" />
-                  <el-input-number v-model="scope.row.width" controls-position="right" :min="0" :precision="2" size="mini" @change="() => {scope.row.rules.width = false;calcMateTotalWeight(scope.row)}" />
+                  <el-input-number v-model="scope.row.width" controls-position="right" :min="0" :precision="3" size="mini" @change="() => {scope.row.rules.width = false;calcMateTotalWeight(scope.row)}" />
                 </div>
               </el-tooltip>
             </template>
@@ -144,7 +144,7 @@
             <el-tooltip class="item" effect="dark" :content="`${scope.row.weight || 0}`" placement="top">
               <div class="mask-td number-input">
                 <div :class="{'mask-red': scope.row.rules.weight}" />
-                <el-input-number v-model="scope.row.weight" controls-position="right" :min="0" :step="0.5" :precision="5" size="mini" @change="() => {scope.row.rules.weight = false;calcTotal();calcNetWeight(scope.row)}" />
+                <el-input-number v-model="scope.row.weight" controls-position="right" :min="0" :step="0.5" :precision="DECIMAL_NUMBER.ton" size="mini" @change="() => {scope.row.rules.weight = false;calcTotal();calcNetWeight(scope.row)}" />
               </div>
             </el-tooltip>
           </template>
@@ -492,7 +492,7 @@ export default {
       const number = item.number || 0
       const name = getCascaderNameByIds(this.mateOption, item.materialClassIds, 'id', 'childrenList')
       if (length && width && thickness && number) {
-        item.weight = Number((calcWeightByMateName(length, width, thickness, number, name) / 1000).toFixed(5))
+        item.weight = Number((calcWeightByMateName(length, width, thickness, number, name) / 1000).toFixed(this.DECIMAL_NUMBER.ton))
         item.netWeight = (item.weight * 1000 / number / length / width).toFixed(2)
         item.rules.weight = false
       } else {

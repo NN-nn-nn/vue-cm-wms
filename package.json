@@ -9,6 +9,8 @@
     "build:prod": "vue-cli-service build",
     "build:stage": "vue-cli-service build --mode staging",
     "build:zheerjian": "vue-cli-service build --mode zheerjian",
+    "build:lmgg": "vue-cli-service build --mode lmgg",
+    "build:scyygg": "vue-cli-service build --mode scyygg",
     "build:mes": "vue-cli-service build --mode mes",
     "preview": "node build/index.js --preview",
     "lint": "eslint --ext .js,.vue src",

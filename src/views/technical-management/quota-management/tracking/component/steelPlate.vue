@@ -39,17 +39,17 @@
         </el-table-column>
         <el-table-column :label="`定额总重 \n(t)`" width="180" align="center">
           <template slot-scope="scope">
-            <el-tag>{{ scope.row.quotaWeight | toFixed(5) }}</el-tag>
+            <el-tag>{{ scope.row.quotaWeight | toFixed(DECIMAL_NUMBER.ton) }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column :label="`实际采购 \n(t)`" width="180" align="center">
           <template slot-scope="scope">
-            <el-tag>{{ scope.row.actualStorageWeight | toFixed(5) }}</el-tag>
+            <el-tag>{{ scope.row.actualStorageWeight | toFixed(DECIMAL_NUMBER.ton) }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column :label="`实际使用 \n(t)`" width="180" align="center">
           <template slot-scope="scope">
-            <el-tag>{{ scope.row.actualUseWeight | toFixed(5) }}</el-tag>
+            <el-tag>{{ scope.row.actualUseWeight | toFixed(DECIMAL_NUMBER.ton) }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column :label="`差值 \n(t)`" align="center">
@@ -115,7 +115,7 @@ export default {
           this.loading = false
           this.data = data.data
           this.data = this.data.map(v => {
-            v.difference = (Number(v.quotaWeight) - Number(v.actualUseWeight)) < 0 ? (Number(v.quotaWeight) - Number(v.actualUseWeight)).toFixed(5) : '+' + (Number(v.quotaWeight) - Number(v.actualUseWeight)).toFixed(5)
+            v.difference = (Number(v.quotaWeight) - Number(v.actualUseWeight)) < 0 ? (Number(v.quotaWeight) - Number(v.actualUseWeight)).toFixed(this.DECIMAL_NUMBER.ton) : '+' + (Number(v.quotaWeight) - Number(v.actualUseWeight)).toFixed(this.DECIMAL_NUMBER.ton)
             return v
           })
           this.totalCount = data.totalCount

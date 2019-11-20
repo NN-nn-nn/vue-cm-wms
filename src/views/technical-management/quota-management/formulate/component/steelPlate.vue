@@ -389,7 +389,7 @@ export default {
       const number = item.number || 0
       const name = getCascaderNameByIds(this.mateOption, item.materialClassIds, 'id', 'childrenList')
       if (length && width && thickness && number) {
-        item.weight = (calcWeightByMateName(length, width, thickness, number, name) / 1000).toFixed(5)
+        item.weight = (calcWeightByMateName(length, width, thickness, number, name) / 1000).toFixed(this.DECIMAL_NUMBER.ton)
         this.$set(this.data, index, Object.assign({}, this.data[index]))
       } else {
         item.weight = undefined

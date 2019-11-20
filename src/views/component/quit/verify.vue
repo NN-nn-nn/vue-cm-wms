@@ -55,7 +55,7 @@
         <el-table-column prop="number" label="数量" align="center" min-width="110" />
         <el-table-column prop="weight" :label="`总重 \n (t)`" align="center" min-width="100">
           <template slot-scope="scope">
-            <span>{{ scope.row.weight | toFixed(5) }}</span>
+            <span>{{ scope.row.weight | toFixed(DECIMAL_NUMBER.ton) }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="purchasePrice" :label="`采购单价 \n (元)`" align="center" min-width="90">

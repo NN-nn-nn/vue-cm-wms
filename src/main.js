@@ -21,6 +21,10 @@ import * as filters from './filters' // 全局过滤器
 import { parseTime, digitUppercase } from './utils'
 import permission from '@/directive/permission/index.js' // 权限判断指令
 
+// DECIMAL_NUMBER
+import { DECIMAL_NUMBER } from '@/utils/conventionalContent'
+Vue.prototype.DECIMAL_NUMBER = DECIMAL_NUMBER
+
 import echarts from 'echarts'
 Vue.prototype.$echarts = echarts
 /**

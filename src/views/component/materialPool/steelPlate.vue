@@ -32,12 +32,12 @@
         <el-table-column label="规格" align="center">
           <el-table-column prop="length" label="长(m)" align="center" min-width="70">
             <template slot-scope="scope">
-              <span>{{ scope.row.length | toFixed(2) }}</span>
+              <span>{{ scope.row.length | toFixed(3) }}</span>
             </template>
           </el-table-column>
           <el-table-column prop="width" label="宽(m)" align="center" min-width="70">
             <template slot-scope="scope">
-              <span>{{ scope.row.width | toFixed(2) }}</span>
+              <span>{{ scope.row.width | toFixed(3) }}</span>
             </template>
           </el-table-column>
           <el-table-column prop="thickness" label="厚(mm)" align="center" min-width="70">
@@ -54,7 +54,7 @@
         <el-table-column prop="number" :label="`数量 \n (张)`" align="center" min-width="70" />
         <el-table-column prop="weight" :label="`总重 \n (t)`" align="center" min-width="100">
           <template slot-scope="scope">
-            <span>{{ scope.row.weight | toFixed(5) }}</span>
+            <span>{{ scope.row.weight | toFixed(DECIMAL_NUMBER.ton) }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="purchasePrice" :label="`采购单价 \n (t/元)`" align="center" min-width="90">
@@ -138,7 +138,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item v-if="handingOutForm.outboundType === 1" label="截取长度" prop="cutOffLength">
-          <el-input-number v-model="handingOutForm.cutOffLength" :precision="2" :step="0.5" :min="0" :max="handingOutForm.cutOffType === 0 ? currentMaterial.length : currentMaterial.width" />
+          <el-input-number v-model="handingOutForm.cutOffLength" :precision="3" :step="0.5" :min="0" :max="handingOutForm.cutOffType === 0 ? currentMaterial.length : currentMaterial.width" />
         </el-form-item>
         <el-form-item label="出库数量" prop="number">
           <el-input-number v-model="handingOutForm.number" :precision="0" :step="1" :min="1" :max="currentMaterial.number" />
@@ -332,8 +332,8 @@ export default {
         return
       }
       printSteelPlateLabel({
-        length: item.length.toFixed(2),
-        width: item.width.toFixed(2),
+        length: item.length.toFixed(3),
+        width: item.width.toFixed(3),
         thickness: item.thickness.toFixed(2),
         material: item.detailName,
         projectName: item.projectName,

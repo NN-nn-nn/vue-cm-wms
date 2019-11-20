@@ -33,14 +33,14 @@
           <el-table-column prop="specification" label="规格" align="center" min-width="120" />
           <el-table-column prop="length" label="定尺长度(m)" align="center" min-width="100">
             <template slot-scope="scope">
-              <span>{{ scope.row.length | toFixed(2) }}</span>
+              <span>{{ scope.row.length | toFixed(3) }}</span>
             </template>
           </el-table-column>
         </el-table-column>
         <el-table-column prop="number" :label="`数量 \n (根)`" align="center" min-width="70" />
         <el-table-column prop="weight" :label="`总重 \n (t)`" align="center" min-width="100">
           <template slot-scope="scope">
-            <span>{{ scope.row.weight | toFixed(5) }}</span>
+            <span>{{ scope.row.weight | toFixed(DECIMAL_NUMBER.ton) }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="purchasePrice" :label="`采购单价 \n (t/元)`" align="center" min-width="90">
@@ -119,7 +119,7 @@
           <span>{{ `${currentMaterial.number}` }}</span>
         </el-form-item>
         <el-form-item v-if="handingOutForm.outboundType === 1" label="截取长度" prop="cutOffLength">
-          <el-input-number v-model="handingOutForm.cutOffLength" :precision="2" :step="0.5" :min="0" :max="currentMaterial.length" />
+          <el-input-number v-model="handingOutForm.cutOffLength" :precision="3" :step="0.5" :min="0" :max="currentMaterial.length" />
         </el-form-item>
         <el-form-item label="出库数量" prop="number">
           <el-input-number v-model="handingOutForm.number" :precision="0" :step="1" :min="1" :max="currentMaterial.number" />

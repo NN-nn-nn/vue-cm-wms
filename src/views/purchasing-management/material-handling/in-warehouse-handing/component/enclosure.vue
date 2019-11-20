@@ -110,7 +110,7 @@
               <el-tooltip class="item" effect="dark" :content="`${scope.row.length || 0}`" placement="top">
                 <div class="mask-td number-input">
                   <div :class="{'mask-red': scope.row.rules.length}" />
-                  <el-input-number v-model="scope.row.length" controls-position="right" :min="0" :step="1" :precision="2" size="mini" @change="() => {scope.row.rules.length = false;calcToatlLength(scope.row);calcTotal();}" />
+                  <el-input-number v-model="scope.row.length" controls-position="right" :min="0" :step="1" :precision="3" size="mini" @change="() => {scope.row.rules.length = false;calcToatlLength(scope.row);calcTotal();}" />
                 </div>
               </el-tooltip>
             </template>
@@ -143,7 +143,7 @@
             <el-tooltip class="item" effect="dark" :content="`${scope.row.totalLength || '0'}`" placement="top">
               <div class="mask-td number-input">
                 <div :class="{'mask-red': scope.row.rules.totalLength}" />
-                <el-input-number v-model="scope.row.totalLength" controls-position="right" :min="0" :step="0.5" :precision="2" size="mini" @change="() => {scope.row.rules.totalLength = false;calcTotal();}" />
+                <el-input-number v-model="scope.row.totalLength" controls-position="right" :min="0" :step="0.5" :precision="3" size="mini" @change="() => {scope.row.rules.totalLength = false;calcTotal();}" />
               </div>
             </el-tooltip>
           </template>

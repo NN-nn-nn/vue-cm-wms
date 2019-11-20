@@ -56,7 +56,7 @@
           <el-table-column prop="specification" label="型号" align="center" min-width="100" />
           <el-table-column prop="length" label="长(m)" align="center" min-width="70">
             <template slot-scope="scope">
-              <span>{{ scope.row.length | toFixed(2) }}</span>
+              <span>{{ scope.row.length | toFixed(3) }}</span>
             </template>
           </el-table-column>
           <el-table-column prop="thickness" label="厚(mm)" align="center" min-width="80">
@@ -69,7 +69,7 @@
 
         <el-table-column prop="totalLength" :label="`总长度 \n (m)`" align="center" min-width="80">
           <template slot-scope="scope">
-            <span>{{ scope.row.totalLength | toFixed(2) }}</span>
+            <span>{{ scope.row.totalLength | toFixed(3) }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="purchasePrice" :label="`采购单价 \n (m/元)`" align="center" min-width="90">

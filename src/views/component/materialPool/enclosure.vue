@@ -34,7 +34,7 @@
           <el-table-column prop="specification" label="型号" align="center" min-width="100" />
           <el-table-column prop="length" label="长(m)" align="center" min-width="100">
             <template slot-scope="scope">
-              <span>{{ scope.row.length | toFixed(2) }}</span>
+              <span>{{ scope.row.length | toFixed(3) }}</span>
             </template>
           </el-table-column>
           <el-table-column prop="thickness" label="厚(mm)" align="center" min-width="70">
@@ -46,7 +46,7 @@
         <el-table-column prop="number" :label="`数量 \n (张)`" align="center" min-width="70" />
         <el-table-column prop="totalLength" :label="`总长度 \n (m)`" align="center" min-width="80">
           <template slot-scope="scope">
-            <span>{{ scope.row.totalLength | toFixed(2) }}</span>
+            <span>{{ scope.row.totalLength | toFixed(3) }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="purchasePrice" :label="`采购单价 \n (m/元)`" align="center" min-width="90">
@@ -124,7 +124,7 @@
           <span>{{ `${currentMaterial.number}` }}</span>
         </el-form-item>
         <el-form-item v-if="handingOutForm.outboundType === 1" label="截取长度" prop="cutOffLength">
-          <el-input-number v-model="handingOutForm.cutOffLength" :precision="2" :step="1" :min="0" :max="currentMaterial.length" />
+          <el-input-number v-model="handingOutForm.cutOffLength" :precision="3" :step="1" :min="0" :max="currentMaterial.length" />
         </el-form-item>
         <el-form-item label="出库数量" prop="number">
           <el-input-number v-model="handingOutForm.number" :precision="0" :step="1" :min="1" :max="currentMaterial.number" />

@@ -33,7 +33,7 @@
         <el-table-column label="规格" align="center">
           <el-table-column prop="length" label="长(m)" align="center" min-width="100">
             <template slot-scope="scope">
-              <span>{{ scope.row.length | toFixed(2) }}</span>
+              <span>{{ scope.row.length | toFixed(3) }}</span>
             </template>
           </el-table-column>
           <el-table-column prop="width" label="宽(m)" align="center" min-width="70">
@@ -49,7 +49,7 @@
         </el-table-column>
         <el-table-column prop="weight" :label="`总重 \n (t)`" align="center" min-width="100">
           <template slot-scope="scope">
-            <span>{{ scope.row.weight | toFixed(5) }}</span>
+            <span>{{ scope.row.weight | toFixed(DECIMAL_NUMBER.ton) }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="purchasePrice" :label="`采购单价 \n (t/元)`" align="center" min-width="90">
@@ -123,7 +123,7 @@
           <el-tag size="small" style="margin-left:5px">{{ `长(m) * 宽(m) * 厚(mm)` }}</el-tag>
         </el-form-item>
         <el-form-item v-if="handingOutForm.outboundType === 1" label="出库长度" prop="cutOffLength">
-          <el-input-number v-model="handingOutForm.cutOffLength" :precision="2" :step="100" :min="0" :max="currentMaterial.length" />
+          <el-input-number v-model="handingOutForm.cutOffLength" :precision="3" :step="100" :min="0" :max="currentMaterial.length" />
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -314,7 +314,7 @@ export default {
         return
       }
       printStripSteelLabel({
-        width: item.width.toFixed(2),
+        width: item.width.toFixed(3),
         thickness: item.thickness.toFixed(3),
         brand: item.brand,
         color: item.color,

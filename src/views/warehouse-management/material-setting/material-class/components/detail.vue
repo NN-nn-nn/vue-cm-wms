@@ -14,7 +14,7 @@
     </div>
     <!-- 主要内容容器 -->
     <div class="content-container">
-      <el-tabs id="classTabs" v-model="currentTabId" :tab-position="'left'" style="min-height: 200px;" @tab-click="changeTab">
+      <el-tabs id="classTabs" v-model="currentTabId" class="el-tabs-box" :tab-position="'left'" style="min-height: 200px;" @tab-click="changeTab">
         <el-tab-pane v-for="(item,i) in classList" :key="i" :label="`${item.className}[${item.unit}] | ${item.classCode}`" :name="`${item.id}`">
           <div class="filter-container">
             <!-- 左侧box -->
@@ -592,6 +592,9 @@ export default {
 </script>
 
 <style scoped>
+.el-tabs-box {
+  height: calc(100vh - 200px);
+}
 .el-input {
   width: 300px;
 }

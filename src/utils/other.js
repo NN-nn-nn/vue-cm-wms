@@ -1,4 +1,4 @@
-import { MATERIAL_DENSITY, MATERIAL_BASE_TYPE } from '@/utils/conventionalContent'
+import { MATERIAL_DENSITY, MATERIAL_BASE_TYPE, DECIMAL_NUMBER } from '@/utils/conventionalContent'
 
 /**
  * 将年份分组的项目转化为级联(树)
@@ -51,7 +51,7 @@ export function calcWeightByMateName(length, width, thick, number = 1, name) {
   if (name && name.indexOf('不锈钢') > -1) {
     density = MATERIAL_DENSITY.STAINLESS_STEEL
   }
-  weight = Number((length * width * thick * density * number).toFixed(5))
+  weight = Number((length * width * thick * density * number).toFixed(DECIMAL_NUMBER.ton))
   return weight
 }
 

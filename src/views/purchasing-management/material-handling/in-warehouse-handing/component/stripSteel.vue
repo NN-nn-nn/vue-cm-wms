@@ -100,7 +100,7 @@
               <el-tooltip class="item" effect="dark" :content="`${scope.row.length || 0}`" placement="top">
                 <div class="mask-td number-input">
                   <div :class="{'mask-red': scope.row.rules.length}" />
-                  <el-input-number v-model="scope.row.length" controls-position="right" :min="0" :step="100" :precision="2" size="mini" @change="() => {scope.row.rules.length = false;calcUnitAmount(scope.row);}" />
+                  <el-input-number v-model="scope.row.length" controls-position="right" :min="0" :step="100" :precision="3" size="mini" @change="() => {scope.row.rules.length = false;calcUnitAmount(scope.row);}" />
                 </div>
               </el-tooltip>
             </template>
@@ -132,7 +132,7 @@
             <el-tooltip class="item" effect="dark" :content="`${scope.row.weight || 0}`" placement="top">
               <div class="mask-td number-input">
                 <div :class="{'mask-red': scope.row.rules.weight}" />
-                <el-input-number v-model="scope.row.weight" controls-position="right" :min="0" :step="0.5" :precision="5" size="mini" @change="() => {scope.row.rules.weight = false;calcTotal();calcUnitAmount(scope.row)}" />
+                <el-input-number v-model="scope.row.weight" controls-position="right" :min="0" :step="0.5" :precision="DECIMAL_NUMBER.ton" size="mini" @change="() => {scope.row.rules.weight = false;calcTotal();calcUnitAmount(scope.row)}" />
               </div>
             </el-tooltip>
           </template>
