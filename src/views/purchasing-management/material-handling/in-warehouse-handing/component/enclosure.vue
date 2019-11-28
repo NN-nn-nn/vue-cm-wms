@@ -193,6 +193,22 @@
           </template>
         </el-table-column>
 
+        <el-table-column prop="supplierId" label="计量方式" align="center" width="100">
+          <template slot-scope="scope">
+            <div class="mask-td">
+              <div :class="{'mask-red': scope.row.rules.measurementType}" />
+              <el-select v-model="scope.row.measurementType" size="small" filterable clearable placeholder="计量" @change="scope.row.rules.measurementType = false">
+                <el-option
+                  v-for="item of materialMeasure"
+                  :key="item.value"
+                  :label="item.name"
+                  :value="item.value"
+                />
+              </el-select>
+            </div>
+          </template>
+        </el-table-column>
+
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
             <div class="mask-td" style="justify-content:left">
@@ -238,49 +254,33 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { removeTreeEmptyFiled, getNodeInfoByIds } from '@/utils'
+import { removeTreeEmptyFiled, getNodeInfoByIds, getNodeIdsById } from '@/utils'
 import { changeProjectToCascadeByYear } from '@/utils/other'
-import { MATERIAL_BASE_TYPE } from '@/utils/conventionalContent'
+import { MATERIAL_BASE_TYPE, MATERIAL_MEASURE, DAY_PICKER_OPTION, MATERIAL_INBOUND_TYPE } from '@/utils/conventionalContent'
 import { fetchMaterialTree } from '@/api/material'
 import { fetchListByBaseType } from '@/api/supplier'
 import { fetchProjectGroupByYear } from '@/api/project'
 import { createInboundList } from '@/api/warehouse'
 export default {
   name: 'EnclosureComponent',
+  props: {
+    resetData: {
+      type: Object,
+      default: () => {}
+    }
+  },
   data() {
     return {
-      pickerOptions: {
-        disabledDate(time) {
-          return time.getTime() > Date.now()
-        },
-        shortcuts: [{
-          text: '今天',
-          onClick(picker) {
-            picker.$emit('pick', new Date())
-          }
-        }, {
-          text: '昨天',
-          onClick(picker) {
-            const date = new Date()
-            date.setTime(date.getTime() - 3600 * 1000 * 24)
-            picker.$emit('pick', date)
-          }
-        }, {
-          text: '一周前',
-          onClick(picker) {
-            const date = new Date()
-            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
-            picker.$emit('pick', date)
-          }
-        }]
-      },
+      pickerOptions: DAY_PICKER_OPTION,
+      currentBaseType: MATERIAL_BASE_TYPE.enclosure, // 围护物料类型
+      materialMeasure: MATERIAL_MEASURE, // 计量方式
+      materialInboundType: MATERIAL_INBOUND_TYPE,
       successVisible: false,
       provideMateCheck: false,
       dailyMateCheck: false,
       props: { value: 'id', label: 'name', children: 'childrenList', expandTrigger: 'hover' }, // 级联列表格式
       mateOption: [], // 物料级联列表
       supplierList: [], // 供应商列表
-      currentBaseType: MATERIAL_BASE_TYPE.enclosure, // 一般物料类型
       submitLoading: false, // 提交load
       inboundList: {
         storageTime: undefined,
@@ -298,6 +298,7 @@ export default {
         thickness: false,
         totalLength: false, // 总长度
         supplierId: false, // 供应商
+        measurementType: false, // 计量方式
         brand: false, // 品牌
         color: false // 颜色
       },
@@ -310,6 +311,7 @@ export default {
         thickness: true,
         totalLength: true, // 总长度
         supplierId: true, // 供应商
+        measurementType: true, // 计量方式
         brand: true // 品牌
       },
       provideMateValid: {
@@ -318,6 +320,7 @@ export default {
         number: true, // 数量
         specification: true,
         thickness: true,
+        measurementType: true, // 计量方式
         totalLength: true // 总长度
       },
       totalAmount: 0, // 总金额
@@ -330,15 +333,40 @@ export default {
       'name'
     ])
   },
-  created() {
-    this.getMaterialClassTree(this.currentBaseType.index)
-    this.getSupplierList(this.currentBaseType.index)
-    this.getProjectYearCascade()
-    this.tableData.push({ rules: { ...this.rules }})
-    this.inboundList.storageTime = new Date().getTime()
-    this.inboundList.formType = this.currentBaseType.index
+  watch: {
+    resetData(newVal, oldVal) {
+      this.initData()
+    }
+  },
+  async created() {
+    await this.getMaterialClassTree(this.currentBaseType.index)
+    await this.getProjectYearCascade()
+    await this.getSupplierList(this.currentBaseType.index)
+    this.initData()
   },
   methods: {
+    initData() {
+      this.tableData = []
+      if (this.resetData && this.resetData.detailList && this.resetData.detailList.length > 0) {
+        this.tableData = this.resetData.detailList.map(l => {
+          l.rules = { ...this.rules }
+          l.materialClassIds = [l.typeId, l.classId, l.detailId]
+          this.calcNetWeight(l)
+          return l
+        })
+        // 是项目则为日常备料
+        this.dailyMateCheck = !this.resetData.projectId
+        this.provideMateCheck = +this.resetData.type === this.materialInboundType.partyA
+        if (this.resetData.projectId) {
+          this.currentProjectId = getNodeIdsById(this.projectCascadeList, this.resetData.projectId)
+        }
+        this.calcTotal()
+      } else {
+        this.tableData.push({ rules: { ...this.rules }})
+      }
+      this.inboundList.storageTime = new Date().getTime()
+      this.inboundList.formType = this.currentBaseType.index
+    },
     submitScrap() {
       this.submitLoading = true
       this.validSubmit().then(({ data }) => {
@@ -364,23 +392,25 @@ export default {
     /**
      * 获取项目年份级联列表
      */
-    getProjectYearCascade: function() {
-      fetchProjectGroupByYear().then(({ data, code, message }) => {
+    getProjectYearCascade: async function() {
+      try {
+        const { data, code, message } = await fetchProjectGroupByYear()
         if (code === 200) {
           // this.projectCascadeList = changeProjectToCascadeByYear(data, '入库总额(万元)', 'totalPrice')
           this.projectCascadeList = changeProjectToCascadeByYear(data)
         } else {
           this.$message.error(message)
         }
-      }).catch(e => {
+      } catch (error) {
         this.$message.error('获取项目级联列表失败')
-      })
+      }
     },
     /**
      * 获取物料列表
      */
-    getMaterialClassTree: function(baseType) {
-      fetchMaterialTree(baseType).then(({ data, code, message }) => {
+    getMaterialClassTree: async function(baseType) {
+      try {
+        const { data, code, message } = await fetchMaterialTree(baseType)
         if (code === 200) {
           if (data && data.length) {
             this.mateOption = data
@@ -393,13 +423,34 @@ export default {
             type: 'error'
           })
         }
-      }).catch(e => {
+      } catch (error) {
         this.$message({
           message: '获取物料失败',
           type: 'error'
         })
-        console.log(e)
-      })
+        console.log(error)
+      }
+    },
+    getSupplierList: async function(baseType) {
+      try {
+        const { data, code, message } = await fetchListByBaseType(baseType)
+        if (code === 200) {
+          if (data) {
+            this.supplierList = data
+          }
+        } else {
+          this.$message({
+            message: `拉取供应商信息失败,${message}`,
+            type: 'error'
+          })
+        }
+      } catch (error) {
+        this.$message({
+          message: '拉取供应商信息失败',
+          type: 'error'
+        })
+        console.log(error)
+      }
     },
     materialChange: function(item) {
       if (item.materialClassIds && item.materialClassIds.length === 3) {
@@ -416,26 +467,6 @@ export default {
         this.currentProjectId = []
         this.inboundList.projectId = undefined
       }
-    },
-    getSupplierList: function(baseType) {
-      fetchListByBaseType(baseType).then(({ data, code, message }) => {
-        if (code === 200) {
-          if (data) {
-            this.supplierList = data
-          }
-        } else {
-          this.$message({
-            message: `拉取供应商信息失败,${message}`,
-            type: 'error'
-          })
-        }
-      }).catch(e => {
-        this.$message({
-          message: '拉取供应商信息失败',
-          type: 'error'
-        })
-        console.log(e)
-      })
     },
     calcTotal: function() {
       let totalAmount = 0

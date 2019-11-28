@@ -33,11 +33,13 @@
             <el-tag type="success" size="medium">{{ scope.row.price }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" align="center" min-width="100">
-          <template slot-scope="scope">
-            <el-button :loading="exportLoad" type="success" icon="el-icon-download" size="small" @click="downloadExcel(scope.row)">下载</el-button>
-          </template>
-        </el-table-column>
+        <template v-if="checkPermission([pDownloadExcel.v])">
+          <el-table-column label="操作" align="center" min-width="100">
+            <template slot-scope="scope">
+              <el-button :loading="exportLoad" type="success" icon="el-icon-download" size="small" @click="downloadExcel(scope.row)">下载</el-button>
+            </template>
+          </el-table-column>
+        </template>
       </el-table>
       <div class="pagination-container">
         <el-pagination v-show="total > 0" :current-page="listQuery.page" :page-sizes="[10, 20, 30, 50]" :page-size="listQuery.size" :total="total" background layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
@@ -48,6 +50,7 @@
 </template>
 
 <script>
+import { downloadExcel as pDownloadExcel, checkPermission } from '@/utils/permission'
 import { fetchProjectOutbound } from '@/api/project'
 import { exportOutboundExcelByProject } from '@/api/exportFiles'
 export default {
@@ -60,6 +63,8 @@ export default {
   },
   data() {
     return {
+      checkPermission,
+      pDownloadExcel,
       exportLoad: false,
       tableLoading: false,
       listQuery: {

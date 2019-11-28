@@ -465,6 +465,32 @@ export function getCascaderNameByIds(pendingArr, ids, idField = 'id', childField
 }
 
 /**
+ * 获取根到当前id的ids
+ * @param {*} pendingTree 待处理树（数组）
+ * @param {*} id 某节点的id
+ * @param {*} idField id的字段名
+ * @param {*} childField child的字段名
+ * @param {*} ids 返回的ids数组
+ */
+export function getNodeIdsById(pendingTree, id, idField = 'id', childField = 'children', ids = []) {
+  if (!pendingTree || pendingTree.length === 0) {
+    return []
+  } else {
+    for (const item of pendingTree) {
+      if (item[idField] === id) {
+        ids.push(item[idField])
+        return ids
+      } else if (item[childField] && item[childField].length > 0) {
+        ids.push(item[idField])
+        ids = getNodeIdsById(item[childField], id, idField, childField, ids)
+        return ids
+      }
+    }
+    return []
+  }
+}
+
+/**
  * 数字转大写中文
  *
  * @export
@@ -520,7 +546,6 @@ export function downloadFiles(res) {
   const downloadElement = document.createElement('a')
   const href = window.URL.createObjectURL(blob) // 创建下载的链接
   downloadElement.href = href
-  console.log('header', decodeURI(res.headers['content-disposition']))
   // 获取文件名
   let _name = res.headers && res.headers['content-disposition'] ? `${decodeURI(res.headers['content-disposition'].split('=')[1].split('.')[0])}` : ``// 处理文件名乱码问题
   const _suffix = res.headers && res.headers['content-disposition'] ? `${decodeURI(res.headers['content-disposition'].split('=')[1].split('.')[1])}` : ``// 处理文件名乱码问题
@@ -534,4 +559,24 @@ export function downloadFiles(res) {
   downloadElement.click() // 点击下载
   document.body.removeChild(downloadElement) // 下载完成移除元素
   window.URL.revokeObjectURL(href) // 释放掉blob对象
+}
+
+/**
+ * 模10算法(可用于银行卡)
+ * @param {string/number} num
+ */
+export function luhn(num) {
+  num = (num + '').replace(/\D+/g, '').split('').reverse()
+  if (!num.length) {
+    return false
+  }
+  var total = 0; var i
+  for (i = 0; i < num.length; i++) {
+    num[i] = parseInt(num[i])
+    total += i % 2 ? 2 * num[i] - (num[i] > 4 ? 9 : 0) : num[i]
+  }
+  if (total === 0) {
+    return false
+  }
+  return (total % 10) === 0
 }

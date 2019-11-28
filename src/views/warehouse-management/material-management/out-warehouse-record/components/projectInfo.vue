@@ -21,7 +21,7 @@
       <!-- 右侧box -->
       <div class="filter-right-box">
         <div class="filter-item">
-          <el-button :loading="exportLoad" type="success" icon="el-icon-download" size="medium" @click="downloadExcel()">下载项目出库记录</el-button>
+          <el-button v-permission="[pDownloadExcel.v]" :loading="exportLoad" type="success" icon="el-icon-download" size="medium" @click="downloadExcel()">下载项目出库记录</el-button>
           <el-button type="primary" size="medium" icon="el-icon-view" @click="drawerVisible = true">查看所有项目出库总额</el-button>
         </div>
       </div>
@@ -48,6 +48,7 @@
 <script>
 import OutboundSummary from '@/views/component/outbound/outboundSummary'
 import DetailComponent from './detail'
+import { downloadExcel as pDownloadExcel } from '@/utils/permission'
 import { changeProjectToCascadeByYear } from '@/utils/other'
 import { fetchProjectGroupByYear } from '@/api/project'
 import { exportOutboundExcelByProject } from '@/api/exportFiles'
@@ -62,6 +63,7 @@ export default {
   },
   data() {
     return {
+      pDownloadExcel,
       exportLoad: false,
       drawerVisible: false,
       projectId: undefined,

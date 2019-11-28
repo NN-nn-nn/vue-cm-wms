@@ -4,7 +4,7 @@
     <!-- 查询容器 -->
     <div class="position-rela">
       <!-- 右侧box -->
-      <div class="dowmload"><el-button type="primary" :loading="downLoading" class="el-icon-download" @click.native="dowmLoadHandle">下载 </el-button></div>
+      <div class="dowmload"><el-button v-permission="[pDownloadExcel.v]" type="primary" :loading="downLoading" class="el-icon-download" @click.native="dowmLoadHandle">下载 </el-button></div>
     </div>
     <!-- 主要内容容器 -->
     <div class="content-container">
@@ -68,8 +68,11 @@
     </div>
   </div>
 </template>
+
 <script>
+import { downloadExcel as pDownloadExcel } from '@/utils/permission'
 import { quotaTrackList, downloadTracking } from '@/api/quotaMmanage'
+
 export default {
   name: 'TechQuotaTrackGeneral',
   props: {
@@ -80,6 +83,7 @@ export default {
   },
   data() {
     return {
+      pDownloadExcel,
       data: [],
       loading: false,
       totalCount: 0,

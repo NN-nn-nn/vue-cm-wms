@@ -1,0 +1,67 @@
+.inbound-verify-table .el-table .cell {
+    padding: 0;
+}
+.inbound-verify-table .el-table .el-table--border th:first-child .cell, .el-table--border td:first-child .cell {
+    padding:  0
+}
+.inbound-verify-table .el-table--border th:first-child .cell, .el-table--border td:first-child .cell {
+    padding:  0
+}
+.inbound-verify-table .el-table--medium td {
+    padding: 10px 5px;
+    overflow: hidden!important;
+}
+.inbound-verify-table .number-input .el-input-number.is-controls-right .el-input__inner {
+    padding-left: 0;
+    padding-right: 25px;
+}
+.inbound-verify-table .party-tip {
+    background: #e64242;
+    transform:  rotate(-45deg);
+    color: white;
+    font-weight: 100;
+    position: absolute;
+    top: 5px;
+    left: -20px;
+    right: 0;
+    width: 70px;
+    height: 20px;
+    font-size: 11px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.material-pool-component .el-table .cell {
+    padding: 0;
+}
+.material-pool-component .el-table .el-table--border th:first-child .cell, .el-table--border td:first-child .cell {
+    padding:  0
+}
+.material-pool-component .el-table--border th:first-child .cell, .el-table--border td:first-child .cell {
+    padding:  0
+}
+.material-pool-component .el-table--medium td {
+    padding: 0;
+    overflow: hidden!important;
+}
+.material-pool-component .number-input .el-input-number.is-controls-right .el-input__inner {
+    padding-left: 0;
+    padding-right: 25px;
+}
+.material-pool-component .party-tip {
+    background: #e64242;
+    transform:  rotate(-45deg);
+    color: white;
+    font-weight: 100;
+    position: absolute;
+    top: 5px;
+    left: -20px;
+    right: 0;
+    width: 70px;
+    height: 20px;
+    font-size: 11px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

@@ -20,14 +20,13 @@ export function changeProjectToCascadeByYear(arr, tip = '', tipField) {
         return _new
       })
       const _node = {
-        id: a.year,
+        id: -parseInt(a.year),
         name: a.year,
         children: _child
       }
       newArr.push(_node)
     }
   })
-  // console.log(newArr)
   return JSON.parse(JSON.stringify(newArr))
 }
 

@@ -110,8 +110,8 @@
 </template>
 
 <script>
-import { MATERIAL_BASE_TYPE, MATERIAL_RETURN_STATUS, MATERIAL_RETURN_INDEX_STATUS_2, MATERIAL_RETURN_STATUS_2, INBOUND_VERIFY } from '@/utils/conventionalContent'
-import { fetchDetailList, createReturnList } from '@/api/warehouse'
+import { MATERIAL_BASE_TYPE, MATERIAL_RETURN_STATUS, MATERIAL_RETURN_INDEX_STATUS_2, MATERIAL_RETURN_STATUS_2, INBOUND_VERIFY, MATERIAL_INBOUND_TYPE } from '@/utils/conventionalContent'
+import { fetchDetailList, fetchDetailListByRoles, createReturnList } from '@/api/warehouse'
 export default {
   name: 'InboundGeneralMateComponent',
   props: {
@@ -122,6 +122,10 @@ export default {
     isVerify: {
       type: Boolean,
       default: false
+    },
+    priceControl: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -130,6 +134,7 @@ export default {
       materialReturnStatus2: MATERIAL_RETURN_STATUS_2,
       materialReturnIndexStatus: MATERIAL_RETURN_INDEX_STATUS_2,
       inboundStatus: INBOUND_VERIFY,
+      materialInboundType: MATERIAL_INBOUND_TYPE,
       currentBaseType: MATERIAL_BASE_TYPE.material, // 一般物料类型
       retrunVisible: false,
       successVisible: false,
@@ -153,10 +158,12 @@ export default {
     this.getList()
   },
   methods: {
-    getList() {
+    getList: async function() {
       this.tableLoading = true
       this.tableData = []
-      fetchDetailList({ id: this.detailId }).then(({ data, code, message }) => {
+      const queryData = { id: this.detailId }
+      try {
+        const { data, code, message } = this.priceControl ? await fetchDetailListByRoles(queryData) : await fetchDetailList(queryData)
         if (code === 200) {
           if (data) {
             this.listDetail = data
@@ -172,19 +179,18 @@ export default {
               }
               return v
             })
-            this.listDetail.provideMateCheck = this.listDetail.type === 1
+            this.listDetail.provideMateCheck = this.listDetail.type === this.materialInboundType.partyA
             this.submitData.projectId = this.listDetail.projectId || undefined
             this.submitData.formType = this.listDetail.formType
           }
         } else {
           this.$message({ message: message, type: 'error' })
         }
-
-        this.tableLoading = false
-      }).catch(() => {
+      } catch (error) {
         this.$message({ message: '获取清单详情失败', type: 'error' })
+      } finally {
         this.tableLoading = false
-      })
+      }
     },
     submitResult(status) {
       if (!this.multipleSelection || !this.multipleSelection.length) {

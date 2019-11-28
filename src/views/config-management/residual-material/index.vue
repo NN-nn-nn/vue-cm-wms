@@ -12,7 +12,7 @@
     </div>
     <!-- 主要内容容器 -->
     <div class="content-container">
-      <el-card class="box-card" style="width:80%">
+      <el-card class="box-card" style="width:100%">
         <div class="scrap-card">
           <span class="scrap-title">废料定义</span>
           <span class="scrap-tip">注意事项：小于限定的尺寸，必须全部出库</span>
@@ -22,7 +22,7 @@
         <el-card class="box-card">
           <div slot="header" class="card-header">
             <span>钢板</span>
-            <el-button v-permission="['50_204_1']" :loading="steelPlateLoading" type="primary" size="small" @click="submitScrap(MATERIAL_BASE_TYPE.steelPlate)">保存</el-button>
+            <el-button v-permission="[pagePermission.o]" :loading="steelPlateLoading" type="primary" size="small" @click="submitScrap(MATERIAL_BASE_TYPE.steelPlate)">保存</el-button>
           </div>
           <div>
             <el-form ref="materialForm" :model="formObj[MATERIAL_BASE_TYPE.steelPlate.index]">
@@ -39,7 +39,7 @@
         <el-card class="box-card">
           <div slot="header" class="card-header">
             <span>型钢</span>
-            <el-button v-permission="['50_204_1']" :loading="steelLoading" type="primary" size="small" @click="submitScrap(MATERIAL_BASE_TYPE.steel)">保存</el-button>
+            <el-button v-permission="[pagePermission.o]" :loading="steelLoading" type="primary" size="small" @click="submitScrap(MATERIAL_BASE_TYPE.steel)">保存</el-button>
           </div>
           <div style="height:116px;">
             <el-form ref="materialForm" :model="formObj[MATERIAL_BASE_TYPE.steel.index]">
@@ -53,7 +53,7 @@
         <el-card class="box-card">
           <div slot="header" class="card-header">
             <span>彩卷/带钢</span>
-            <el-button v-permission="['50_204_1']" :loading="stripSteelLoading" type="primary" size="small" @click="submitScrap(MATERIAL_BASE_TYPE.stripSteel)">保存</el-button>
+            <el-button v-permission="[pagePermission.o]" :loading="stripSteelLoading" type="primary" size="small" @click="submitScrap(MATERIAL_BASE_TYPE.stripSteel)">保存</el-button>
           </div>
           <div>
             <el-form ref="materialForm" :model="formObj[MATERIAL_BASE_TYPE.stripSteel.index]">
@@ -67,7 +67,7 @@
         <el-card class="box-card">
           <div slot="header" class="card-header">
             <span>成品围护</span>
-            <el-button v-permission="['50_204_1']" :loading="enclosureLoading" type="primary" size="small" @click="submitScrap(MATERIAL_BASE_TYPE.enclosure)">保存</el-button>
+            <el-button v-permission="[pagePermission.o]" :loading="enclosureLoading" type="primary" size="small" @click="submitScrap(MATERIAL_BASE_TYPE.enclosure)">保存</el-button>
           </div>
           <div>
             <el-form ref="materialForm" :model="formObj[MATERIAL_BASE_TYPE.enclosure.index]">
@@ -85,12 +85,14 @@
 
 <script>
 import { MATERIAL_BASE_TYPE } from '@/utils/conventionalContent'
+import { wasteDefinition as pagePermission } from '@/utils/permission' // 权限判断函数
 import { updateScrap, fetchScrapList } from '@/api/material'
 
 export default {
   name: 'ConfigResidualMaterial',
   data() {
     return {
+      pagePermission,
       formObj: {},
       steelPlateLoading: false,
       steelLoading: false,

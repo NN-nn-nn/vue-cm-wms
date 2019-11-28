@@ -145,7 +145,7 @@
   </div>
 </template>
 <script>
-import { validatorEmail, validatorTel, validatorBankAcount } from '@/utils/validatePattern'
+import { validatorEmail, validatorTel } from '@/utils/validatePattern'
 import { getProvice, detail, update } from '@/api/supplier'
 import { fetchEnterpriseTypeList, fetchSupplierTypeList } from '@/api/dictionary'
 export default {
@@ -213,8 +213,8 @@ export default {
           { required: true, message: '请输入开户行名称', trigger: 'blur' }
         ],
         firstBankAccount: [
-          { required: true, message: '请输入银行账户', trigger: 'blur' },
-          { pattern: validatorBankAcount, message: '请输入正确的银行账户', trigger: 'blur' }
+          { required: true, message: '请输入银行账户', trigger: 'blur' }
+          // { pattern: validatorBankAcount, message: '请输入正确的银行账户', trigger: 'blur' }
         ],
         companyEmail: [
           { pattern: validatorEmail, message: '请输入正确的邮箱号码', trigger: 'blur' }

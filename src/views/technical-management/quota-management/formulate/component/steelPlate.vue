@@ -4,7 +4,7 @@
     <!-- 查询容器 -->
     <div class="position-rela">
       <!-- 右侧box -->
-      <div class="dowmload"><el-button type="primary" :loading="downLoading" class="el-icon-download" @click.native="dowmLoadHandle">下载 </el-button></div>
+      <div class="dowmload"><el-button v-permission="[pDownloadExcel.v]" type="primary" :loading="downLoading" class="el-icon-download" @click.native="dowmLoadHandle">下载 </el-button></div>
     </div>
     <!-- 主要内容容器 -->
     <div class="content-container">
@@ -231,10 +231,11 @@
 
 <script>
 import { removeTreeEmptyFiled, getNodeInfoByIds, getCascaderNameByIds } from '@/utils'
+import { downloadExcel as pDownloadExcel } from '@/utils/permission'
 import { calcWeightByMateName } from '@/utils/other'
-import { fetchMaterialTree } from '@/api/material'
 import { MATERIAL_BASE_TYPE } from '@/utils/conventionalContent'
 import { qutoList, saveQuto, updateQuto, delQuto, queryInventory, exportFormulate } from '@/api/quotaMmanage'
+import { fetchMaterialTree } from '@/api/material'
 export default {
   name: 'TechQuotaFormuSteelPlate',
   props: {
@@ -251,6 +252,7 @@ export default {
         children: 'childrenList',
         expandTrigger: 'hover'
       },
+      pDownloadExcel,
       currnetBaseType: MATERIAL_BASE_TYPE.steelPlate,
       searchInp: '',
       totalCount: 0,

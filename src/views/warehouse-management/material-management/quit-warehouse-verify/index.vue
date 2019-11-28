@@ -88,7 +88,12 @@
           </template>
         </el-table-column>
         <el-table-column prop="outWarehouseListNo" label="退库凭证号" align="center" />
-        <el-table-column prop="totalPrice" label="退库额(元)" align="center" />
+        <el-table-column prop="totalPrice" label="退库额(元)" align="center">
+          <template slot-scope="scope">
+            <span v-if="scope.row.totalPrice || scope.row.totalPrice == 0">{{ scope.row.totalPrice }}</span>
+            <span v-else>/</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="className" label="状态" align="center">
           <template slot-scope="scope">
             <el-tag :type="scope.row.status == 1 ? 'success' : scope.row.status == 2 ? 'danger' : 'warning'" size="medium">{{ materialReturnIndexStatus[scope.row.status].name }}</el-tag>
@@ -97,7 +102,7 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button type="primary" size="small" icon="el-icon-view" @click="openDetail(scope.row)">查看</el-button>
-            <el-button type="success" :loading="exportLoad[scope.$index]" icon="el-icon-download" size="small" @click="downloadExcel(scope.row,scope.$index)">下载</el-button>
+            <el-button v-permission="[pDownloadExcel.v]" type="success" :loading="exportLoad[scope.$index]" icon="el-icon-download" size="small" @click="downloadExcel(scope.row,scope.$index)">下载</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -115,7 +120,7 @@
         <span>{{ `${ materialBaseNum[currentRow.formType] ? materialBaseNum[currentRow.formType].name : ''}退库审核：${currentRow.outWarehouseListNo}` }}</span>
         <el-tag effect="dark" :type="materialReturnIndexStatus[currentRow.status].tip" size="small">{{ materialReturnIndexStatus[currentRow.status].name }}</el-tag>
       </div>
-      <VerifyComponent :detail-id="currentRow.id" :is-verify="true" @closeEvent="detailVisible = false" @refreshEvent="refreshInfo" />
+      <VerifyComponent :detail-id="currentRow.id" :is-verify="true" :price-control="true" @closeEvent="detailVisible = false" @refreshEvent="refreshInfo" />
     </el-dialog>
   </div>
 </template>
@@ -123,20 +128,21 @@
 <script>
 import moment from 'moment'
 import VerifyComponent from '@/views/component/quit/verify'
+import { downloadExcel as pDownloadExcel } from '@/utils/permission'
 import { changeProjectToCascadeByYear } from '@/utils/other'
-import { MATERIAL_BASE_TYPE, MATERIAL_BASE_NUM, MATERIAL_RETURN_STATUS, MATERIAL_RETURN_INDEX_STATUS } from '@/utils/conventionalContent'
+import { MATERIAL_BASE_NUM, MATERIAL_RETURN_STATUS, MATERIAL_RETURN_INDEX_STATUS } from '@/utils/conventionalContent'
 import { fetchProjectGroupByYear } from '@/api/project'
-import { fetchReturnList } from '@/api/warehouse'
+import { fetchReturnListByRoles as fetchReturnList } from '@/api/warehouse'
 import { exportReturnWarehouseExcel } from '@/api/exportFiles'
 export default {
   name: 'WareQuitWarehouseVerify',
   components: { VerifyComponent },
   data() {
     return {
-      MATERIAL_BASE_TYPE,
       materialBaseNum: MATERIAL_BASE_NUM,
       materialReturnStatus: MATERIAL_RETURN_STATUS,
       materialReturnIndexStatus: MATERIAL_RETURN_INDEX_STATUS,
+      pDownloadExcel,
       exportLoad: [],
       checkHasProject: false,
       detailVisible: false,

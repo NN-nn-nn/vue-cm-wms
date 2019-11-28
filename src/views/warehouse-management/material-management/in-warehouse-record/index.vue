@@ -101,7 +101,7 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button type="primary" size="small" icon="el-icon-view" @click="openDetail(scope.row)">查看</el-button>
-            <el-button type="success" :loading="exportLoad[scope.$index]" icon="el-icon-download" size="small" @click="downloadExcel(scope.row,scope.$index)">下载</el-button>
+            <el-button v-permission="[pDownloadExcel.v]" type="success" :loading="exportLoad[scope.$index]" icon="el-icon-download" size="small" @click="downloadExcel(scope.row,scope.$index)">下载</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -145,10 +145,11 @@ import Steel from '@/views/component/inbound/steel'
 import StripSteel from '@/views/component/inbound/stripSteel'
 import Enclosure from '@/views/component/inbound/enclosure'
 import InboundSummary from '@/views/component/inbound/inboundSummary'
+import { downloadExcel as pDownloadExcel } from '@/utils/permission'
 import { changeProjectToCascadeByYear } from '@/utils/other'
 import { MATERIAL_BASE_TYPE, MATERIAL_BASE_NUM, INBOUND_VERIFY_STATUS } from '@/utils/conventionalContent'
 import { fetchProjectGroupByYear } from '@/api/project'
-import { fetchList } from '@/api/warehouse'
+import { fetchList, fetchListByRoles } from '@/api/warehouse'
 import { exportInboundExcelByOrderId } from '@/api/exportFiles'
 export default {
   name: 'WareInWarehouseRecord',
@@ -158,6 +159,8 @@ export default {
       MATERIAL_BASE_TYPE,
       materialBaseNum: MATERIAL_BASE_NUM,
       inboundVerifyStatus: INBOUND_VERIFY_STATUS,
+      pDownloadExcel,
+      priceControl: true,
       checkHasProject: false,
       exportLoad: [],
       topDrawerVisible: false,
@@ -196,9 +199,13 @@ export default {
         this.$message({ message: '导出失败', type: 'error' })
       })
     },
-    getList: function() {
+    getList: async function() {
       this.listLoading = true
-      fetchList(this.listQuery).then(({ data, code, message }) => {
+      if (this.listQuery.projectId === undefined && this.checkHasProject) {
+        this.listQuery.projectId = 0
+      }
+      try {
+        const { data, code, message } = this.priceControl ? await fetchListByRoles(this.listQuery) : await fetchList(this.listQuery)
         if (code === 200) {
           this.listData = []
           if (data && data.data && data.totalCount) {
@@ -208,12 +215,12 @@ export default {
         } else {
           this.$message({ message: message, type: 'error' })
         }
-        this.listLoading = false
-      }).catch(e => {
-        console.log(e)
-        this.listLoading = false
+      } catch (error) {
         this.$message({ message: '获取入库清单失败', type: 'error' })
-      })
+        console.log(error)
+      } finally {
+        this.listLoading = false
+      }
     },
     refreshInfo: function(data) {
       console.log('data', data)

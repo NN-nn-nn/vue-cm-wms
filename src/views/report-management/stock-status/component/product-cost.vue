@@ -109,7 +109,7 @@ export default {
                 const _tempData = JSON.parse(JSON.stringify(monthData))
                 v.details.forEach(child => {
                   const _index = Number(child.month) - 1
-                  _tempData[_index].totalMoney = Number((child.totalMoney).toFixed(0)) || 0
+                  _tempData[_index].totalMoney = Number((child.totalMoney).toFixed(2)) || 0
                   // 计算总额
                   if (v.typeName !== '产量(t)') {
                     this.data[_index].sumMoney += _tempData[_index].totalMoney
@@ -128,7 +128,7 @@ export default {
             console.log(this.data, 'this.data----')
             this.dataHead = data.filter(v => v.typeName !== '产量(t)')
             this.data.forEach(v => {
-              v.average = v.sumMoney && v.output ? ((v.sumMoney || 0) / (v.output || 0)).toFixed(0) : '0'
+              v.average = v.sumMoney && v.output ? ((v.sumMoney || 0) / (v.output || 0)).toFixed(2) : '0'
             })
           }
         } else {
@@ -170,6 +170,7 @@ export default {
               }
             }, 0)
             if (index === 1) {
+              sums[index] = sums[index].toFixed(3)
               sums[index] += ' t'
             } else {
               sums[index] += ' 元'

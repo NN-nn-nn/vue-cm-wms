@@ -38,6 +38,7 @@
         <el-table-column label="序号" align="center" type="index" min-width="80" />
         <el-table-column prop="materialCode" align="center" label="编号" min-width="120">
           <template slot-scope="scope">
+            <div v-if="scope.row.measurementType || scope.row.measurementType == 0" :style="{'background-color': `${materialMeasure[scope.row.measurementType].color}`}" class="party-tip">{{ materialMeasure[scope.row.measurementType].name }}</div>
             <el-tag v-if="scope.row.materialCode" size="medium">{{ scope.row.materialCode }}</el-tag>
           </template>
         </el-table-column>
@@ -71,12 +72,14 @@
         </el-table-column>
         <el-table-column prop="purchasePrice" :label="`采购单价 \n (t/元)`" align="center" min-width="90">
           <template slot-scope="scope">
-            <span>{{ scope.row.purchasePrice | toFixed(2) }}</span>
+            <span v-if="scope.row.purchasePrice || scope.row.purchasePrice == 0">{{ scope.row.purchasePrice | toFixed(2) }}</span>
+            <span v-else>/</span>
           </template>
         </el-table-column>
         <el-table-column prop="taxIncludedAmount" :label="`总额 \n (元)`" align="center" min-width="100">
           <template slot-scope="scope">
-            <el-tag v-if="scope.row.taxIncludedAmount !== null" type="success" size="medium">{{ scope.row.taxIncludedAmount | toFixed(2) }}</el-tag>
+            <el-tag v-if="scope.row.taxIncludedAmount || scope.row.taxIncludedAmount == 0" type="success" size="medium">{{ scope.row.taxIncludedAmount | toFixed(2) }}</el-tag>
+            <span v-else>/</span>
           </template>
         </el-table-column>
         <el-table-column prop="unitAmount" :label="`单位净重 \n (kg/m)`" align="center" min-width="100">
@@ -97,18 +100,20 @@
     <div class="footer-toolbar">
       <div class="footer-toolbar-drawer">
         <div class="price-drawer">
-          <div class="price-total-tip">
-            <span>合计</span>
-          </div>
-          <div class="price-total-num">
-            <span>{{ listDetail.totalPrice }}元</span>
-          </div>
-          <div class="price-total-tip">
-            <span>大写</span>
-          </div>
-          <div class="price-total-num" style="width:60%">
-            <span>{{ listDetail.totalPrice | digitUppercase }}</span>
-          </div>
+          <template v-if="listDetail.totalPrice || listDetail.totalPrice == 0">
+            <div class="price-total-tip">
+              <span>合计</span>
+            </div>
+            <div class="price-total-num">
+              <span>{{ listDetail.totalPrice }}元</span>
+            </div>
+            <div class="price-total-tip">
+              <span>大写</span>
+            </div>
+            <div class="price-total-num" style="width:60%">
+              <span>{{ listDetail.totalPrice | digitUppercase }}</span>
+            </div>
+          </template>
         </div>
         <div class="submit-item">
           <el-button type="primary" icon="el-icon-arrow-left" @click="closeDlg">返回</el-button>
@@ -130,6 +135,9 @@
               <el-button slot="reference" v-permission="['50_203_1']" :loading="submitLoading" type="success" icon="el-icon-circle-check">通过</el-button>
             </el-popover>
           </template>
+          <template v-if="!isVerify && listDetail.status === 2">
+            <el-button type="warning" icon="el-icon-document-copy" @click="resubmit">重新提交</el-button>
+          </template>
         </div>
       </div>
     </div>
@@ -137,8 +145,8 @@
 </template>
 
 <script>
-import { MATERIAL_BASE_TYPE, INBOUND_VERIFY, INBOUND_VERIFY_STATUS } from '@/utils/conventionalContent'
-import { fetchDetailList, verifyInboundList } from '@/api/warehouse'
+import { MATERIAL_BASE_TYPE, INBOUND_VERIFY, INBOUND_VERIFY_STATUS, MATERIAL_MEASURE, MATERIAL_INBOUND_TYPE } from '@/utils/conventionalContent'
+import { fetchDetailList, fetchDetailListByRoles, verifyInboundList } from '@/api/warehouse'
 export default {
   name: 'InboundStripSteelComponent',
   props: {
@@ -149,6 +157,10 @@ export default {
     isVerify: {
       type: Boolean,
       default: false
+    },
+    priceControl: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -156,6 +168,8 @@ export default {
       inboundVerify: INBOUND_VERIFY,
       inboundVerifyStatus: INBOUND_VERIFY_STATUS,
       currentBaseType: MATERIAL_BASE_TYPE.stripSteel, // 带钢
+      materialMeasure: MATERIAL_MEASURE, // 计量方式
+      materialInboundType: MATERIAL_INBOUND_TYPE,
       retrunVisible: false,
       successVisible: false,
       provideMateCheck: false,
@@ -176,25 +190,30 @@ export default {
     this.getList()
   },
   methods: {
-    getList() {
+    resubmit: function() {
+      const data = this.listDetail
+      this.$router.push({ name: 'MatInWarehouseHanding', params: { resetData: data }})
+    },
+    getList: async function() {
       this.tableLoading = true
       this.tableData = []
-      fetchDetailList({ id: this.detailId }).then(({ data, code, message }) => {
+      const queryData = { id: this.detailId }
+      try {
+        const { data, code, message } = this.priceControl ? await fetchDetailListByRoles(queryData) : await fetchDetailList(queryData)
         if (code === 200) {
           if (data) {
             this.listDetail = data
             this.listDetail.detailList = this.listDetail.detailList || []
-            this.listDetail.provideMateCheck = this.listDetail.type === 1
+            this.listDetail.provideMateCheck = this.listDetail.type === this.materialInboundType.partyA
           }
         } else {
           this.$message({ message: message, type: 'error' })
         }
-
-        this.tableLoading = false
-      }).catch(() => {
+      } catch (error) {
         this.$message({ message: '获取清单详情失败', type: 'error' })
+      } finally {
         this.tableLoading = false
-      })
+      }
     },
     submitVerifyResult(status) {
       const submitData = {

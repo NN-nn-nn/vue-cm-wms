@@ -32,10 +32,10 @@
     <!-- 主要内容容器 -->
     <div class="content-container">
       <generalMaterial v-if="materialBaseType == 4" :project-id="projectId" />
-      <SteelPlate v-else-if="materialBaseType == 0" :project-id="projectId" />
-      <Steel v-else-if="materialBaseType == 1" :project-id="projectId" />
-      <ColorStrip v-else-if="materialBaseType == 2" :project-id="projectId" />
-      <FinishedProduct v-else :project-id="projectId" />
+      <SteelPlate v-if="materialBaseType == 0" :project-id="projectId" />
+      <Steel v-if="materialBaseType == 1" :project-id="projectId" />
+      <ColorStrip v-if="materialBaseType == 2" :project-id="projectId" />
+      <FinishedProduct v-if="materialBaseType == 3" :project-id="projectId" />
     </div>
 
   </div>

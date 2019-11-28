@@ -65,71 +65,7 @@
     </div>
     <!-- 主要内容容器 -->
     <div class="content-container">
-      <template v-if="currentClassId[0] == materialBaseType.steelPlate.index">
-        <SteelPlate
-          ref="pool"
-          :project-id="listQuery.projectId"
-          :pool-type="listQuery.materialPoolType"
-          :base-type="currentClassId[0]"
-          :type-id="currentClassId[1]"
-          :class-id="currentClassId[2]"
-          :detail-id="currentClassId[3]"
-          :material-move-mode="materialMoveMode"
-          :move-type="listQuery.moveType"
-        />
-      </template>
-      <template v-if="currentClassId[0] == materialBaseType.steel.index">
-        <Steel
-          ref="pool"
-          :project-id="listQuery.projectId"
-          :pool-type="listQuery.materialPoolType"
-          :base-type="currentClassId[0]"
-          :type-id="currentClassId[1]"
-          :class-id="currentClassId[2]"
-          :detail-id="currentClassId[3]"
-          :material-move-mode="materialMoveMode"
-          :move-type="listQuery.moveType"
-        />
-      </template>
-      <template v-if="currentClassId[0] == materialBaseType.stripSteel.index">
-        <StripSteel
-          ref="pool"
-          :project-id="listQuery.projectId"
-          :pool-type="listQuery.materialPoolType"
-          :base-type="currentClassId[0]"
-          :type-id="currentClassId[1]"
-          :class-id="currentClassId[2]"
-          :detail-id="currentClassId[3]"
-          :material-move-mode="materialMoveMode"
-          :move-type="listQuery.moveType"
-        />
-      </template>
-      <template v-if="currentClassId[0] == materialBaseType.enclosure.index">
-        <Enclosure
-          ref="pool"
-          :project-id="listQuery.projectId"
-          :pool-type="listQuery.materialPoolType"
-          :base-type="currentClassId[0]"
-          :type-id="currentClassId[1]"
-          :class-id="currentClassId[2]"
-          :detail-id="currentClassId[3]"
-          :material-move-mode="materialMoveMode"
-          :move-type="listQuery.moveType"
-        />
-      </template>
-      <template v-if="currentClassId[0] == materialBaseType.material.index">
-        <GeneralMate
-          ref="pool"
-          :project-id="listQuery.projectId"
-          :pool-type="listQuery.materialPoolType"
-          :base-type="currentClassId[0]"
-          :type-id="currentClassId[1]"
-          :class-id="currentClassId[2]"
-          :detail-id="currentClassId[3]"
-          :material-move-mode="materialMoveMode"
-          :move-type="listQuery.moveType"
-        />
-      </template>
+      <component v-bind="materialProps()" />
     </div>
 
     <!-- 其他模块（例如弹窗等） -->
@@ -189,16 +125,24 @@ import { MATERIAL_BASE_TYPE, MATERIAL_BASE_NUM, MATERIAL_POOL_TYPE, MATERIAL_MOV
 import { fetchAllMaterialTree } from '@/api/material'
 import { fetchProjectGroupByYear } from '@/api/project'
 
+const materialBaseNum = MATERIAL_BASE_NUM
+materialBaseNum[MATERIAL_BASE_TYPE.material.index].component = 'GeneralMate'
+materialBaseNum[MATERIAL_BASE_TYPE.steelPlate.index].component = 'SteelPlate'
+materialBaseNum[MATERIAL_BASE_TYPE.steel.index].component = 'Steel'
+materialBaseNum[MATERIAL_BASE_TYPE.stripSteel.index].component = 'StripSteel'
+materialBaseNum[MATERIAL_BASE_TYPE.enclosure.index].component = 'Enclosure'
+
 export default {
   name: 'WareMaterialWarehouse',
-  components: { SteelPlate, Steel, OrderList, StripSteel, Enclosure, GeneralMate },
+  // eslint-disable-next-line
+  components: { SteelPlate, Steel, StripSteel, Enclosure, GeneralMate, OrderList },
   data() {
     return {
       materialBaseType: MATERIAL_BASE_TYPE,
-      materialBaseNum: MATERIAL_BASE_NUM,
       materialPoolType: MATERIAL_POOL_TYPE,
       materialMoveType: MATERIAL_MOVE_TYPE,
       materialMoveIndexType: MATERIAL_MOVE_INDEX_TYPE,
+      materialBaseNum,
       props: { value: 'id', label: 'name', children: 'childrenList', expandTrigger: 'hover', checkStrictly: true },
       listQuery: { // 大类查询条件
         materialPoolType: 0,
@@ -316,6 +260,25 @@ export default {
     },
     batchPrintLabel: function() {
       this.$refs['pool'].batchPrintLabel()
+    },
+    materialProps: function() {
+      if (!this.currentClassId || (!this.currentClassId[0] && this.currentClassId[0] !== 0)) {
+        return {
+          is: 'span'
+        }
+      }
+      return {
+        ref: 'pool',
+        is: this.materialBaseNum[this.currentClassId[0]].component,
+        projectId: this.listQuery.projectId,
+        poolType: this.listQuery.materialPoolType,
+        baseType: this.currentClassId[0],
+        typeId: this.currentClassId[1],
+        classId: this.currentClassId[2],
+        detailId: this.currentClassId[3],
+        materialMoveMode: this.materialMoveMode,
+        moveType: this.listQuery.moveType
+      }
     }
   }
 }

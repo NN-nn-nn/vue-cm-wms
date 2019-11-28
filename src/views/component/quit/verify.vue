@@ -60,12 +60,14 @@
         </el-table-column>
         <el-table-column prop="purchasePrice" :label="`采购单价 \n (元)`" align="center" min-width="90">
           <template slot-scope="scope">
-            <span>{{ scope.row.purchasePrice | toFixed(2) }}</span>
+            <span v-if="scope.row.purchasePrice || scope.row.purchasePrice == 0">{{ scope.row.purchasePrice | toFixed(2) }}</span>
+            <span v-else>/</span>
           </template>
         </el-table-column>
         <el-table-column prop="taxIncludedAmount" :label="`总价 \n (元)`" align="center" min-width="100">
           <template slot-scope="scope">
-            <el-tag v-if="scope.row.taxIncludedAmount !== null" type="success" size="medium">{{ scope.row.taxIncludedAmount | toFixed(2) }}</el-tag>
+            <el-tag v-if="scope.row.taxIncludedAmount || scope.row.taxIncludedAmount == 0" type="success" size="medium">{{ scope.row.taxIncludedAmount | toFixed(2) }}</el-tag>
+            <span v-else>/</span>
           </template>
         </el-table-column>
         <el-table-column prop="brand" label="品牌" align="center" min-width="160" />
@@ -82,18 +84,20 @@
     <div class="footer-toolbar">
       <div class="footer-toolbar-drawer">
         <div class="price-drawer">
-          <div class="price-total-tip">
-            <span>合计</span>
-          </div>
-          <div class="price-total-num">
-            <span>{{ listDetail.totalPrice }}元</span>
-          </div>
-          <div class="price-total-tip">
-            <span>大写</span>
-          </div>
-          <div class="price-total-num" style="width:60%">
-            <span>{{ listDetail.totalPrice | digitUppercase }}</span>
-          </div>
+          <template v-if="listDetail.totalPrice || listDetail.totalPrice == 0">
+            <div class="price-total-tip">
+              <span>合计</span>
+            </div>
+            <div class="price-total-num">
+              <span>{{ listDetail.totalPrice }}元</span>
+            </div>
+            <div class="price-total-tip">
+              <span>大写</span>
+            </div>
+            <div class="price-total-num" style="width:60%">
+              <span>{{ listDetail.totalPrice | digitUppercase }}</span>
+            </div>
+          </template>
         </div>
         <div class="submit-item">
           <el-button type="primary" icon="el-icon-arrow-left" @click="closeDlg">返回</el-button>
@@ -104,7 +108,7 @@
                 <el-button size="mini" type="text" @click="retrunVisible = false">取消</el-button>
                 <el-button type="primary" size="mini" @click="()=> {retrunVisible = false;submitVerifyResult(returnVerify.return)}">确定</el-button>
               </div>
-              <el-button slot="reference" v-permission="['50_203_1']" :loading="submitLoading" type="danger" icon="el-icon-circle-close">退回</el-button>
+              <el-button slot="reference" v-permission="[materialWarehouse.o]" :loading="submitLoading" type="danger" icon="el-icon-circle-close">退回</el-button>
             </el-popover>
             <el-popover v-model="successVisible" placement="top" width="160" trigger="click">
               <p>确认通过？</p>
@@ -112,7 +116,7 @@
                 <el-button size="mini" type="text" @click="successVisible = false">取消</el-button>
                 <el-button type="primary" size="mini" @click="()=> {successVisible = false;submitVerifyResult(returnVerify.success)}">确定</el-button>
               </div>
-              <el-button slot="reference" v-permission="['50_203_1']" :loading="submitLoading" type="success" icon="el-icon-circle-check">通过</el-button>
+              <el-button slot="reference" v-permission="[materialWarehouse.o]" :loading="submitLoading" type="success" icon="el-icon-circle-check">通过</el-button>
             </el-popover>
           </template>
         </div>
@@ -124,7 +128,8 @@
 <script>
 import { MATERIAL_BASE_TYPE, RETURN_VERIFY } from '@/utils/conventionalContent'
 import { setMaterialSpecification } from '@/utils/other'
-import { fetchReturnDetailList, verifyReturnList } from '@/api/warehouse'
+import { materialWarehouse } from '@/utils/permission'
+import { fetchReturnDetailList, fetchReturnDetailListByRoles, verifyReturnList } from '@/api/warehouse'
 export default {
   name: 'InboundGeneralMateComponent',
   props: {
@@ -135,12 +140,17 @@ export default {
     isVerify: {
       type: Boolean,
       default: false
+    },
+    priceControl: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
       returnVerify: RETURN_VERIFY,
       currentBaseType: MATERIAL_BASE_TYPE.material, // 一般物料类型
+      materialWarehouse,
       retrunVisible: false,
       successVisible: false,
       provideMateCheck: false,
@@ -161,10 +171,17 @@ export default {
     this.getList()
   },
   methods: {
-    getList() {
+    getList: async function() {
       this.tableLoading = true
       this.tableData = []
-      fetchReturnDetailList({ id: this.detailId }).then(({ data, code, message }) => {
+      try {
+        let res = null
+        if (this.priceControl) {
+          res = await fetchReturnDetailListByRoles({ id: this.detailId })
+        } else {
+          res = await fetchReturnDetailList({ id: this.detailId })
+        }
+        const { data, code, message } = res
         if (code === 200) {
           if (data) {
             this.listDetail = data
@@ -177,11 +194,11 @@ export default {
         } else {
           this.$message({ message: message, type: 'error' })
         }
-        this.tableLoading = false
-      }).catch(() => {
-        this.tableLoading = false
+      } catch (error) {
         this.$message({ message: '获取清单详情失败', type: 'error' })
-      })
+      } finally {
+        this.tableLoading = false
+      }
     },
     submitVerifyResult(status) {
       const submitData = {

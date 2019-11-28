@@ -37,12 +37,14 @@
       </el-table-column>
       <el-table-column prop="purchasePrice" :label="`单价 \n (元)`" align="center" min-width="110">
         <template slot-scope="scope">
-          <span>{{ scope.row.purchasePrice | toFixed(2) }}</span>
+          <span v-if="scope.row.purchasePrice || scope.row.purchasePrice == 0">{{ scope.row.purchasePrice | toFixed(2) }}</span>
+          <span v-else>/</span>
         </template>
       </el-table-column>
       <el-table-column prop="purchasePrice" :label="`总价 \n (元)`" align="center" min-width="100">
         <template slot-scope="scope">
-          <el-tag v-if="scope.row.taxIncludedAmount !== null" type="success" size="medium">{{ scope.row.taxIncludedAmount | toFixed(2) }}</el-tag>
+          <el-tag v-if="scope.row.taxIncludedAmount || scope.row.taxIncludedAmount == 0" type="success" size="medium">{{ scope.row.taxIncludedAmount | toFixed(2) }}</el-tag>
+          <span v-else>/</span>
         </template>
       </el-table-column>
       <el-table-column prop="purchasePrice" :label="`出库凭证`" align="center" min-width="120">
@@ -62,7 +64,7 @@
 import moment from 'moment'
 import { MATERIAL_BASE_TYPE, OUTBOUND_MODE, MATERIAL_INBOUND_TYPE } from '@/utils/conventionalContent'
 import { setMaterialSpecification } from '@/utils/other'
-import { fetchOutboundRecordDetailByNormal, fetchOutboundRecordDetailByProject } from '@/api/warehouse'
+import { fetchOutboundRecordDetailByNormalAndRoles as fetchRecordByNormal, fetchOutboundRecordDetailByProjectRoles as fetchRecordByProject } from '@/api/warehouse'
 
 export default {
   name: 'WareOutboundDetailComponent',
@@ -139,13 +141,16 @@ export default {
       }
     },
     getDataByProject: function() {
+      if (!this.projectId) {
+        return
+      }
       const _listQuery = {
         page: this.listQuery.page,
         size: this.listQuery.size,
         projectId: this.projectId
       }
       this.tableLoading = true
-      fetchOutboundRecordDetailByProject(_listQuery).then(({ data, code, message }) => {
+      fetchRecordByProject(_listQuery).then(({ data, code, message }) => {
         if (code === 200) {
           this.tableData = []
           if (data && data.data && data.data.length) {
@@ -175,7 +180,7 @@ export default {
         this.listQuery.endDate = moment(this.dateTime).endOf('date').format('YYYY-MM-DD')
       }
       this.tableLoading = true
-      fetchOutboundRecordDetailByNormal(this.listQuery).then(({ data, code, message }) => {
+      fetchRecordByNormal(this.listQuery).then(({ data, code, message }) => {
         if (code === 200) {
           this.tableData = []
           if (data && data.data && data.data.length) {

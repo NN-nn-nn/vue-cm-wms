@@ -15,6 +15,12 @@ const DECIMAL_NUMBER = {
   ton: 3 // 吨
 }
 
+// 计量方式
+const MATERIAL_MEASURE = {
+  0: { name: '理算', value: 0, color: '#1682e6' },
+  1: { name: '过磅', value: 1, color: '#ffba00' }
+}
+
 // 物料池类型 整料/余料
 const MATERIAL_POOL_TYPE = {
   entire: 0,
@@ -176,6 +182,32 @@ const DATE_PICKER_OPTION = {
   }]
 }
 
+const DAY_PICKER_OPTION = {
+  disabledDate(time) {
+    return time.getTime() > Date.now()
+  },
+  shortcuts: [{
+    text: '今天',
+    onClick(picker) {
+      picker.$emit('pick', new Date())
+    }
+  }, {
+    text: '昨天',
+    onClick(picker) {
+      const date = new Date()
+      date.setTime(date.getTime() - 3600 * 1000 * 24)
+      picker.$emit('pick', date)
+    }
+  }, {
+    text: '一周前',
+    onClick(picker) {
+      const date = new Date()
+      date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
+      picker.$emit('pick', date)
+    }
+  }]
+}
+
 const MONTH_PICKER_OPTION = {
   shortcuts: [{
     text: '本月',
@@ -200,4 +232,27 @@ const MONTH_PICKER_OPTION = {
   }]
 }
 
-export { apiResultCode, dictionaryType, DECIMAL_NUMBER, MATERIAL_RETURN_INDEX_STATUS_2, MATERIAL_RETURN_STATUS_2, OUTBOUND_MODE, REPORT_ICON_BY_TEXT, REPORT_ICON, RETURN_VERIFY, MATERIAL_RETURN_STATUS, MATERIAL_RETURN_INDEX_STATUS, MATERIAL_BASE_TYPE, MATERIAL_BASE_NUM, MATERIAL_DENSITY, INBOUND_VERIFY_STATUS, INBOUND_VERIFY, DATE_PICKER_OPTION, MONTH_PICKER_OPTION, MATERIAL_POOL_TYPE, MATERIAL_MOVE_TYPE, MATERIAL_MOVE_INDEX_TYPE, MATERIAL_INBOUND_TYPE }
+export { apiResultCode,
+  dictionaryType,
+  DECIMAL_NUMBER,
+  MATERIAL_MEASURE,
+  MATERIAL_RETURN_INDEX_STATUS_2,
+  MATERIAL_RETURN_STATUS_2,
+  OUTBOUND_MODE,
+  REPORT_ICON_BY_TEXT,
+  REPORT_ICON,
+  RETURN_VERIFY,
+  MATERIAL_RETURN_STATUS,
+  MATERIAL_RETURN_INDEX_STATUS,
+  MATERIAL_BASE_TYPE,
+  MATERIAL_BASE_NUM,
+  MATERIAL_DENSITY,
+  INBOUND_VERIFY_STATUS,
+  INBOUND_VERIFY,
+  DAY_PICKER_OPTION,
+  DATE_PICKER_OPTION,
+  MONTH_PICKER_OPTION,
+  MATERIAL_POOL_TYPE,
+  MATERIAL_MOVE_TYPE,
+  MATERIAL_MOVE_INDEX_TYPE,
+  MATERIAL_INBOUND_TYPE }

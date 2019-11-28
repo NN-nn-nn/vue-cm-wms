@@ -32,7 +32,7 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button type="primary" size="small" icon="el-icon-view" @click="openDetail(scope.row)">查看</el-button>
-            <el-button type="success" :loading="exportLoad[scope.$index]" icon="el-icon-download" size="small" @click="downloadExcel(scope.row,scope.$index)">下载</el-button>
+            <el-button v-permission="[pDownloadExcel.v]" type="success" :loading="exportLoad[scope.$index]" icon="el-icon-download" size="small" @click="downloadExcel(scope.row,scope.$index)">下载</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -59,6 +59,7 @@
 <script>
 import moment from 'moment'
 import DetailComponent from './detailReturn'
+import { downloadExcel as pDownloadExcel } from '@/utils/permission'
 import { MATERIAL_MOVE_TYPE, MATERIAL_MOVE_INDEX_TYPE, MONTH_PICKER_OPTION } from '@/utils/conventionalContent'
 import { fetchReturnOrScrapMateDateList } from '@/api/warehouse'
 import { exportReturnOrScrapExcel } from '@/api/exportFiles'
@@ -80,6 +81,7 @@ export default {
       materialMoveType: MATERIAL_MOVE_TYPE,
       materialMoveIndexType: MATERIAL_MOVE_INDEX_TYPE,
       pickerOptions: MONTH_PICKER_OPTION,
+      pDownloadExcel,
       tableLoading: false,
       exportLoad: [],
       drawerVisible: false,

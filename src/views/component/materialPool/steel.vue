@@ -21,6 +21,7 @@
         </el-table-column>
         <el-table-column prop="materialCode" align="center" label="编号" min-width="100">
           <template slot-scope="scope">
+            <div v-if="scope.row.measurementType || scope.row.measurementType == 0" :style="{'background-color': `${materialMeasure[scope.row.measurementType].color}`}" class="party-tip">{{ materialMeasure[scope.row.measurementType].name }}</div>
             <el-tag v-if="scope.row.materialCode" size="medium">{{ scope.row.materialCode }}</el-tag>
           </template>
         </el-table-column>
@@ -43,11 +44,14 @@
             <span>{{ scope.row.weight | toFixed(DECIMAL_NUMBER.ton) }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="purchasePrice" :label="`采购单价 \n (t/元)`" align="center" min-width="90">
+        <el-table-column prop="oldPurchasePrice" :label="`采购单价 \n (t/元)`" align="center" min-width="90">
           <template slot-scope="scope">
             <div class="mask-td number-input">
               <div :class="{'mask-red': scope.row.priceError}" />
-              <span v-if="!materialMoveMode || moveType || !scope.row.isProvideMate">{{ scope.row.purchasePrice | toFixed(2) }}</span>
+              <template v-if="!materialMoveMode || moveType || !scope.row.isProvideMate">
+                <span v-if="scope.row.oldPurchasePrice || scope.row.oldPurchasePrice == 0">{{ scope.row.oldPurchasePrice | toFixed(2) }}</span>
+                <span v-else>/</span>
+              </template>
               <el-input-number v-else v-model="scope.row.purchasePrice" controls-position="right" :min="0" :step="100" :precision="2" size="mini" style="width:160px" @change="() => {scope.row.priceError = false;}" />
             </div>
           </template>
@@ -134,7 +138,7 @@
 </template>
 
 <script>
-import { MATERIAL_BASE_TYPE, INBOUND_VERIFY, INBOUND_VERIFY_STATUS, MATERIAL_POOL_TYPE, MATERIAL_MOVE_TYPE, MATERIAL_INBOUND_TYPE } from '@/utils/conventionalContent'
+import { MATERIAL_BASE_TYPE, INBOUND_VERIFY, INBOUND_VERIFY_STATUS, MATERIAL_POOL_TYPE, MATERIAL_MOVE_TYPE, MATERIAL_INBOUND_TYPE, MATERIAL_MEASURE } from '@/utils/conventionalContent'
 import { printSteelLabel } from '@/utils/print'
 import { changeProjectToCascadeByYear } from '@/utils/other'
 import { fetchMaterialPool, createOutbound, materialMove } from '@/api/warehouse'
@@ -186,6 +190,7 @@ export default {
       materialPoolType: MATERIAL_POOL_TYPE,
       materialMoveType: MATERIAL_MOVE_TYPE,
       materialInboundType: MATERIAL_INBOUND_TYPE,
+      materialMeasure: MATERIAL_MEASURE, // 计量方式
       currentBaseType: MATERIAL_BASE_TYPE.steel, // 型钢
       handingOutVisible: false,
       submitLoading: false, // 提交load
@@ -245,6 +250,9 @@ export default {
       this.handleFilter()
     },
     materialMoveMode(newVal, oldVal) {
+      if (!newVal) {
+        this.clearEditData()
+      }
       this.toggleSelection()
     }
   },
@@ -342,14 +350,14 @@ export default {
           this.tableData = []
           if (data && data.data) {
             this.tableData = data.data.map(v => {
-              // v.isProvideMate = Number(v.storageListType) === this.materialInboundType.partyA && !v.purchasePrice
-              if (Number(v.storageListType) === this.materialInboundType.partyA && !v.purchasePrice) {
-                v.purchasePrice = undefined
+              if (Number(v.storageListType) === this.materialInboundType.partyA) {
+                // v.purchasePrice = undefined
                 v.isProvideMate = true
               } else {
                 v.isProvideMate = false
               }
               v.priceError = false
+              v.oldPurchasePrice = v.purchasePrice
               return v
             })
           }
@@ -429,7 +437,7 @@ export default {
         this.clearAllValid()
         let errorFlag = false
         this.multipleSelection.forEach(v => {
-          if (v['purchasePrice'] === undefined || v['purchasePrice'] === null) {
+          if (+v.storageListType === this.materialInboundType.partyA && (!v['purchasePrice'] && v['purchasePrice'] !== 0)) {
             v['priceError'] = true
             errorFlag = true
           }
@@ -482,6 +490,11 @@ export default {
       if (!selection || selection.length === 0) {
         this.clearAllValid()
       }
+    },
+    clearEditData: function() {
+      this.tableData.forEach(l => {
+        l.purchasePrice = l.oldPurchasePrice
+      })
     }
   }
 }

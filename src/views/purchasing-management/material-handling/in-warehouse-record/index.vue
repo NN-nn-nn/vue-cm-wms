@@ -103,7 +103,7 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button type="primary" size="small" icon="el-icon-view" @click="openDetail(scope.row)">查看</el-button>
-            <el-button type="success" :loading="exportLoad[scope.$index]" icon="el-icon-download" size="small" @click="downloadExcel(scope.row,scope.$index)">下载</el-button>
+            <el-button v-permission="[pDownloadExcel.v]" type="success" :loading="exportLoad[scope.$index]" icon="el-icon-download" size="small" @click="downloadExcel(scope.row,scope.$index)">下载</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -121,11 +121,12 @@
         <span>{{ `${ materialBaseNum[currentInbound.formType] ? materialBaseNum[currentInbound.formType].name : ''}入库详情：${currentInbound.storageListNo}` }}</span>
         <el-tag effect="dark" :type="currentInbound.status == 1 ? 'success' : currentInbound.status == 2 ? 'danger' : 'warning'" size="small">{{ inboundVerifyStatus[currentInbound.status] }}</el-tag>
       </div>
-      <GeneralMat v-if="currentInbound.formType === MATERIAL_BASE_TYPE.material.index" :detail-id="currentInbound.id" @closeEvent="detailVisible = false" @refreshEvent="refreshInfo" />
+      <component v-bind="materialProps()" @closeEvent="detailVisible = false" @refreshEvent="refreshInfo" />
+      <!-- <GeneralMat v-if="currentInbound.formType === MATERIAL_BASE_TYPE.material.index" :detail-id="currentInbound.id" @closeEvent="detailVisible = false" @refreshEvent="refreshInfo" />
       <SteelPlate v-if="currentInbound.formType === MATERIAL_BASE_TYPE.steelPlate.index" :detail-id="currentInbound.id" @closeEvent="detailVisible = false" @refreshEvent="refreshInfo" />
       <Steel v-if="currentInbound.formType === MATERIAL_BASE_TYPE.steel.index" :detail-id="currentInbound.id" @closeEvent="detailVisible = false" @refreshEvent="refreshInfo" />
       <StripSteel v-if="currentInbound.formType === MATERIAL_BASE_TYPE.stripSteel.index" :detail-id="currentInbound.id" @closeEvent="detailVisible = false" @refreshEvent="refreshInfo" />
-      <Enclosure v-if="currentInbound.formType === MATERIAL_BASE_TYPE.enclosure.index" :detail-id="currentInbound.id" @closeEvent="detailVisible = false" @refreshEvent="refreshInfo" />
+      <Enclosure v-if="currentInbound.formType === MATERIAL_BASE_TYPE.enclosure.index" :price-control="true" :detail-id="currentInbound.id" @closeEvent="detailVisible = false" @refreshEvent="refreshInfo" /> -->
     </el-dialog>
 
     <el-drawer
@@ -149,18 +150,29 @@ import Enclosure from '@/views/component/inbound/enclosure'
 import InboundSummary from '@/views/component/inbound/inboundSummary'
 import { changeProjectToCascadeByYear } from '@/utils/other'
 import { MATERIAL_BASE_TYPE, MATERIAL_BASE_NUM, INBOUND_VERIFY_STATUS } from '@/utils/conventionalContent'
+import { downloadExcel as pDownloadExcel } from '@/utils/permission'
 import { fetchProjectGroupByYear } from '@/api/project'
-import { fetchList } from '@/api/warehouse'
+import { fetchList, fetchListByRoles } from '@/api/warehouse'
 import { exportInboundExcelByOrderId } from '@/api/exportFiles'
+
+const materialBaseNum = MATERIAL_BASE_NUM
+materialBaseNum[MATERIAL_BASE_TYPE.material.index].component = 'GeneralMat'
+materialBaseNum[MATERIAL_BASE_TYPE.steelPlate.index].component = 'SteelPlate'
+materialBaseNum[MATERIAL_BASE_TYPE.steel.index].component = 'Steel'
+materialBaseNum[MATERIAL_BASE_TYPE.stripSteel.index].component = 'StripSteel'
+materialBaseNum[MATERIAL_BASE_TYPE.enclosure.index].component = 'Enclosure'
 
 export default {
   name: 'MatInWarehouseRecord',
+  // eslint-disable-next-line
   components: { GeneralMat, SteelPlate, Steel, StripSteel, Enclosure, InboundSummary },
   data() {
     return {
-      MATERIAL_BASE_TYPE,
-      materialBaseNum: MATERIAL_BASE_NUM,
+      pDownloadExcel,
+      materialBaseType: MATERIAL_BASE_TYPE,
       inboundVerifyStatus: INBOUND_VERIFY_STATUS,
+      materialBaseNum,
+      priceControl: false,
       checkHasProject: false,
       topDrawerVisible: false,
       detailVisible: false,
@@ -199,12 +211,13 @@ export default {
         this.$message({ message: '导出失败', type: 'error' })
       })
     },
-    getList: function() {
+    getList: async function() {
       this.listLoading = true
       if (this.listQuery.projectId === undefined && this.checkHasProject) {
         this.listQuery.projectId = 0
       }
-      fetchList(this.listQuery).then(({ data, code, message }) => {
+      try {
+        const { data, code, message } = this.priceControl ? await fetchListByRoles(this.listQuery) : await fetchList(this.listQuery)
         if (code === 200) {
           this.listData = []
           if (data && data.data && data.totalCount) {
@@ -214,12 +227,23 @@ export default {
         } else {
           this.$message({ message: message, type: 'error' })
         }
-        this.listLoading = false
-      }).catch(e => {
-        console.log(e)
-        this.listLoading = false
+      } catch (error) {
         this.$message({ message: '获取入库清单失败', type: 'error' })
-      })
+        console.log(error)
+      } finally {
+        this.listLoading = false
+      }
+    },
+    materialProps: function() {
+      if (!this.currentInbound || (!this.currentInbound.formType && this.currentInbound.formType !== 0)) {
+        return {
+          is: 'span'
+        }
+      }
+      return {
+        is: this.materialBaseNum[this.currentInbound.formType].component,
+        detailId: this.currentInbound.id
+      }
     },
     refreshInfo: function(data) {
       console.log('data', data)

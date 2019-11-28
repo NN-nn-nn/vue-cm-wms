@@ -132,7 +132,7 @@ import Enclosure from '@/views/component/returnbound/enclosure'
 import { changeProjectToCascadeByYear } from '@/utils/other'
 import { MATERIAL_BASE_TYPE, MATERIAL_BASE_NUM, INBOUND_VERIFY_STATUS, MATERIAL_RETURN_STATUS, MATERIAL_RETURN_INDEX_STATUS } from '@/utils/conventionalContent'
 import { fetchProjectGroupByYear } from '@/api/project'
-import { fetchList } from '@/api/warehouse'
+import { fetchList, fetchListByRoles } from '@/api/warehouse'
 
 export default {
   name: 'MatQuitWarehouseHanding',
@@ -144,6 +144,7 @@ export default {
       inboundVerifyStatus: INBOUND_VERIFY_STATUS,
       materialReturnStatus: MATERIAL_RETURN_STATUS,
       materialReturnIndexStatus: MATERIAL_RETURN_INDEX_STATUS,
+      priceControl: false,
       checkHasProject: false,
       topDrawerVisible: false,
       detailVisible: false,
@@ -173,9 +174,13 @@ export default {
     this.dataChange()
   },
   methods: {
-    getList: function() {
+    getList: async function() {
       this.listLoading = true
-      fetchList(this.listQuery).then(({ data, code, message }) => {
+      if (this.listQuery.projectId === undefined && this.checkHasProject) {
+        this.listQuery.projectId = 0
+      }
+      try {
+        const { data, code, message } = this.priceControl ? await fetchListByRoles(this.listQuery) : await fetchList(this.listQuery)
         if (code === 200) {
           this.listData = []
           if (data && data.data && data.totalCount) {
@@ -185,12 +190,12 @@ export default {
         } else {
           this.$message({ message: message, type: 'error' })
         }
-        this.listLoading = false
-      }).catch(e => {
-        console.log(e)
-        this.listLoading = false
+      } catch (error) {
         this.$message({ message: '获取入库清单失败', type: 'error' })
-      })
+        console.log(error)
+      } finally {
+        this.listLoading = false
+      }
     },
     refreshInfo: function(data) {
       console.log('data', data)

@@ -48,7 +48,7 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button type="primary" size="small" icon="el-icon-view" @click="openDetail(scope.row)">查看</el-button>
-            <el-button type="success" :loading="exportLoad[scope.$index]" icon="el-icon-download" size="small" @click="downloadExcel(scope.row.dateTime, scope.$index)">下载</el-button>
+            <el-button v-permission="[pDownloadExcel.v]" type="success" :loading="exportLoad[scope.$index]" icon="el-icon-download" size="small" @click="downloadExcel(scope.row.dateTime, scope.$index)">下载</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -72,8 +72,9 @@
 </template>
 
 <script>
-import DetailComponent from './detail'
 import moment from 'moment'
+import DetailComponent from './detail'
+import { downloadExcel as pDownloadExcel } from '@/utils/permission'
 import { fetchOutboundRecordByNormal } from '@/api/warehouse'
 import { exportOutboundExcelByNormal } from '@/api/exportFiles'
 
@@ -88,6 +89,7 @@ export default {
   },
   data() {
     return {
+      pDownloadExcel,
       dateType: {
         month: 1,
         year: 2

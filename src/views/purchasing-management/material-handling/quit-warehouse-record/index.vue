@@ -97,7 +97,7 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button type="primary" size="small" icon="el-icon-view" @click="openDetail(scope.row)">查看</el-button>
-            <el-button type="success" :loading="exportLoad[scope.$index]" icon="el-icon-download" size="small" @click="downloadExcel(scope.row,scope.$index)">下载</el-button>
+            <el-button v-permission="[pDownloadExcel.v]" type="success" :loading="exportLoad[scope.$index]" icon="el-icon-download" size="small" @click="downloadExcel(scope.row,scope.$index)">下载</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -124,7 +124,8 @@
 import moment from 'moment'
 import VerifyComponent from '@/views/component/quit/verify'
 import { changeProjectToCascadeByYear } from '@/utils/other'
-import { MATERIAL_BASE_TYPE, MATERIAL_BASE_NUM, MATERIAL_RETURN_STATUS, MATERIAL_RETURN_INDEX_STATUS } from '@/utils/conventionalContent'
+import { MATERIAL_BASE_NUM, MATERIAL_RETURN_STATUS, MATERIAL_RETURN_INDEX_STATUS } from '@/utils/conventionalContent'
+import { downloadExcel as pDownloadExcel } from '@/utils/permission'
 import { fetchProjectGroupByYear } from '@/api/project'
 import { fetchReturnList } from '@/api/warehouse'
 import { exportReturnWarehouseExcel } from '@/api/exportFiles'
@@ -133,7 +134,7 @@ export default {
   components: { VerifyComponent },
   data() {
     return {
-      MATERIAL_BASE_TYPE,
+      pDownloadExcel,
       materialBaseNum: MATERIAL_BASE_NUM,
       materialReturnStatus: MATERIAL_RETURN_STATUS,
       materialReturnIndexStatus: MATERIAL_RETURN_INDEX_STATUS,

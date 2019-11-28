@@ -1,3 +1,4 @@
+import { luhn } from '@/utils'
 /**
  * @param {string} path
  * @returns {Boolean}
@@ -80,4 +81,17 @@ export function isArray(arg) {
     return Object.prototype.toString.call(arg) === '[object Array]'
   }
   return Array.isArray(arg)
+}
+
+export function checkBankCardNumber(withCheckDigitString) {
+  if (withCheckDigitString == null) {
+    return false
+  }
+  // 6位IIN+最多12位自定义数字+1位校验数字
+  // 注意ISO/IEC 7812-1:2017中重新定义8位IIN+最多10位自定义数字+1位校验数字
+  // 这里为了兼容2017之前的版本，使用8~19位数字校验
+  if (!withCheckDigitString.match('^\\d{8,19}$')) {
+    return false
+  }
+  return luhn(withCheckDigitString)
 }

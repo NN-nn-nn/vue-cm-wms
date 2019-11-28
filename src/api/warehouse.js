@@ -22,9 +22,27 @@ export function fetchList(params) {
 }
 
 // 获取物料名称
+export function fetchListByRoles(params) {
+  return request({
+    url: '/storage-list/warehouse/find/list',
+    method: 'get',
+    params
+  })
+}
+
+// 获取物料名称
 export function fetchDetailList(params) {
   return request({
     url: '/storage-list/get',
+    method: 'get',
+    params
+  })
+}
+
+// 获取物料名称
+export function fetchDetailListByRoles(params) {
+  return request({
+    url: 'storage-list/warehouse/get',
     method: 'get',
     params
   })
@@ -111,8 +129,8 @@ export function fetchOutboundRecordByNormal(params) {
   })
 }
 
-// 获取出库记录（常规）
-export function fetchOutboundRecordDetailByNormal(params) {
+// 获取出库记录（常规）（价格是否显示）
+export function fetchOutboundRecordDetailByNormalAndRoles(params) {
   return request({
     url: '/outboundDetail/record/details',
     method: 'get',
@@ -120,8 +138,8 @@ export function fetchOutboundRecordDetailByNormal(params) {
   })
 }
 
-// 获取出库记录（项目）
-export function fetchOutboundRecordDetailByProject(params) {
+// 获取出库记录（项目）（价格是否显示）
+export function fetchOutboundRecordDetailByProjectRoles(params) {
   return request({
     url: '/outboundDetail/project/record/details',
     method: 'get',
@@ -165,10 +183,28 @@ export function fetchReturnList(params) {
   })
 }
 
+// 分页查询退库清单(是否显示价格)
+export function fetchReturnListByRoles(params) {
+  return request({
+    url: '/out-warehouse-list/warehouse/find/list',
+    method: 'get',
+    params
+  })
+}
+
 // 查询退库清单详情
 export function fetchReturnDetailList(params) {
   return request({
     url: '/out-warehouse-list/get',
+    method: 'get',
+    params
+  })
+}
+
+// 查询退库清单详情(是否显示价格)
+export function fetchReturnDetailListByRoles(params) {
+  return request({
+    url: '/out-warehouse-list/warehouse/get',
     method: 'get',
     params
   })

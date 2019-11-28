@@ -10,11 +10,14 @@
         <el-tab-pane label="项目出库汇总" name="1">
           <ProjectRecord :visible="activeName == 1" />
         </el-tab-pane>
-        <el-tab-pane label="归还清单" name="2">
-          <ReturnRecord :query-type="materialMoveType.partyA" :visible="activeName == 2" />
+        <el-tab-pane label="搬家清单" name="2">
+          <ReturnRecord :query-type="materialMoveType.common" :visible="activeName == 2" />
         </el-tab-pane>
-        <el-tab-pane label="废料清单" name="3">
-          <ReturnRecord :query-type="materialMoveType.scrap" :visible="activeName == 3" />
+        <el-tab-pane label="归还清单" name="3">
+          <ReturnRecord :query-type="materialMoveType.partyA" :visible="activeName == 3" />
+        </el-tab-pane>
+        <el-tab-pane label="废料清单" name="4">
+          <ReturnRecord :query-type="materialMoveType.scrap" :visible="activeName == 4" />
         </el-tab-pane>
       </el-tabs>
     </div>

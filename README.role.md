@@ -18,3 +18,7 @@
 50_206_2: {id: 206, moduleId: 50, name: "定额管理", permissionModuleName: "物料管理", type: 2, typeList: null}
 50_207_1: {id: 207, moduleId: 50, name: "报表中心", permissionModuleName: "物料管理", type: 1, typeList: null}
 50_207_2: {id: 207, moduleId: 50, name: "报表中心", permissionModuleName: "物料管理", type: 2, typeList: null}
+50_208_1: {id: 208, moduleId: 50, name: "物料模块配置", permissionModuleName: "物料管理", type: 1, typeList: null}
+50_208_2: {id: 208, moduleId: 50, name: "物料模块配置", permissionModuleName: "物料管理", type: 2, typeList: null}
+50_209_1: {id: 209, moduleId: 50, name: "物料模块表单下载", permissionModuleName: "物料管理", type: 1, typeList: null}
+50_209_2: {id: 209, moduleId: 50, name: "物料模块表单下载", permissionModuleName: "物料管理", type: 2, typeList: null}
