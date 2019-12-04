@@ -11,6 +11,8 @@
     "build:zheerjian": "vue-cli-service build --mode zheerjian",
     "build:lmgg": "vue-cli-service build --mode lmgg",
     "build:scyygg": "vue-cli-service build --mode scyygg",
+    "build:hbopen": "vue-cli-service build --mode hbopen",
+    "build:hxzn": "vue-cli-service build --mode hxzn",
     "build:mes": "vue-cli-service build --mode mes",
     "preview": "node build/index.js --preview",
     "lint": "eslint --ext .js,.vue src",

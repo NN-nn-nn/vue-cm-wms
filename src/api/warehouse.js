@@ -66,6 +66,15 @@ export function verifyInboundList(data) {
   })
 }
 
+// 物料入库价格列表
+export function fetchInboundPriceList(params) {
+  return request({
+    url: '/return/warehouse/getPurchasePrice',
+    method: 'get',
+    params
+  })
+}
+
 // 出库办理
 export function createOutbound(data) {
   return request({
@@ -219,3 +228,65 @@ export function verifyReturnList(data) {
   })
 }
 
+// 出库退料办理
+export function createOutboundReturnList(data) {
+  return request({
+    url: '/return/warehouse/save',
+    method: 'post',
+    data
+  })
+}
+
+// 获取出库退料列表
+export function fetchOutboundReturnList(params) {
+  return request({
+    url: '/return/warehouse/find/list',
+    method: 'get',
+    params
+  })
+}
+
+// 获取出库退料列表
+export function fetchOutboundReturnListByRoles(params) {
+  return request({
+    url: '/return/warehouse/warehouse/find/list',
+    method: 'get',
+    params
+  })
+}
+
+// 获取物料名称
+export function fetchOutboundReturnDetailList(params) {
+  return request({
+    url: '/return/warehouse/get',
+    method: 'get',
+    params
+  })
+}
+
+// 获取物料名称
+export function fetchOutboundReturnDetailListByRoles(params) {
+  return request({
+    url: '/return/warehouse/warehouse/get',
+    method: 'get',
+    params
+  })
+}
+
+// 审核出库退料清单
+export function verifyOutboundReturnList(data) {
+  return request({
+    url: '/return/warehouse/check',
+    method: 'put',
+    data
+  })
+}
+
+// 常规/项目 各分类数据月汇总【入库，出库，物料池，退料】
+export function fetchProjectDataAnalysisByMonth(params) {
+  return request({
+    url: '/report-form/money-sum',
+    method: 'get',
+    params
+  })
+}

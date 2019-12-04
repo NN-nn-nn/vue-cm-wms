@@ -539,18 +539,23 @@ export function formatExcelDate(numb) {
 
 export function downloadFiles(res) {
   const data = res.data
+  const headers = res.headers
+  console.log(!headers, headers['content-type'].indexOf('application/vnd.ms-excel') === -1)
+  if (!headers || headers['content-type'].indexOf('application/vnd.ms-excel') === -1) {
+    return false
+  }
   if (!data) {
-    return
+    return false
   }
   const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8' }) // application/vnd.openxmlformats-officedocument.spreadsheetml.sheet这里表示xlsx类型
   const downloadElement = document.createElement('a')
   const href = window.URL.createObjectURL(blob) // 创建下载的链接
   downloadElement.href = href
   // 获取文件名
-  let _name = res.headers && res.headers['content-disposition'] ? `${decodeURI(res.headers['content-disposition'].split('=')[1].split('.')[0])}` : ``// 处理文件名乱码问题
-  const _suffix = res.headers && res.headers['content-disposition'] ? `${decodeURI(res.headers['content-disposition'].split('=')[1].split('.')[1])}` : ``// 处理文件名乱码问题
+  let _name = headers && headers['content-disposition'] ? `${decodeURI(headers['content-disposition'].split('=')[1].split('.')[0])}` : ``// 处理文件名乱码问题
+  const _suffix = headers && headers['content-disposition'] ? `${decodeURI(headers['content-disposition'].split('=')[1].split('.')[1])}` : ``// 处理文件名乱码问题
   if (!_suffix) {
-    return
+    return false
   }
   _name = `${_name}_`
   const fileName = `${_name}${parseTime(new Date(), '{y}{m}{d}{h}{i}{s}')}.${_suffix}`// 处理文件名乱码问题
@@ -559,6 +564,7 @@ export function downloadFiles(res) {
   downloadElement.click() // 点击下载
   document.body.removeChild(downloadElement) // 下载完成移除元素
   window.URL.revokeObjectURL(href) // 释放掉blob对象
+  return true
 }
 
 /**

@@ -118,7 +118,11 @@ export function getLodop(oOBJECT, oEMBED) {
       return LODOP
     }
     // ===如下空白位置适合调用统一功能(如注册语句、语言选择等):==
+    // hzcm
     LODOP.SET_LICENSES('', '605B506B73263FCEE3B3ED62FBDABECC', 'C94CEE276DB2187AE6B65D56B3FC2848', '')
+
+    // lmgg
+    // LODOP.SET_LICENSES("","AC59530E27ED9A944F682EDBD590A96F","C94CEE276DB2187AE6B65D56B3FC2848","")
 
     // =======================================================
     return LODOP

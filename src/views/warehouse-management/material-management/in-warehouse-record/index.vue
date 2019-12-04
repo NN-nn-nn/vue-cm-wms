@@ -16,7 +16,7 @@
           </el-radio-group>
         </div>
         <div class="filter-item">
-          <el-radio-group v-model="checkHasProject" size="medium" @change="inboundTypeChange">
+          <el-radio-group v-model="checkHasProject" size="medium" @change="projectTypeChange">
             <el-radio-button :label="false">常规入库</el-radio-button>
             <el-radio-button :label="true">项目入库</el-radio-button>
           </el-radio-group>
@@ -263,7 +263,7 @@ export default {
       this.listQuery.projectId = this.currentProjectId[1]
       this.handleFilter()
     },
-    inboundTypeChange: function(check) {
+    projectTypeChange: function(check) {
       if (check) {
         if (!this.listQuery.projectId && this.projectCascadeList[0] && this.projectCascadeList[0].children[0] && this.projectCascadeList[0].children[0].id) {
           this.currentProjectId.push(this.projectCascadeList[0].id)

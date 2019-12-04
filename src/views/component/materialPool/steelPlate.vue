@@ -72,7 +72,7 @@
         </el-table-column>
         <el-table-column prop="brand" label="品牌" align="center" min-width="110" />
         <el-table-column prop="furnaceLotNumber" label="炉批号" align="center" min-width="170" />
-        <el-table-column prop="taxIncludedAmount" label="仓库位置" align="center" min-width="140">
+        <el-table-column prop="warehouse" label="仓库位置" align="center" min-width="140">
           <template slot-scope="scope">
             <el-tooltip class="item" effect="dark" :content="`${scope.row.warehouse || '无'}`" placement="left" :disabled="!scope.row.warehouse">
               <span>{{ scope.row.warehouse }}</span>
@@ -86,7 +86,7 @@
         </el-table-column>
         <el-table-column v-if="!materialMoveMode" label="操作" align="center" min-width="200">
           <template slot-scope="scope">
-            <el-tooltip class="item" effect="dark" :content="`入库单号：${scope.row.storageListNo || '无'}`" placement="left" :disabled="poolType == materialPoolType.remainder || !scope.row.storageListNo">
+            <el-tooltip class="item tooltip-pre-line" effect="dark" :content="`入库单号：${scope.row.storageListNo || '无'}`" placement="left" :disabled="poolType == materialPoolType.remainder || !scope.row.storageListNo">
               <el-button v-permission="['50_203_1']" type="primary" size="small" @click="handlingOut(scope.row)">办理出库</el-button>
             </el-tooltip>
             <el-button type="success" size="small" @click="printLabel(scope.row)">打印标签</el-button>

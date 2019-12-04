@@ -1,30 +1,143 @@
 <template>
   <!-- 页面主容器 -->
-  <div class="page-container">
+  <div class="page-container outbound-return-apply">
     <!-- 查询容器 -->
     <div class="filter-container">
       <!-- 左侧box -->
       <div class="filter-left-box">
-        <div class="filter-item">左</div>
+        <div class="filter-item" />
       </div>
       <!-- 右侧box -->
-      <div class="filter-right-box">右</div>
+      <div class="filter-right-box" />
     </div>
     <!-- 主要内容容器 -->
-    <div class="content-container">主要内容主要内容</div>
+    <div class="content-container">
+      <div v-for="(item, i) in materialBaseType" :key="i" class="content-drawer">
+        <el-button type="primary" size="medium" @click="selectBaseType(item)"><svg-icon :icon-class="item.icon" />{{ item.name }}</el-button>
+      </div>
+    </div>
     <!-- 其他模块（例如弹窗等） -->
+    <!-- 入库Dlg -->
+    <el-dialog
+      :title="`${currrentBaseType.name}出库退料办理`"
+      :visible.sync="createVisible"
+      :fullscreen="true"
+      :before-close="handleClose"
+    >
+      <div slot="title" class="dialog-title">
+        <span style="font-weight:bold;">{{ `${currrentBaseType.name}出库退料办理` }}</span>
+      </div>
+      <component ref="inboundComponent" v-bind="materialProps()" @closeEvent="closeDlg" />
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import Steel from '@/views/component/outboundReturnApply/steel'
+import Enclosure from '@/views/component/outboundReturnApply/enclosure'
+import StripSteel from '@/views/component/outboundReturnApply/stripSteel'
+import SteelPlate from '@/views/component/outboundReturnApply/steelPlate'
+import GeneralMat from '@/views/component/outboundReturnApply/generalMate'
+import { MATERIAL_BASE_TYPE, MATERIAL_BASE_NUM } from '@/utils/conventionalContent'
+
+const materialBaseType = JSON.parse(JSON.stringify(MATERIAL_BASE_TYPE))
+materialBaseType.material.component = 'GeneralMat'
+materialBaseType.steelPlate.component = 'SteelPlate'
+materialBaseType.steel.component = 'Steel'
+materialBaseType.stripSteel.component = 'StripSteel'
+materialBaseType.enclosure.component = 'Enclosure'
+
 export default {
   name: 'WareOutboundReturnApply',
+  // eslint-disable-next-line
+  components: { GeneralMat, SteelPlate, Steel, StripSteel, Enclosure },
   data() {
-    return {}
+    return {
+      materialBaseNum: MATERIAL_BASE_NUM,
+      materialBaseType,
+      createVisible: false,
+      currrentBaseType: {},
+      resetData: {},
+      hasHandleParam: false
+    }
+  },
+  beforeRouteEnter(to, from, next) {
+    // console.log('beforRouterEnter', from)
+    next(vm => {
+      vm.hasHandleParam = false
+      // 通过 `vm` 访问组件实例
+    })
+  },
+  created() {
+  },
+  mounted() {
+    this.renderData()
+  },
+  // 考虑到可能会取消缓存的情况
+  activated() {
+    this.renderData()
+  },
+  methods: {
+    renderData: function() {
+      if (this.hasHandleParam) {
+        return
+      }
+      this.hasHandleParam = true
+      const resetData = this.$route.params.resetData
+      if (resetData && resetData.detailList) {
+        const baseType = this.materialBaseType[this.materialBaseNum[resetData.formType].value]
+        this.resetData = resetData
+        this.selectBaseType(baseType)
+      }
+    },
+    selectBaseType: function(item) {
+      this.createVisible = true
+      this.currrentBaseType = item
+    },
+    materialProps: function() {
+      return {
+        is: this.currrentBaseType.component,
+        resetData: this.resetData
+      }
+    },
+    handleClose(done) {
+      this.$confirm('确认关闭？')
+        .then(_ => {
+          this.$refs['inboundComponent'].clearAllValid()
+          done()
+        })
+        .catch(_ => {})
+    },
+    closeDlg(type) {
+      this.$confirm('确认关闭？')
+        .then(_ => {
+          this.$refs['inboundComponent'].clearAllValid()
+          this.createVisible = false
+        })
+        .catch(_ => {})
+    }
   }
 }
 </script>
 
 <style scoped>
-
+.content-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.content-drawer {
+  margin-bottom: 10px;
+  margin-right: 10px;
+}
+.outbound-return-apply .content-container .el-button--medium {
+    width: 200px;
+    height: 60px;
+    font-size: 18px;
+}
+.svg-icon {
+  margin-right: 10px;
+}
 </style>

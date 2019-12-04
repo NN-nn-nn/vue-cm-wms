@@ -15,6 +15,7 @@ import reportManagementRouter from './modules/reportManagement'
 import configManagementRouter from './modules/configManagement'
 import purchasingManagementRouter from './modules/purchasingManagement'
 import warehouseManagementRouter from './modules/warehouseManagement'
+import financialManagementRouter from './modules/financialManagement'
 import technicalManagementRouter from './modules/technicalManagement'
 import SupportManagementRouter from './modules/supportManagement'
 
@@ -106,6 +107,7 @@ export const asyncRoutes = [
   configManagementRouter,
   purchasingManagementRouter,
   warehouseManagementRouter,
+  financialManagementRouter,
   technicalManagementRouter,
   SupportManagementRouter,
 

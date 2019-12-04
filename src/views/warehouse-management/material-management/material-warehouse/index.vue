@@ -12,7 +12,7 @@
           </el-radio-group>
         </div> -->
         <div class="filter-item">
-          <el-radio-group v-model="checkHasProject" size="medium" @change="inboundTypeChange">
+          <el-radio-group v-model="checkHasProject" size="medium" @change="projectTypeChange">
             <el-radio-button :label="false" :disabled="materialMoveMode && (listQuery.moveType != materialMoveType.scrap)">常规出库</el-radio-button>
             <el-radio-button :label="true">项目出库</el-radio-button>
           </el-radio-group>
@@ -125,7 +125,7 @@ import { MATERIAL_BASE_TYPE, MATERIAL_BASE_NUM, MATERIAL_POOL_TYPE, MATERIAL_MOV
 import { fetchAllMaterialTree } from '@/api/material'
 import { fetchProjectGroupByYear } from '@/api/project'
 
-const materialBaseNum = MATERIAL_BASE_NUM
+const materialBaseNum = JSON.parse(JSON.stringify(MATERIAL_BASE_NUM))
 materialBaseNum[MATERIAL_BASE_TYPE.material.index].component = 'GeneralMate'
 materialBaseNum[MATERIAL_BASE_TYPE.steelPlate.index].component = 'SteelPlate'
 materialBaseNum[MATERIAL_BASE_TYPE.steel.index].component = 'Steel'
@@ -236,7 +236,7 @@ export default {
         this.$message.error('获取项目级联列表失败')
       })
     },
-    inboundTypeChange: function(check) {
+    projectTypeChange: function(check) {
       if (check) {
         // if (!this.listQuery.projectId && this.projectCascadeList[0] && this.projectCascadeList[0].children[0] && this.projectCascadeList[0].children[0].id) {
         //   this.currentProjectId.push(this.projectCascadeList[0].id)
@@ -262,6 +262,7 @@ export default {
       this.$refs['pool'].batchPrintLabel()
     },
     materialProps: function() {
+      console.log('-----------', this.currentClassId)
       if (!this.currentClassId || (!this.currentClassId[0] && this.currentClassId[0] !== 0)) {
         return {
           is: 'span'

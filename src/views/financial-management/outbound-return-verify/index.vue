@@ -38,7 +38,9 @@
       </div>
       <!-- 右侧box -->
       <div class="filter-right-box">
-        <div class="filter-item" />
+        <div class="filter-item">
+          <el-button type="primary" size="medium" icon="el-icon-view" @click="topDrawerVisible = true">查看所有项目退料总额</el-button>
+        </div>
       </div>
     </div>
     <div class="filter-container">
@@ -58,7 +60,7 @@
             type="month"
             value-format="timestamp"
             placeholder="选择月"
-            @change="dataChange"
+            @change="dateChange"
           />
         </div>
         <div class="filter-item">
@@ -153,7 +155,7 @@ import { fetchProjectGroupByYear } from '@/api/project'
 import { fetchOutboundReturnList as fetchList, fetchOutboundReturnListByRoles as fetchListByRoles } from '@/api/warehouse'
 import { exportOutboundReturnExcelByOrderId as exprotDetailExcel } from '@/api/exportFiles'
 
-const materialBaseNum = JSON.parse(JSON.stringify(MATERIAL_BASE_NUM))
+const materialBaseNum = MATERIAL_BASE_NUM
 materialBaseNum[MATERIAL_BASE_TYPE.material.index].component = 'GeneralMat'
 materialBaseNum[MATERIAL_BASE_TYPE.steelPlate.index].component = 'SteelPlate'
 materialBaseNum[MATERIAL_BASE_TYPE.steel.index].component = 'Steel'
@@ -161,7 +163,7 @@ materialBaseNum[MATERIAL_BASE_TYPE.stripSteel.index].component = 'StripSteel'
 materialBaseNum[MATERIAL_BASE_TYPE.enclosure.index].component = 'Enclosure'
 
 export default {
-  name: 'WareOutboundReturnRecord',
+  name: 'FinancialOutboundReturnVerify',
   // eslint-disable-next-line
   components: { GeneralMat, SteelPlate, Steel, StripSteel, Enclosure, Summary },
   data() {
@@ -170,7 +172,7 @@ export default {
       materialBaseType: MATERIAL_BASE_TYPE,
       outboundReturnVerifyStatus: OUTBOUND_RETURN_VERIFY_STATUS,
       materialBaseNum,
-      priceControl: true,
+      priceControl: false,
       checkHasProject: false,
       topDrawerVisible: false,
       detailVisible: false,
@@ -197,7 +199,7 @@ export default {
   created() {
     this.getProjectYearCascade()
     this.listQuery.month = new Date()
-    this.dataChange()
+    this.dateChange()
   },
   methods: {
     downloadExcel: function(row, index) {
@@ -241,7 +243,7 @@ export default {
       return {
         is: this.materialBaseNum[this.currentData.formType].component,
         detailId: this.currentData.id,
-        priceControl: true
+        isVerify: true
       }
     },
     refreshInfo: function(data) {
@@ -290,7 +292,7 @@ export default {
       }
       this.handleFilter()
     },
-    dataChange: function() {
+    dateChange: function() {
       this.listQuery.startDate = this.listQuery.month ? moment(this.listQuery.month).startOf('month').format('YYYY-MM-DD') : ''
       this.listQuery.endDate = this.listQuery.month ? moment(this.listQuery.month).endOf('month').format('YYYY-MM-DD') : ''
       this.handleFilter()

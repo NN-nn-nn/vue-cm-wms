@@ -33,6 +33,7 @@ const MATERIAL_MOVE_TYPE = {
   partyA: 1,
   scrap: 2
 }
+
 const MATERIAL_MOVE_INDEX_TYPE = {
   0: '常规物料仓',
   1: '归还甲方',
@@ -43,6 +44,12 @@ const MATERIAL_MOVE_INDEX_TYPE = {
 const MATERIAL_INBOUND_TYPE = {
   normal: 0,
   partyA: 1
+}
+
+// 物料入库类型 正常/甲供
+const MATERIAL_INBOUND_NUM = {
+  0: { name: '自购', value: '0' },
+  1: { name: '甲供', value: '1' }
 }
 
 const MATERIAL_RETURN_STATUS = {
@@ -125,7 +132,7 @@ const REPORT_ICON_BY_TEXT = [
 
 ]
 
-// 入库状态验证
+// 入库验证状态
 const INBOUND_VERIFY_STATUS = {
   0: '未审核',
   1: '已通过',
@@ -139,6 +146,20 @@ const INBOUND_VERIFY = {
   success: 1,
   return: 2,
   quit: 3
+}
+
+// 出库退料验证状态
+const OUTBOUND_RETURN_VERIFY_STATUS = {
+  0: '未审核',
+  1: '已通过',
+  2: '已退回'
+}
+
+// 出库退料验证
+const OUTBOUND_RETURN_VERIFY = {
+  unfinished: 0,
+  success: 1,
+  return: 2
 }
 
 // 退库验证
@@ -232,7 +253,8 @@ const MONTH_PICKER_OPTION = {
   }]
 }
 
-export { apiResultCode,
+export {
+  apiResultCode,
   dictionaryType,
   DECIMAL_NUMBER,
   MATERIAL_MEASURE,
@@ -255,4 +277,8 @@ export { apiResultCode,
   MATERIAL_POOL_TYPE,
   MATERIAL_MOVE_TYPE,
   MATERIAL_MOVE_INDEX_TYPE,
-  MATERIAL_INBOUND_TYPE }
+  MATERIAL_INBOUND_TYPE,
+  MATERIAL_INBOUND_NUM,
+  OUTBOUND_RETURN_VERIFY,
+  OUTBOUND_RETURN_VERIFY_STATUS
+}

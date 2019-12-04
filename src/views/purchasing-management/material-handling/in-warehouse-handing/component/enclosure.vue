@@ -52,7 +52,7 @@
         </div>
         <div class="filter-item">
           <el-tooltip class="item" effect="dark" content="日常备料：常规入库(无需项目信息)" placement="top">
-            <el-checkbox v-model="dailyMateCheck" :disabled="provideMateCheck" @change="inboundTypeChange">日常备料</el-checkbox>
+            <el-checkbox v-model="dailyMateCheck" :disabled="provideMateCheck" @change="projectTypeChange">日常备料</el-checkbox>
           </el-tooltip>
         </div>
       </div>
@@ -370,7 +370,6 @@ export default {
     submitScrap() {
       this.submitLoading = true
       this.validSubmit().then(({ data }) => {
-        console.log(data)
         createInboundList(data).then(({ code, message }) => {
           if (code === 200) {
             this.$message({ message: '保存成功', type: 'success' })
@@ -384,7 +383,6 @@ export default {
           this.submitLoading = false
           this.$message({ message: '保存失败', type: 'error' })
         })
-        this.submitLoading = false
       }).catch(e => {
         this.submitLoading = false
       })
@@ -462,7 +460,7 @@ export default {
     projectChange: function() {
       this.inboundList.projectId = this.currentProjectId[1]
     },
-    inboundTypeChange: function(check) {
+    projectTypeChange: function(check) {
       if (check) {
         this.currentProjectId = []
         this.inboundList.projectId = undefined
@@ -485,6 +483,7 @@ export default {
       const number = item.number || 0
       if (length && number) {
         item.totalLength = Number((number * length).toFixed(2))
+        item.rules.totalLength = false
       } else {
         item.totalLength = undefined
       }

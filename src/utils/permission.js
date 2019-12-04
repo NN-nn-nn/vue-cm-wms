@@ -25,6 +25,11 @@ const downloadExcel = {
   v: '50_209_2'
 }
 
+const financialManagement = {
+  o: '50_210_1',
+  v: '50_210_2'
+}
+
 /**
  * @param {Array} value
  * @returns {Boolean}
@@ -49,4 +54,12 @@ function checkPermission(value) {
   }
 }
 
-export { materialClassify, checkPermission, wasteDefinition, configPriceControl, materialWarehouse, downloadExcel }
+export {
+  materialClassify,
+  checkPermission,
+  wasteDefinition,
+  configPriceControl,
+  materialWarehouse,
+  downloadExcel,
+  financialManagement
+}

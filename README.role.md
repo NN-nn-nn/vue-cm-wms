@@ -22,3 +22,5 @@
 50_208_2: {id: 208, moduleId: 50, name: "物料模块配置", permissionModuleName: "物料管理", type: 2, typeList: null}
 50_209_1: {id: 209, moduleId: 50, name: "物料模块表单下载", permissionModuleName: "物料管理", type: 1, typeList: null}
 50_209_2: {id: 209, moduleId: 50, name: "物料模块表单下载", permissionModuleName: "物料管理", type: 2, typeList: null}
+50_210_1:{id: 210, moduleId: 50, name: "财务管理", permissionModuleName: "物料管理", type: 1, typeList: null}
+50_210_2:{id: 210, moduleId: 50, name: "财务管理", permissionModuleName: "物料管理", type: 2, typeList: null}

@@ -27,3 +27,13 @@ export function fetchProjectOutbound(params) {
     params
   })
 }
+
+// 查询项目出库退料汇总信息
+export function fetchProjectOutboundReturn(params) {
+  return request({
+    url: '/return/warehouse/find/sum-info-page',
+    method: 'get',
+    params
+  })
+}
+

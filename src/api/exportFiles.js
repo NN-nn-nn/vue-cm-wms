@@ -20,6 +20,16 @@ export function exportOutboundExcelByNormal(params) {
   })
 }
 
+// 导出出库退料记录报表
+export function exportOutboundReturnExcelByOrderId(params) {
+  return request({
+    url: '/return/warehouse/record/export',
+    method: 'get',
+    responseType: 'blob',
+    params
+  })
+}
+
 // 导出项目出库记录报表
 export function exportOutboundExcelByProject(params) {
   return request({
@@ -43,6 +53,16 @@ export function exportReturnOrScrapExcel(params) {
 export function exportReturnWarehouseExcel(params) {
   return request({
     url: '/out-warehouse-list/record/export',
+    method: 'get',
+    responseType: 'blob',
+    params
+  })
+}
+
+// 导出项目汇总记录
+export function exportProjectSummaryExcel(params) {
+  return request({
+    url: '/report-form/sum/export',
     method: 'get',
     responseType: 'blob',
     params

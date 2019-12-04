@@ -424,10 +424,11 @@ export default {
           } else if (v.供应商入库登记表 === '法定代表人') {
             this.ruleForm.legalRepresentative = v.__EMPTY
             this.ruleForm.registeredCapital = v.__EMPTY_2
-            this.ruleForm.enterpriseType = v.__EMPTY_4
+            // this.ruleForm.enterpriseType = v.__EMPTY_4
             this.enterpriseList.forEach(item => {
               if (item.name === v.__EMPTY_4) this.ruleForm.enterpriseType = item.value
             })
+            this.$notify({ title: '供应商导入', message: '企业类型错误', type: 'error' })
           } else if (v.供应商入库登记表 === '开户行名称*') {
             this.ruleForm.firstBankName = v.__EMPTY
             this.ruleForm.firstBankAccount = v.__EMPTY_2

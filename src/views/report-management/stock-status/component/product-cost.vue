@@ -77,6 +77,7 @@ import moment from 'moment'
 import { productCost } from '@/api/report'
 import { fetchTypeList } from '@/api/material'
 import { dataMonth, monthData } from '@/utils/product-cost'
+import { array } from 'jszip/lib/support'
 export default {
   name: 'ReportManagementProduct',
   data() {
@@ -125,7 +126,6 @@ export default {
               //   })
               // }
             })
-            console.log(this.data, 'this.data----')
             this.dataHead = data.filter(v => v.typeName !== '产量(t)')
             this.data.forEach(v => {
               v.average = v.sumMoney && v.output ? ((v.sumMoney || 0) / (v.output || 0)).toFixed(2) : '0'
@@ -160,6 +160,13 @@ export default {
         }
         if (index === 1 || index === columns.length - 1 || index === columns.length - 2) {
           const values = data.map(item => Number(item[column.property]))
+          if (index === columns.length - 1) {
+            const price = +sums[columns.length - 2].split(' ')[0]
+            const ton = +sums[1].split(' ')[0]
+            sums[index] = (price / ton).toFixed(2)
+            sums[index] += ' 元 / t'
+            return
+          }
           if (!values.every(value => isNaN(value))) {
             sums[index] = values.reduce((prev, curr) => {
               const value = Number(curr)

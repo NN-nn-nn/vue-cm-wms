@@ -12,12 +12,9 @@
     </div>
     <!-- 主要内容容器 -->
     <div class="content-container">
-      <!-- <el-button type="primary" size="medium" @click="">一般物料入库</el-button>
-      <el-button type="primary" size="medium">钢板入库</el-button>
-      <el-button type="primary" size="medium">型钢入库</el-button>
-      <el-button type="primary" size="medium">彩卷/带钢入库</el-button>
-      <el-button type="primary" size="medium">成品围护入库</el-button> -->
-      <el-button v-for="(item, i) in materialBaseType" :key="i" type="primary" size="medium" @click="selectBaseType(item)"><svg-icon :icon-class="item.icon" />{{ item.name }}</el-button>
+      <div v-for="(item, i) in materialBaseType" :key="i" class="content-drawer">
+        <el-button type="primary" size="medium" @click="selectBaseType(item)"><svg-icon :icon-class="item.icon" />{{ item.name }}</el-button>
+      </div>
     </div>
     <!-- 其他模块（例如弹窗等） -->
     <!-- 入库Dlg -->
@@ -50,7 +47,8 @@ import Steel from './component/steel'
 import StripSteel from './component/stripSteel'
 import Enclosure from './component/enclosure'
 import { MATERIAL_BASE_TYPE, MATERIAL_BASE_NUM } from '@/utils/conventionalContent'
-const materialBaseType = MATERIAL_BASE_TYPE
+
+const materialBaseType = JSON.parse(JSON.stringify(MATERIAL_BASE_TYPE))
 materialBaseType.material.component = 'GeneralMat'
 materialBaseType.steelPlate.component = 'SteelPlate'
 materialBaseType.steel.component = 'Steel'
@@ -131,6 +129,17 @@ export default {
 </script>
 
 <style scoped>
+.content-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.content-drawer {
+  margin-bottom: 10px;
+  margin-right: 10px;
+}
 .in-ware-house-handing .content-container .el-button--medium {
     width: 200px;
     height: 60px;

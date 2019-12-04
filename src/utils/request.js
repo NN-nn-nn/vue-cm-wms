@@ -114,8 +114,8 @@ service.interceptors.response.use(
     }
 
     if (response.config.responseType === 'blob' || response.config.responseType === 'arraybuffer') {
-      downloadFiles(response)
-      return
+      const res = downloadFiles(response)
+      return res
     } else {
       return res
     }
