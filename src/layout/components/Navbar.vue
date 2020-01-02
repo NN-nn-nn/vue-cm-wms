@@ -19,10 +19,12 @@
       </template>
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
-        <div class="avatar-wrapper">
-          <img src="@/assets/images/avatar.gif" class="user-avatar">
-          <i class="el-icon-caret-bottom" />
-        </div>
+        <el-tooltip class="item" effect="dark" :content="`当前用户：${name}`" placement="top-start">
+          <div class="avatar-wrapper">
+            <img src="@/assets/images/avatar.gif" class="user-avatar">
+            <i class="el-icon-caret-bottom" />
+          </div>
+        </el-tooltip>
         <el-dropdown-menu slot="dropdown">
           <!-- <router-link to="/profile/index">
             <el-dropdown-item>个人中心</el-dropdown-item>
@@ -69,7 +71,8 @@ export default {
     ...mapGetters([
       'sidebar',
       'avatar',
-      'device'
+      'device',
+      'name'
     ])
   },
   methods: {

@@ -41,7 +41,7 @@
             <span v-else>{{ scope.row.number }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" width="100">
           <template slot-scope="scope">
             <!-- <el-button v-if="scope.row.edit" type="success" size="small" icon="el-icon-circle-plus-outline" @click="confirmEdit(scope.row)">保存</el-button>
             <el-button v-else type="primary" size="small" icon="el-icon-edit" @click="scope.row.edit=!scope.row.edit">编辑</el-button> -->
@@ -53,7 +53,7 @@
     <!-- 其他模块（例如弹窗等） -->
     <div v-if="tableData && tableData.length" v-permission="['50_203_1']" class="footer-drawer">
       <el-popover v-if="submitAble" v-model="confirmVisible" placement="top" width="160" trigger="click">
-        <p>确认提交？提交后将会打印2张领料凭证</p>
+        <p>确认提交？提交后将会打印一份领料凭证</p>
         <div style="text-align: right; margin: 0">
           <el-button size="mini" type="text" @click="confirmVisible = false">取消</el-button>
           <el-button type="primary" size="mini" @click="()=> {confirmVisible = false;submitOutboundOrder()}">确定</el-button>
@@ -66,10 +66,11 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { updateOutboundOrderItem, deleteOrderItem, fetchOutboundOrder, createOutboundOrder } from '@/api/warehouse'
 import { parseTime } from '@/utils'
 import { setMaterialSpecification } from '@/utils/other'
-import { printOutboundOrder } from '@/utils/print'
+import { printDetailOutboundOrder as printOutboundOrder } from '@/utils/print'
 import { MATERIAL_BASE_TYPE } from '@/utils/conventionalContent'
 export default {
   name: 'PoolOrderComponent',
@@ -92,6 +93,11 @@ export default {
       currentPrintDate: undefined,
       currentPrintOrderNo: undefined
     }
+  },
+  computed: {
+    ...mapGetters([
+      'name'
+    ])
   },
   watch: {
     visible(newVal, oldVal) {
@@ -140,7 +146,7 @@ export default {
           this.currentPrintOrderNo = data.outboundNo
           this.submitAble = false
           this.$emit('inboundEvent', true)
-          this.$notify({ title: '出库单', message: '出库成功，将自动打印两份领料凭证', type: 'success' })
+          this.$notify({ title: '出库单', message: '出库成功，将自动打印一份领料凭证', type: 'success' })
           this.printOrder()
         } else {
           this.$message({ message: message, type: 'error' })
@@ -152,13 +158,14 @@ export default {
         console.log(e)
       })
     },
-    printOrder: function(number = 2) {
+    printOrder: function(number = 1) {
       // const list = this.tableData.map(v => {
       //   v.newSpecification = setMaterialSpecification(v.formType, v)
       //   return v
       // })
       const printData = {
         date: this.currentPrintDate,
+        handler: this.name,
         orderNo: this.currentPrintOrderNo,
         list: this.tableData,
         number: number
