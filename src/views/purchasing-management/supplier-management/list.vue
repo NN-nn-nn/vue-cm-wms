@@ -8,6 +8,9 @@
           <el-input v-model="dataParam.shortName" placeholder="请输入供应商名称" class="input-with-select" @keyup.enter.native="serachHandle">
             <el-button slot="append" type="warning" icon="el-icon-search" @click="serachHandle" />
           </el-input>
+          <el-input v-model="dataParam.supplierCode" placeholder="请输入编号" class="input-with-select" @keyup.enter.native="serachHandle">
+            <el-button slot="append" type="warning" icon="el-icon-search" @click="serachHandle" />
+          </el-input>
         </div>
       </div>
       <div class="filter-right-box"><el-button v-permission="['50_200_1']" class="el-icon-circle-plus-outline" type="primary" @click="goCreate"> 添加供应商</el-button></div>
@@ -146,7 +149,8 @@ export default {
       dataParam: {
         page: 1,
         size: 10,
-        shortName: ''
+        shortName: '',
+        supplierCode: ''
       },
       totalCount: 0,
       loading: false,
@@ -161,13 +165,16 @@ export default {
       this.loading = true
 
       list(this.dataParam).then(res => {
+        console.log(res.data)
         if (res.code === 200) {
           this.loading = false
           this.data = res.data.data
           this.data.forEach((v, index) => {
             this.supplierClassType = ''
+            // stringObject.substring(start,stop) 截取字符串
             v.supplierClassification = v.supplierClassification.substring(1, v.supplierClassification.length - 1)
             v.supplierClassification = v.supplierClassification.split(',')
+            // console.log(this.data[1].supplierClassification.split(','))  输出为：["["0"", ""1"", ""2"]"]
             v.supplierClassification.forEach(item => {
               item = item.replace(/\"/g, '')
               supplierType.filter(typeItem => {
